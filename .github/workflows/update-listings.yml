@@ -1,0 +1,91 @@
+name: Update listings and publish
+
+on:
+  schedule:
+    - cron: "7 1,5,9,13,17,21 * * *"   # every 4 hours (UTC), a few minutes past the hour
+  workflow_dispatch:                    # "Run workflow" button
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "data/**"
+
+permissions:
+  contents: write      # commit the refreshed listings
+  pages: write         # publish the site
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # A site that is down or slow keeps its last good listings (data/raw/), so the
+      # scrape never leaves the site empty. The step itself must not fail the run.
+      - name: Scrape the agency websites
+        id: scrape
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python -m scraper.run
+
+      - name: Check the result
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          d = json.loads(Path("data/listings.json").read_text())
+          n = len(d["listings"])
+          ok = [s["name"] for s in d["sources"] if s.get("ok")]
+          stale = [s["name"] for s in d["sources"] if not s.get("ok") and s.get("count")]
+          down = [s["name"] for s in d["sources"] if not s.get("ok") and not s.get("count")]
+          print(f"{n} properties · read now: {', '.join(ok) or 'none'}")
+          print(f"last good data used for: {', '.join(stale) or 'none'}")
+          print(f"nothing available from: {', '.join(down) or 'none'}")
+          if n < 100:
+              sys.exit(f"Only {n} properties — refusing to publish this run.")
+          PY
+
+      - name: Commit the refreshed listings
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/listings.json data/raw
+          if git diff --staged --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "Listings refreshed $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+        id: pages
+
+      - name: Build the site
+        run: python build_site.py --url "${{ steps.pages.outputs.base_url }}"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

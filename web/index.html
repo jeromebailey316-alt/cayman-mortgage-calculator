@@ -1,0 +1,1517 @@
+<title>Cayman Mortgage Calculator</title>
+<script>
+/* Set the saved theme before the page paints, so there is no flash of the wrong one. */
+try { var t = localStorage.getItem('caymanMortgage.theme'); if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t); } catch (e) { /* ignore */ }
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Instrument+Sans:wght@400..600&display=swap">
+<style>
+:root{
+  --bg:#f1f5f7; --surface:#ffffff; --surface-2:#e8eef2;
+  --ink:#0f2230; --ink-2:#465865; --ink-3:#6c7d89;
+  --line:#d5dde3; --line-strong:#b6c3cd;
+  --accent:#0d5c99; --accent-soft:#e0ecf6; --on-accent:#ffffff;
+  --hero-bg:#0b3a5e; --hero-ink:#ffffff; --hero-ink-2:#c4d9ea; --hero-line:rgba(255,255,255,.18);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#e5f5e5; --good-ink:#0b4a0b;
+  --warn-bg:#fff4d9; --warn-ink:#5a4100;
+  --crit-bg:#fbe7e7; --crit-ink:#7a1717;
+  --shadow:0 1px 2px rgba(15,34,48,.05),0 10px 28px rgba(15,34,48,.06);
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Instrument Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
+    --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
+    --line:#293947; --line-strong:#3c5062;
+    --accent:#6bb1ee; --accent-soft:#17324a; --on-accent:#06223a;
+    --hero-bg:#103a5c; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --good-bg:#12331a; --good-ink:#b9efc0;
+    --warn-bg:#3a2f10; --warn-ink:#ffe3a0;
+    --crit-bg:#3d1717; --crit-ink:#ffc9c9;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
+  --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
+  --line:#293947; --line-strong:#3c5062;
+  --accent:#6bb1ee; --accent-soft:#17324a; --on-accent:#06223a;
+  --hero-bg:#103a5c; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good-bg:#12331a; --good-ink:#b9efc0;
+  --warn-bg:#3a2f10; --warn-ink:#ffe3a0;
+  --crit-bg:#3d1717; --crit-ink:#ffc9c9;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.25);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:clamp(16px,3vw,32px);padding-block:28px 64px}
+h1,h2,h3,p,dl,dd,figure{margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:-.01em}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+.top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.top-text{max-width:66ch;display:flex;flex-direction:column;gap:6px}
+.top h1{font-size:clamp(28px,4.2vw,40px);font-weight:700;line-height:1.05}
+.top p{color:var(--ink-2);font-size:15.5px}
+.top-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font:inherit;font-weight:500;font-size:14px;color:var(--ink-2);background:transparent;border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- layout ---------- */
+.app{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:940px){.app{grid-template-columns:minmax(330px,392px) minmax(0,1fr);align-items:start}}
+.results{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* ---------- inputs ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.inputs fieldset{border:0;margin:0;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.inputs fieldset+fieldset,.inputs details{border-top:1px solid var(--line)}
+.inputs legend{float:left;width:100%;padding:0;margin-bottom:2px;font-family:var(--display);font-weight:600;font-size:17px}
+.inputs legend+*{clear:both}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>label,.field>.lab{font-size:13px;font-weight:600;color:var(--ink-2)}
+.hint{font-size:12.5px;color:var(--ink-3);line-height:1.4}
+.hint.alert{color:var(--warn-ink);background:var(--warn-bg);padding:7px 9px;border-radius:7px}
+.row{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:10px}
+.row.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+.control{display:flex;align-items:stretch;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);overflow:hidden;min-width:0}
+.control:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.control input,.control select{flex:1;min-width:0;width:100%;border:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;font-variant-numeric:tabular-nums;padding:9px 10px;outline:none}
+.control select{appearance:auto;font-size:15px}
+.affix{display:flex;align-items:center;padding-inline:10px;background:var(--surface-2);color:var(--ink-2);font-size:13px;font-weight:600;white-space:nowrap}
+.control input:disabled{color:var(--ink-3)}
+.control:has(input:disabled){opacity:.55}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line-strong);border-radius:9px;padding:3px;gap:3px;background:var(--surface-2)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{text-align:center;font-size:13.5px;font-weight:600;color:var(--ink-2);padding:7px 8px;border-radius:6px;cursor:pointer;line-height:1.25}
+.seg input:checked+label{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(15,34,48,.18)}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:1px}
+.seg.small label{padding:5px 12px;font-size:13px}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--ink-2);cursor:pointer}
+.check input{width:17px;height:17px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+.inputs details summary{cursor:pointer;padding:16px 20px;font-family:var(--display);font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.inputs details summary::-webkit-details-marker{display:none}
+.inputs details summary::after{content:"+";font-family:var(--body);font-weight:400;font-size:22px;color:var(--ink-3);line-height:1}
+.inputs details[open] summary::after{content:"\2212"}
+.inputs details .body{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--hero-bg);color:var(--hero-ink);border-radius:16px;padding:clamp(20px,3vw,30px);display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end}
+.hero>div{flex:0 1 auto;min-width:0;max-width:100%}
+.hero>.hero-break{flex:1 1 250px}
+.hero-label{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--hero-ink-2)}
+.hero-figure{font-family:var(--body);font-weight:600;font-size:clamp(38px,5.6vw,60px);line-height:1.02;letter-spacing:-.025em;margin-top:4px;white-space:nowrap}
+.hero-figure .cents{font-size:.45em;font-weight:500;color:var(--hero-ink-2);letter-spacing:0}
+.hero-sub{color:var(--hero-ink-2);margin-top:8px;font-size:14.5px;max-width:36ch}
+.hero-break{display:flex;flex-direction:column;font-size:14px}
+.hero-break div{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid var(--hero-line);color:var(--hero-ink-2)}
+.hero-break dd{font-variant-numeric:tabular-nums;color:var(--hero-ink)}
+.hero-break div.total{border-bottom:0;padding-top:9px;color:var(--hero-ink);font-weight:600;font-size:15.5px}
+
+/* ---------- KPI row ---------- */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+@media (min-width:1100px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.kpi{background:var(--surface);padding:15px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.kpi .v{font-size:clamp(19px,2.4vw,23px);font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere}
+.kpi .s{font-size:12.5px;color:var(--ink-3)}
+
+/* ---------- cards ---------- */
+.card{padding:clamp(18px,2.4vw,24px);display:flex;flex-direction:column;gap:16px;min-width:0}
+.card-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px}
+.card h2{font-size:20px;font-weight:600}
+.card-head .aside{font-size:13.5px;color:var(--ink-2)}
+
+.stack{display:flex;gap:2px;height:22px}
+.stack .segm{min-width:4px;border-radius:0;cursor:default;transition:filter .12s}
+.stack .segm:first-child{border-radius:4px 0 0 4px}
+.stack .segm:last-child{border-radius:0 4px 4px 0}
+.stack .segm:only-child{border-radius:4px}
+.stack .segm:hover,.stack .segm:focus-visible{filter:brightness(1.12)}
+.c1{background:var(--s1)} .c2{background:var(--s2)} .c3{background:var(--s3)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13.5px;color:var(--ink-2)}
+.legend span.item{display:inline-flex;align-items:center;gap:7px}
+.legend b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.sw{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.lk{width:16px;height:0;border-top:2.5px solid;border-radius:2px;flex:none;display:inline-block}
+.lk.k1{border-color:var(--s1)} .lk.k2{border-color:var(--s2)}
+
+table{border-collapse:collapse;width:100%}
+.costs td,.costs th{padding:10px 0;border-top:1px solid var(--line);vertical-align:top;text-align:left;font-weight:400}
+.costs tbody tr:first-child td{border-top:0}
+.costs .lbl{display:flex;gap:9px;align-items:baseline}
+.costs .lbl .sw{transform:translateY(1px)}
+.costs .lbl strong{font-weight:600}
+.costs .note{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.costs td.amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600;padding-left:16px}
+.costs tfoot th,.costs tfoot td{border-top:2px solid var(--ink);font-weight:700;font-size:16.5px;padding-top:12px}
+.costs tr.sub th,.costs tr.sub td{font-weight:600;color:var(--ink-2);font-size:14px}
+
+.explain{display:flex;flex-direction:column;gap:10px;color:var(--ink-2);max-width:72ch}
+.explain strong{color:var(--ink)}
+.callout{display:flex;gap:10px;padding:11px 13px;border-radius:10px;font-size:14px;line-height:1.45}
+.callout .ico{flex:none;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;margin-top:1px}
+.callout.good{background:var(--good-bg);color:var(--good-ink)} .callout.good .ico{background:var(--good);color:#fff}
+.callout.warn{background:var(--warn-bg);color:var(--warn-ink)} .callout.warn .ico{background:var(--warn);color:#2b2000}
+.callout.crit{background:var(--crit-bg);color:var(--crit-ink)} .callout.crit .ico{background:var(--crit);color:#fff}
+
+.meter{height:10px;border-radius:5px;background:var(--surface-2);position:relative;overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--good)}
+.meter.warn i{background:var(--warn)} .meter.crit i{background:var(--crit)}
+.meter-scale{position:relative;height:16px;font-size:11.5px;color:var(--ink-3)}
+.meter-scale span{position:absolute;transform:translateX(-50%)}
+.afford-grid{display:grid;gap:14px 28px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.afford-grid .big{font-size:22px;font-weight:600}
+
+/* ---------- chart ---------- */
+.chart{position:relative;width:100%;min-width:0;border-radius:8px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .axis-text{fill:var(--ink-3);font-size:11.5px;font-family:var(--body);font-variant-numeric:tabular-nums}
+.chart .dlabel{fill:var(--ink);font-size:12px;font-weight:600;font-family:var(--body)}
+.chart .dlabel tspan.mut{fill:var(--ink-2);font-weight:500}
+.chart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .ln1{stroke:var(--s1)} .chart .ln2{stroke:var(--s2)}
+.chart .area1{fill:var(--s1);opacity:.1}
+.chart .dot1{fill:var(--s1)} .chart .dot2{fill:var(--s2)}
+.chart .dot1,.chart .dot2{stroke:var(--surface);stroke-width:2}
+.chart .cross{stroke:var(--ink-3);stroke-width:1}
+.tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:10px;padding:9px 11px;box-shadow:var(--shadow);font-size:12.5px;min-width:170px;z-index:5}
+.tip .th{font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.tip .tr{display:flex;align-items:center;gap:7px;padding:1.5px 0}
+.tip .tr b{font-variant-numeric:tabular-nums;font-weight:600;font-size:13.5px}
+.tip .tr span.n{color:var(--ink-2)}
+.tip .tr .lk.k0{border-color:var(--ink-3)}
+
+.table-tools{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.scroll{overflow:auto;max-height:440px;border:1px solid var(--line);border-radius:10px}
+.amort{min-width:520px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.amort th,.amort td{padding:8px 12px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
+.amort thead th{position:sticky;top:0;background:var(--surface-2);color:var(--ink-2);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-top:0}
+.amort th:first-child,.amort td:first-child{text-align:left}
+.amort tbody tr:hover td{background:var(--accent-soft)}
+
+/* ---------- notes ---------- */
+.notes{margin-top:36px;display:grid;gap:20px 40px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));color:var(--ink-2);font-size:13.5px}
+.notes h3{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.notes ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.disclaimer{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);max-width:90ch}
+
+/* ---------- mobile dock ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--hero-bg);color:var(--hero-ink);display:flex;justify-content:space-between;gap:16px;padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+.dock div{display:flex;flex-direction:column;min-width:0}
+.dock div:last-child{text-align:right}
+.dock .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
+.dock .v{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+@media (min-width:940px){.dock{display:none}}
+@media (max-width:939.98px){.wrap{padding-bottom:110px}}
+
+/* ---------- header nav ---------- */
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.08);color:var(--on-accent);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.icon{padding:7px;line-height:0;border-radius:9px}
+.btn.icon svg{width:17px;height:17px;display:block;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.src-dot.stale i{background:var(--warn)}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.count{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- budget ---------- */
+.budget{display:grid;gap:1px;background:var(--line);grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.budget>div{background:var(--surface);padding:13px 15px;display:flex;flex-direction:column;gap:2px}
+.budget .k{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.budget .v{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.budget .s{font-size:12.5px;color:var(--ink-3)}
+.budget>div.bind{background:var(--accent-soft)}
+.budget>div.bind .k{color:var(--accent)}
+
+/* ---------- listings ---------- */
+.lx{margin-top:40px;display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.lx-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px 24px}
+.lx-head h2{font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.1}
+.lx-head p{color:var(--ink-2);max-width:70ch;margin-top:6px}
+.lx-status{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;color:var(--ink-3)}
+.src-dot{display:inline-flex;align-items:center;gap:6px}
+.src-dot i{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block}
+.src-dot.bad i{background:var(--crit)}
+.lx-bar{padding:14px 16px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));align-items:end}
+.lx-bar .field.wide{grid-column:span 2}
+@media (max-width:330px){.lx-bar .field.wide{grid-column:auto}}
+.lx-bar .control select{font-size:14.5px;padding:8px 9px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip label{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--line-strong);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink-3);cursor:pointer;background:var(--surface)}
+.chip input:checked+label{color:var(--ink);border-color:var(--accent);background:var(--accent-soft)}
+.chip input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.chip label b{font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.lx-summary{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline;font-size:14px;color:var(--ink-2)}
+.lx-summary strong{color:var(--ink)}
+.lx-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,272px),1fr))}
+.lx-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:border-color .15s,box-shadow .15s}
+.lx-card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
+.lx-card.current{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.lx-photo{position:relative;aspect-ratio:3/2;max-width:100%;background:var(--surface-2);overflow:hidden}
+.lx-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.lx-ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;background:linear-gradient(160deg,var(--hero-bg),color-mix(in srgb,var(--hero-bg) 70%,var(--s1)));color:var(--hero-ink-2);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.lx-ph b{font-family:var(--display);font-size:22px;letter-spacing:-.01em;text-transform:none;color:var(--hero-ink);font-weight:600}
+.lx-tags{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:6px;pointer-events:none}
+.tag{font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:3px 8px;border-radius:6px;background:rgba(8,26,40,.78);color:#fff;white-space:nowrap}
+.pill{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.pill.good{background:var(--good-bg);color:var(--good-ink)}
+.pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
+.pill.crit{background:var(--crit-bg);color:var(--crit-ink)}
+.pill.neutral{background:var(--surface);color:var(--ink-2)}
+.lx-body{padding:14px 15px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.lx-price{font-size:21px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.lx-price small{font-size:12.5px;font-weight:500;color:var(--ink-3)}
+.lx-title{font-weight:600;color:var(--ink);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lx-loc{font-size:13px;color:var(--ink-2)}
+.lx-facts{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;margin-top:2px}
+.lx-calc{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.lx-calc div{background:var(--surface-2);padding:9px 15px;display:flex;flex-direction:column}
+.lx-calc .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.lx-calc .v{font-size:15.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.lx-actions{display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
+.lx-actions .btn{padding:6px 11px;font-size:13.5px}
+.lx-actions .also{font-size:12px;color:var(--ink-3);margin-left:auto}
+.lx-empty{padding:28px;text-align:center;color:var(--ink-2);display:flex;flex-direction:column;gap:10px;align-items:center}
+.lx-empty code{background:var(--surface-2);padding:2px 6px;border-radius:5px;font-size:13px}
+.lx-more{display:flex;justify-content:center}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:9px;font-size:14px;z-index:30;box-shadow:var(--shadow)}
+@media (max-width:939.98px){.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="top-text">
+      <h1>Cayman Mortgage Calculator</h1>
+      <p>Your monthly payment, plus what it really costs to close in the Cayman Islands: stamp duty on the transfer and on the mortgage, Land Registry, legal and bank fees. There is no annual property tax here, so the one-off costs are the ones to plan for. Then see which homes for sale right now fit those numbers.</p>
+    </div>
+    <div class="top-tools">
+      <div class="seg small" role="radiogroup" aria-label="Currency">
+        <input type="radio" name="cur" id="cur-kyd" value="KYD" checked><label for="cur-kyd">CI$</label>
+        <input type="radio" name="cur" id="cur-usd" value="USD"><label for="cur-usd">US$</label>
+      </div>
+      <a class="btn" href="#listings" id="jumpBtn">Listings that fit <span class="count" id="jumpCount">0</span></a>
+      <button class="btn" id="resetBtn" type="button">Reset to example</button>
+      <button class="btn icon" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>
+    </div>
+  </header>
+
+  <div class="app">
+    <!-- ================= INPUTS ================= -->
+    <form class="panel inputs" id="form" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>Property</legend>
+        <div class="field">
+          <label for="price">Purchase price</label>
+          <div class="control"><span class="affix cur">CI$</span><input id="price" type="text" inputmode="decimal" data-money></div>
+          <p class="hint">Duty is charged on the price or Lands &amp; Survey's market valuation, whichever is higher.</p>
+        </div>
+        <div class="field">
+          <span class="lab" id="ptype-lab">Property type</span>
+          <div class="seg" role="radiogroup" aria-labelledby="ptype-lab">
+            <input type="radio" name="ptype" id="ptype-home" value="home" checked><label for="ptype-home">House or condo</label>
+            <input type="radio" name="ptype" id="ptype-land" value="land"><label for="ptype-land">Raw land</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Buyer</legend>
+        <div class="field">
+          <label for="status">Stamp duty status</label>
+          <div class="control">
+            <select id="status">
+              <option value="standard">Standard rate (no concession)</option>
+              <option value="first">Caymanian, first property</option>
+              <option value="second">Caymanian, second property</option>
+            </select>
+          </div>
+          <p class="hint" id="statusHint"></p>
+        </div>
+        <div class="field" id="jointField">
+          <span class="lab" id="joint-lab">Buying as</span>
+          <div class="seg" role="radiogroup" aria-labelledby="joint-lab">
+            <input type="radio" name="joint" id="joint-no" value="single" checked><label for="joint-no">One buyer</label>
+            <input type="radio" name="joint" id="joint-yes" value="joint"><label for="joint-yes">2&ndash;10 Caymanians jointly</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Mortgage</legend>
+        <div class="field">
+          <span class="lab">Down payment</span>
+          <div class="row">
+            <div class="control"><span class="affix cur">CI$</span><input id="downAmt" type="text" inputmode="decimal" data-money aria-label="Down payment amount"></div>
+            <div class="control"><input id="downPct" type="text" inputmode="decimal" aria-label="Down payment percent"><span class="affix">%</span></div>
+          </div>
+          <p class="hint" id="downHint"></p>
+        </div>
+        <div class="row even">
+          <div class="field">
+            <label for="rate">Interest rate</label>
+            <div class="control"><input id="rate" type="text" inputmode="decimal"><span class="affix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="term">Term</label>
+            <div class="control"><input id="term" type="text" inputmode="numeric"><span class="affix">yrs</span></div>
+          </div>
+        </div>
+        <p class="hint">KYD prime was 6.75% at last check (December 2025) and home loans are usually priced at prime plus a margin. Use your bank's quote.</p>
+        <div class="field">
+          <label for="extra">Extra monthly payment <span style="font-weight:400">(optional)</span></label>
+          <div class="control"><span class="affix cur">CI$</span><input id="extra" type="text" inputmode="decimal" data-money></div>
+        </div>
+        <div class="field">
+          <label for="income">Gross monthly household income <span style="font-weight:400">(optional)</span></label>
+          <div class="control"><span class="affix cur">CI$</span><input id="income" type="text" inputmode="decimal" data-money placeholder="For an affordability check"></div>
+        </div>
+        <div class="field">
+          <label for="savings">Cash you have for the purchase <span style="font-weight:400">(optional)</span></label>
+          <div class="control"><span class="affix cur">CI$</span><input id="savings" type="text" inputmode="decimal" data-money placeholder="Down payment plus closing costs"></div>
+          <p class="hint">Add income, cash or both to work out the highest price you can take on, and to rank listings against it.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Monthly running costs</legend>
+        <div class="row even">
+          <div class="field">
+            <label for="strata">Strata fees</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="strata" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="life">Life insurance</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="life" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="insPct">Home insurance, yearly premium</label>
+          <div class="control"><input id="insPct" type="text" inputmode="decimal"><span class="affix">% of price</span></div>
+          <p class="hint" id="insHint">Banks require buildings cover including hurricane, plus life cover assigned to the loan. For a condo the strata usually insures the building, so set this lower and enter strata fees instead.</p>
+        </div>
+      </fieldset>
+
+      <details id="feeDetails">
+        <summary>Fee assumptions</summary>
+        <div class="body">
+          <div class="row even">
+            <div class="field">
+              <label for="legalPct">Legal fees</label>
+              <div class="control"><input id="legalPct" type="text" inputmode="decimal"><span class="affix">% of price</span></div>
+            </div>
+            <div class="field">
+              <label for="bankPct">Bank commitment fee</label>
+              <div class="control"><input id="bankPct" type="text" inputmode="decimal"><span class="affix">% of loan</span></div>
+            </div>
+          </div>
+          <p class="hint">Attorneys typically quote 0.25&ndash;1% of the price; banks charge 0.5&ndash;1% of the loan.</p>
+          <div class="row even">
+            <div class="field">
+              <label for="valuation">Valuation report</label>
+              <div class="control"><span class="affix cur">CI$</span><input id="valuation" type="text" inputmode="decimal" data-money></div>
+            </div>
+            <div class="field">
+              <label for="inspection">Inspection or survey</label>
+              <div class="control"><span class="affix cur">CI$</span><input id="inspection" type="text" inputmode="decimal" data-money></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="chattels">Chattels itemised in the contract</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="chattels" type="text" inputmode="decimal" data-money></div>
+            <p class="hint">Furniture and appliances listed separately in the sale agreement are taken off the dutiable value. Keep it realistic; Lands &amp; Survey can reassess.</p>
+          </div>
+          <label class="check" for="insAtClose"><input type="checkbox" id="insAtClose" checked><span>Pay the first year's home insurance premium at closing</span></label>
+          <div class="field">
+            <label for="fx">Exchange rate</label>
+            <div class="control"><span class="affix">US$1 =</span><input id="fx" type="text" inputmode="decimal"><span class="affix">CI$</span></div>
+            <p class="hint">0.82 is the rate the Land Registry and most listings use. Duty thresholds are set in CI$.</p>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <!-- ================= RESULTS ================= -->
+    <div class="results">
+      <section class="hero" aria-label="Monthly payment">
+        <div>
+          <p class="hero-label">Monthly payment</p>
+          <p class="hero-figure" id="outPayment"></p>
+          <p class="hero-sub" id="outPaymentSub"></p>
+        </div>
+        <dl class="hero-break" id="heroBreak"></dl>
+      </section>
+
+      <section class="kpis" aria-label="Key figures">
+        <div class="kpi"><span class="k">Cash to close</span><span class="v" id="kCash"></span><span class="s" id="kCashS"></span></div>
+        <div class="kpi"><span class="k">Closing costs</span><span class="v" id="kCosts"></span><span class="s" id="kCostsS"></span></div>
+        <div class="kpi"><span class="k">Loan amount</span><span class="v" id="kLoan"></span><span class="s" id="kLoanS"></span></div>
+        <div class="kpi"><span class="k">Total interest</span><span class="v" id="kInt"></span><span class="s" id="kIntS"></span></div>
+      </section>
+
+      <section class="panel card" id="budgetCard" aria-labelledby="budH" hidden>
+        <div class="card-head"><h2 id="budH">What you can buy</h2><span class="aside" id="budAside"></span></div>
+        <div class="budget" id="budgetGrid"></div>
+        <div id="budgetNote"></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="cashH">
+        <div class="card-head">
+          <h2 id="cashH">Cash needed at closing</h2>
+          <span class="aside" id="cashAside"></span>
+        </div>
+        <div class="stack" id="stack" role="img" aria-label="Breakdown of cash needed at closing"></div>
+        <div class="legend" id="stackLegend"></div>
+        <table class="costs">
+          <tbody id="costRows"></tbody>
+          <tfoot><tr><th scope="row">Total cash needed</th><td class="amt" id="costTotal"></td></tr></tfoot>
+        </table>
+      </section>
+
+      <section class="panel card" aria-labelledby="dutyH">
+        <div class="card-head"><h2 id="dutyH">How the stamp duty was worked out</h2></div>
+        <div class="explain" id="dutyExplain"></div>
+      </section>
+
+      <section class="panel card" id="affordCard" aria-labelledby="affH" hidden>
+        <div class="card-head"><h2 id="affH">Affordability check</h2><span class="aside">Rule of thumb, not a lending decision</span></div>
+        <div class="afford-grid" id="affordGrid"></div>
+        <div id="affordNote"></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="amH">
+        <div class="card-head">
+          <h2 id="amH">Paying it down</h2>
+          <span class="aside" id="amAside"></span>
+        </div>
+        <div class="legend">
+          <span class="item"><i class="lk k1"></i>Loan balance</span>
+          <span class="item"><i class="lk k2"></i>Interest paid so far</span>
+        </div>
+        <div class="chart" id="chart" tabindex="0" role="img" aria-label="Line chart of loan balance and cumulative interest over the term. Use the left and right arrow keys to read values year by year.">
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="table-tools">
+          <label class="check" for="showTable"><input type="checkbox" id="showTable"><span>Show amortisation table</span></label>
+          <div class="seg small" role="radiogroup" aria-label="Table detail" id="tableMode" hidden>
+            <input type="radio" name="tmode" id="tmode-y" value="year" checked><label for="tmode-y">Yearly</label>
+            <input type="radio" name="tmode" id="tmode-m" value="month"><label for="tmode-m">Monthly</label>
+          </div>
+        </div>
+        <div class="scroll" id="tableWrap" hidden>
+          <table class="amort"><thead id="amHead"></thead><tbody id="amBody"></tbody></table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="lx" id="listings" aria-labelledby="lxH">
+    <div class="lx-head">
+      <div>
+        <h2 id="lxH">Listings that fit your numbers</h2>
+        <p id="lxLead">Homes and land for sale in the Cayman Islands, gathered from CIREBA and the agencies' own websites. Each one is priced through your calculator settings above.</p>
+      </div>
+      <div class="lx-status" id="lxStatus"></div>
+    </div>
+
+    <div class="panel lx-bar" role="group" aria-label="Filter listings">
+      <div class="field wide">
+        <label for="lxRange">Price range</label>
+        <div class="control"><select id="lxRange"></select></div>
+      </div>
+      <div class="field">
+        <label for="lxType">Property type</label>
+        <div class="control"><select id="lxType">
+          <option value="match">As calculator</option>
+          <option value="all">All types</option>
+          <option value="house">Houses</option>
+          <option value="condo">Condos and townhomes</option>
+          <option value="land">Land</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label for="lxArea">Area</label>
+        <div class="control"><select id="lxArea"><option value="">Anywhere</option></select></div>
+      </div>
+      <div class="field">
+        <label for="lxBeds">Bedrooms</label>
+        <div class="control"><select id="lxBeds">
+          <option value="0">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label for="lxSort">Sort by</label>
+        <div class="control"><select id="lxSort">
+          <option value="fit">Closest price</option>
+          <option value="price-asc">Price, low to high</option>
+          <option value="price-desc">Price, high to low</option>
+          <option value="size">Most floor area</option>
+        </select></div>
+      </div>
+      <div class="field wide" style="grid-column:1/-1">
+        <span class="lab">Sources</span>
+        <div class="chips" id="lxSources"></div>
+      </div>
+    </div>
+
+    <div class="lx-summary"><span id="lxCount"></span><span class="hint" id="lxBasis"></span></div>
+    <div class="lx-grid" id="lxGrid"></div>
+    <div class="lx-more"><button class="btn" id="lxMore" type="button" hidden>Show more listings</button></div>
+  </section>
+
+  <footer>
+    <div class="notes">
+      <div>
+        <h3>Rules built in</h3>
+        <ul>
+          <li>Transfer stamp duty: 7.5% of the dutiable value, or 10% of the whole value once it reaches CI$2,000,000 (from 1 January 2026).</li>
+          <li>First-time Caymanian buyers: nothing up to CI$550,000 on a home (CI$250,000 on land), then 3.75% on the next CI$100,000. Joint purchases by 2&ndash;10 Caymanians: CI$600,000 (CI$450,000 land). Above the ceiling the concession is lost and 7.5% applies to the full value.</li>
+          <li>Caymanian second property: 3.75% of the full value up to CI$600,000 on a home (CI$300,000 land); jointly CI$700,000 (CI$550,000 land).</li>
+          <li>Mortgage stamp duty: 1% of the loan up to CI$300,000, 1.5% of the whole loan above that.</li>
+          <li>Land Registry: CI$50 to register the transfer and CI$50 to register the charge.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>Stamp duty is due within 45 days of signing, or interest accrues.</li>
+          <li>Concessions need an approved application to Lands &amp; Survey. A five-year restriction goes on the register and duty is clawed back pro rata if you sell early.</li>
+          <li>Banks commonly lend 85&ndash;90% on a primary home, about 65% on a rental and about 50% on raw land, usually over a shorter term.</li>
+          <li>Fees, insurance and the interest rate here are planning defaults. Swap in your own quotes as they arrive.</li>
+          <li>Listings are copied from the agencies' public websites and refreshed every four hours. A property may have sold or changed price since, so always check the agent's page.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sources, checked September 2026</h3>
+        <ul>
+          <li><a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">Lands &amp; Survey: concession form for Caymanian buyers</a></li>
+          <li><a href="https://www.caymanlandinfo.ky/services/land-registry/registry-fees" target="_blank" rel="noopener">Lands &amp; Survey: registry fees</a></li>
+          <li><a href="https://gov.ky/w/legislation-passed-to-increase-stamp-duty-on-properties-worth-2m-and-over" target="_blank" rel="noopener">Cayman Islands Government: 10% duty at CI$2M and over</a></li>
+          <li><a href="https://caymanresident.com/housing/real-estate/buying-real-estate/stamp-duty" target="_blank" rel="noopener">Cayman Resident: stamp duty</a></li>
+          <li><a href="https://www.cireba.com/stamp-duty" target="_blank" rel="noopener">CIREBA: stamp duty</a></li>
+          <li><a href="https://www.sothebysrealty.ky/resources/grand-cayman-real-estate-fees/" target="_blank" rel="noopener">Sotheby's Cayman: purchase fees and deposits</a></li>
+          <li><a href="https://century21cayman.com/en/costs-of-buying-cayman-islands-real-estate/" target="_blank" rel="noopener">Century 21 Cayman: costs of buying</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disclaimer">An estimating tool, not financial or legal advice. Government rates change and banks set their own fees and lending criteria, so confirm figures with your attorney and lender before you commit.</p>
+  </footer>
+</div>
+
+<div class="dock" aria-hidden="true">
+  <div><span class="k">Monthly</span><span class="v" id="dockPay"></span></div>
+  <div><span class="k">Cash to close</span><span class="v" id="dockCash"></span></div>
+</div>
+
+<script type="application/json" id="listingData">__LISTINGS_JSON__</script>
+<script>
+/* ================= Core maths (no DOM) ================= */
+var Core = (function () {
+  'use strict';
+  var R = {
+    std: 0.075, lux: 0.10, luxFrom: 2000000, reduced: 0.0375,
+    first: { home: { single: [550000, 650000], joint: [600000, 700000] },
+             land: { single: [250000, 350000], joint: [450000, 550000] } },
+    second: { home: { single: 600000, joint: 700000 },
+              land: { single: 300000, joint: 550000 } },
+    mort: { threshold: 300000, low: 0.01, high: 0.015 },
+    regTransfer: 50, regCharge: 50
+  };
+
+  function standardDuty(v) { return v >= R.luxFrom ? v * R.lux : v * R.std; }
+
+  function transferDuty(v, ptype, status, joint) {
+    v = Math.max(0, v);
+    var std = standardDuty(v), out = { amount: std, std: std, rule: v >= R.luxFrom ? 'luxury' : 'standard' };
+    var who = joint ? 'joint' : 'single';
+    if (status === 'first') {
+      var t = R.first[ptype][who];
+      out.free = t[0]; out.upper = t[1];
+      if (v <= t[0]) { out.amount = 0; out.rule = 'first-free'; }
+      else if (v <= t[1]) { out.amount = (v - t[0]) * R.reduced; out.rule = 'first-taper'; }
+      else { out.rule = 'first-over'; out.atLimit = (t[1] - t[0]) * R.reduced; }
+    } else if (status === 'second') {
+      var cap = R.second[ptype][who];
+      out.cap = cap;
+      if (v <= cap) { out.amount = v * R.reduced; out.rule = 'second-reduced'; }
+      else { out.rule = 'second-over'; out.atLimit = cap * R.reduced; }
+    }
+    return out;
+  }
+
+  function mortgageDuty(loan) {
+    if (loan <= 0) return { amount: 0, rate: 0 };
+    var rate = loan <= R.mort.threshold ? R.mort.low : R.mort.high;
+    return { amount: loan * rate, rate: rate };
+  }
+
+  function payment(L, annual, n) {
+    if (L <= 0 || n <= 0) return 0;
+    var r = annual / 12;
+    return r === 0 ? L / n : L * r / (1 - Math.pow(1 + r, -n));
+  }
+
+  function amortise(L, annual, years, extra) {
+    var n = Math.max(1, Math.round(years * 12)), r = annual / 12, pmt = payment(L, annual, n);
+    var bal = L, cumI = 0, cumP = 0, rows = [], bals = [L], ints = [0], m = 0;
+    extra = Math.max(0, extra || 0);
+    while (bal > 0.005 && m < n) {
+      m++;
+      var i = bal * r, p = pmt - i + extra;
+      if (p > bal || m === n) p = bal;
+      bal -= p; cumI += i; cumP += p;
+      rows.push({ m: m, pay: p + i, p: p, i: i, bal: Math.max(0, bal), cumI: cumI, cumP: cumP });
+      bals.push(Math.max(0, bal)); ints.push(cumI);
+    }
+    return { pmt: pmt, n: n, months: m, rows: rows, bals: bals, ints: ints,
+             totalInterest: cumI, baseInterest: L > 0 ? pmt * n - L : 0 };
+  }
+
+  return { R: R, transferDuty: transferDuty, mortgageDuty: mortgageDuty, payment: payment, amortise: amortise, standardDuty: standardDuty };
+})();
+if (typeof module !== 'undefined') module.exports = Core;
+
+/* ================= UI ================= */
+if (typeof document !== 'undefined') (function () {
+  'use strict';
+  var R = Core.R, STORE = 'caymanMortgage.v1';
+  var DEFAULTS = {
+    cur: 'KYD', price: 600000, ptype: 'home', status: 'standard', joint: 'single',
+    downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.25, term: 25, extra: 0, income: 0, savings: 0,
+    strata: 0, life: 0, insPct: 1, legalPct: 0.5, bankPct: 1, valuation: 700, inspection: 750,
+    chattels: 0, insAtClose: true, fx: 0.82, showTable: false, tmode: 'year'
+  };
+  var MONEY = ['price', 'downAmt', 'extra', 'income', 'savings', 'strata', 'life', 'valuation', 'inspection', 'chattels'];
+  var PLAIN = ['downPct', 'rate', 'term', 'insPct', 'legalPct', 'bankPct', 'fx'];
+  var $ = function (id) { return document.getElementById(id); };
+  var S = {}, curNow = 'KYD', last = null, hoverIdx = null;
+
+  /* ---------- helpers ---------- */
+  function parseNum(str) {
+    if (typeof str === 'number') return isFinite(str) ? str : 0;
+    var s = String(str || '').replace(/[, $]|CI|US|KYD|USD/gi, '').trim();
+    var m = /^(-?[\d.]+)\s*([kKmM])?$/.exec(s);
+    if (!m) return 0;
+    var v = parseFloat(m[1]); if (!isFinite(v)) return 0;
+    if (m[2]) v *= /k/i.test(m[2]) ? 1e3 : 1e6;
+    return v;
+  }
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function group(v, dp) { return v.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp }); }
+  function trimNum(v, dp) { return String(+v.toFixed(dp)); }
+  function sym() { return curNow === 'USD' ? 'US$' : 'CI$'; }
+  function disp(kyd) { return curNow === 'USD' ? kyd / S.fx : kyd; }
+  function toKyd(v) { return curNow === 'USD' ? v * S.fx : v; }
+  function money(kyd, dp) { return sym() + group(disp(kyd), dp || 0); }
+  function compact(kyd) {
+    var v = disp(kyd), a = Math.abs(v);
+    if (a >= 1e6) return sym() + trimNum(v / 1e6, 2) + 'M';
+    if (a >= 1e3) return sym() + trimNum(v / 1e3, 1) + 'K';
+    return sym() + Math.round(v);
+  }
+  function pct(x, dp) { return trimNum(x * 100, dp == null ? 2 : dp) + '%'; }
+  function span(months) {
+    var y = Math.floor(months / 12), m = months % 12;
+    return (y ? y + (y === 1 ? ' yr' : ' yrs') : '') + (y && m ? ' ' : '') + (m || !y ? m + (m === 1 ? ' mo' : ' mos') : '');
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function radio(name) { var r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : null; }
+  function setRadio(name, val) { var r = document.querySelector('input[name="' + name + '"][value="' + val + '"]'); if (r) r.checked = true; }
+
+  /* ---------- state <-> form ---------- */
+  function writeForm(st) {
+    setRadio('cur', st.cur); curNow = st.cur;
+    setRadio('ptype', st.ptype); setRadio('joint', st.joint); setRadio('tmode', st.tmode);
+    $('status').value = st.status;
+    MONEY.forEach(function (k) { $(k).value = st[k] ? group(st[k], 0) : (k === 'price' || k === 'downAmt' ? '0' : ''); });
+    PLAIN.forEach(function (k) { $(k).value = trimNum(st[k], k === 'fx' ? 4 : 3); });
+    $('insAtClose').checked = !!st.insAtClose;
+    $('showTable').checked = !!st.showTable;
+    S.downMaster = st.downMaster || 'pct';
+    syncCurrencyLabels();
+  }
+  function readForm() {
+    S.cur = curNow;
+    S.fx = clamp(parseNum($('fx').value) || 0.82, 0.5, 1.5);
+    MONEY.forEach(function (k) { S[k] = Math.max(0, parseNum($(k).value)); });
+    S.downPct = clamp(parseNum($('downPct').value), 0, 100);
+    S.rate = clamp(parseNum($('rate').value), 0, 30);
+    S.term = clamp(Math.round(parseNum($('term').value)) || 1, 1, 40);
+    S.insPct = clamp(parseNum($('insPct').value), 0, 10);
+    S.legalPct = clamp(parseNum($('legalPct').value), 0, 10);
+    S.bankPct = clamp(parseNum($('bankPct').value), 0, 10);
+    S.ptype = radio('ptype'); S.joint = radio('joint'); S.status = $('status').value;
+    S.insAtClose = $('insAtClose').checked; S.showTable = $('showTable').checked; S.tmode = radio('tmode');
+  }
+  function save() {
+    try {
+      var o = {}; Object.keys(DEFAULTS).forEach(function (k) { o[k] = S[k]; });
+      localStorage.setItem(STORE, JSON.stringify(o));
+    } catch (e) { /* storage unavailable: carry on */ }
+  }
+  function load() {
+    var st = {}; Object.keys(DEFAULTS).forEach(function (k) { st[k] = DEFAULTS[k]; });
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (raw && typeof raw === 'object') Object.keys(DEFAULTS).forEach(function (k) {
+        if (typeof raw[k] === typeof DEFAULTS[k]) st[k] = raw[k];
+      });
+    } catch (e) { /* ignore */ }
+    return st;
+  }
+  function syncCurrencyLabels() {
+    var s = sym();
+    Array.prototype.forEach.call(document.querySelectorAll('.affix.cur'), function (a) { a.textContent = s; });
+  }
+
+  /* ---------- down payment linking ---------- */
+  function syncDown(source) {
+    var price = Math.max(0, parseNum($('price').value));
+    if (source === 'pct') S.downMaster = 'pct';
+    if (source === 'amt') S.downMaster = 'amt';
+    if (S.downMaster === 'pct') {
+      var p = clamp(parseNum($('downPct').value), 0, 100);
+      if (document.activeElement !== $('downAmt')) $('downAmt').value = group(Math.round(price * p / 100), 0);
+    } else {
+      var a = Math.min(price, Math.max(0, parseNum($('downAmt').value)));
+      if (document.activeElement !== $('downPct')) $('downPct').value = price > 0 ? trimNum(a / price * 100, 2) : '0';
+    }
+  }
+
+  /* ---------- the calculation ---------- */
+  // ov (optional): { price: KYD, ptype: 'home'|'land', light: true to skip the amortisation schedule }
+  function compute(ov) {
+    ov = ov || {};
+    var alt = ov.price != null, ptype = ov.ptype || S.ptype;
+    var price = alt ? ov.price : toKyd(S.price), chattels = alt ? 0 : Math.min(price, toKyd(S.chattels));
+    var down = Math.min(price, S.downMaster === 'pct' ? price * S.downPct / 100 : toKyd(S.downAmt));
+    var loan = Math.max(0, price - down), dutiable = Math.max(0, price - chattels);
+    var joint = S.joint === 'joint' && S.status !== 'standard';
+    var td = Core.transferDuty(dutiable, ptype, S.status, joint);
+    var md = Core.mortgageDuty(loan);
+    var am = ov.light ? { pmt: Core.payment(loan, S.rate / 100, Math.max(1, Math.round(S.term * 12))) }
+                      : Core.amortise(loan, S.rate / 100, S.term, toKyd(S.extra));
+    var isHome = ptype === 'home';
+    var insYear = isHome ? price * S.insPct / 100 : 0;
+    var items = [
+      { g: 1, label: 'Down payment', note: price > 0 ? pct(down / price, 1) + ' of the price' : '', v: down },
+      { g: 2, label: 'Stamp duty on the transfer', note: dutyShort(td, dutiable), v: td.amount },
+      { g: 2, label: 'Stamp duty on the mortgage', note: loan > 0 ? pct(md.rate, 1) + ' of the loan (' + (md.rate === R.mort.low ? money(R.mort.threshold) + ' or less' : 'over ' + money(R.mort.threshold)) + ')' : 'No loan', v: md.amount },
+      { g: 2, label: 'Land Registry fees', note: loan > 0 ? 'CI$50 for the transfer, CI$50 for the charge' : 'CI$50 to register the transfer', v: R.regTransfer + (loan > 0 ? R.regCharge : 0) },
+      { g: 3, label: 'Legal fees', note: pct(S.legalPct / 100) + ' of the price', v: price * S.legalPct / 100 },
+      { g: 3, label: 'Bank commitment fee', note: pct(S.bankPct / 100) + ' of the loan', v: loan * S.bankPct / 100 },
+      { g: 3, label: 'Valuation report', note: 'Required by the lender', v: loan > 0 ? toKyd(S.valuation) : 0 },
+      { g: 3, label: 'Inspection or survey', note: '', v: toKyd(S.inspection) }
+    ];
+    if (isHome && S.insAtClose) items.push({ g: 3, label: "First year's home insurance", note: pct(S.insPct / 100) + ' of the price', v: insYear });
+    var groups = [0, 0, 0, 0];
+    items.forEach(function (it) { groups[it.g] += it.v; });
+    var costs = groups[2] + groups[3];
+    return { price: price, down: down, loan: loan, dutiable: dutiable, chattels: chattels, td: td, md: md, am: am,
+             items: items, groups: groups, costs: costs, cash: down + costs,
+             insMonth: insYear / 12, strata: toKyd(S.strata), life: toKyd(S.life), extra: toKyd(S.extra), income: toKyd(S.income), savings: toKyd(S.savings) };
+  }
+  function dutyShort(td, v) {
+    switch (td.rule) {
+      case 'luxury': return '10% of the full value (CI$2M and over)';
+      case 'first-free': return 'Exempt: first-time Caymanian buyer';
+      case 'first-taper': return '3.75% on the ' + money(v - td.free) + ' above ' + money(td.free);
+      case 'second-reduced': return '3.75% of the full value';
+      case 'first-over': case 'second-over': return (v >= R.luxFrom ? '10%' : '7.5%') + ' of the full value: over the concession limit';
+      default: return '7.5% of ' + money(v);
+    }
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    readForm();
+    var c = last = compute();
+
+    // contextual form hints
+    $('jointField').hidden = S.status === 'standard';
+    $('statusHint').textContent = S.status === 'standard'
+      ? 'Applies to non-Caymanian buyers and to any purchase outside the concession limits.'
+      : 'Needs an approved concession application. A five-year restriction is placed on the register.';
+    var dp = c.price > 0 ? c.down / c.price : 0, dh = $('downHint');
+    dh.className = 'hint';
+    if (S.ptype === 'land' && dp < 0.5) { dh.textContent = 'Banks often ask for around 50% down on raw land, over about 15 years.'; dh.className = 'hint alert'; }
+    else if (dp < 0.1) { dh.textContent = 'Most Cayman banks want at least 10 to 15% down on a primary home, and 30 to 35% from non-residents or on rentals.'; dh.className = 'hint alert'; }
+    else dh.textContent = 'Typical minimums: 10 to 15% on a primary home, 30 to 35% for non-residents or rentals.';
+    $('insPct').disabled = S.ptype === 'land'; $('insAtClose').disabled = S.ptype === 'land';
+    $('insHint').hidden = S.ptype === 'land';
+
+    // hero
+    var pay = c.am.pmt, whole = Math.floor(disp(pay) + 1e-9), cents = Math.round((disp(pay) - whole) * 100);
+    if (cents === 100) { whole += 1; cents = 0; }
+    var hf = $('outPayment'); hf.textContent = sym() + group(whole, 0);
+    hf.appendChild(el('span', 'cents', '.' + (cents < 10 ? '0' : '') + cents));
+    $('outPaymentSub').textContent = c.loan > 0
+      ? 'Principal and interest on ' + money(c.loan) + ' over ' + S.term + (S.term === 1 ? ' year' : ' years') + ' at ' + trimNum(S.rate, 3) + '%'
+      : 'No loan: this is a cash purchase';
+    var hb = $('heroBreak'); hb.textContent = '';
+    var allIn = pay + c.extra + c.insMonth + c.strata + c.life;
+    [['Principal and interest', pay], ['Extra payment', c.extra], ['Home insurance', c.insMonth], ['Strata fees', c.strata], ['Life insurance', c.life]]
+      .forEach(function (r, i) { if (i === 0 || r[1] > 0) hb.appendChild(dlRow(r[0], money(r[1]))); });
+    hb.appendChild(dlRow('All-in monthly cost', money(allIn), 'total'));
+    $('dockPay').textContent = money(pay); $('dockCash').textContent = money(c.cash);
+
+    // KPIs
+    $('kCash').textContent = money(c.cash);
+    $('kCashS').textContent = 'Down payment plus all closing costs';
+    $('kCosts').textContent = money(c.costs);
+    $('kCostsS').textContent = c.price > 0 ? pct(c.costs / c.price, 1) + ' on top of the price' : '';
+    $('kLoan').textContent = money(c.loan);
+    $('kLoanS').textContent = c.price > 0 ? pct(c.loan / c.price, 1) + ' loan to value' : '';
+    $('kInt').textContent = money(c.am.totalInterest);
+    $('kIntS').textContent = c.loan > 0 ? money(c.loan + c.am.totalInterest) + ' repaid in total' : '';
+
+    renderCash(c); renderDuty(c); renderAfford(c, allIn); renderAmort(c); drawChart();
+    B = budget(); renderBudget(c);
+    save();
+    scheduleListings();
+  }
+  function dlRow(k, v, cls) { var d = el('div', cls); d.appendChild(el('dt', null, k)); d.appendChild(el('dd', null, v)); return d; }
+
+  var GROUPS = { 1: 'Down payment', 2: 'Government duty and fees', 3: 'Bank, legal and other' };
+  function renderCash(c) {
+    $('cashAside').textContent = c.price > 0 ? 'Closing costs add ' + pct(c.costs / c.price, 1) + ' to the price' : '';
+    var st = $('stack'), lg = $('stackLegend'); st.textContent = ''; lg.textContent = '';
+    [1, 2, 3].forEach(function (g) {
+      var v = c.groups[g];
+      if (v > 0 && c.cash > 0) {
+        var s = el('div', 'segm c' + g); s.style.flex = (v / c.cash) + ' 1 0'; s.tabIndex = 0;
+        s.setAttribute('aria-label', GROUPS[g] + ' ' + money(v));
+        s.dataset.tipHead = GROUPS[g]; s.dataset.tipVal = money(v); s.dataset.tipSub = pct(v / c.cash, 1) + ' of cash needed';
+        st.appendChild(s);
+      }
+      var it = el('span', 'item'); it.appendChild(el('i', 'sw c' + g)); it.appendChild(document.createTextNode(GROUPS[g] + ' '));
+      it.appendChild(el('b', null, money(v))); lg.appendChild(it);
+    });
+    var tb = $('costRows'); tb.textContent = '';
+    c.items.forEach(function (it) {
+      if (it.v <= 0 && it.g === 3) return;
+      var tr = el('tr'), td1 = el('td'), lbl = el('div', 'lbl'), txt = el('div');
+      lbl.appendChild(el('i', 'sw c' + it.g)); txt.appendChild(el('strong', null, it.label));
+      if (it.note) txt.appendChild(el('span', 'note', it.note));
+      lbl.appendChild(txt); td1.appendChild(lbl); tr.appendChild(td1);
+      tr.appendChild(el('td', 'amt', money(it.v))); tb.appendChild(tr);
+    });
+    $('costTotal').textContent = money(c.cash);
+  }
+
+  function callout(kind, text) {
+    var d = el('div', 'callout ' + kind);
+    d.appendChild(el('span', 'ico', kind === 'good' ? '✓' : '!'));
+    d.appendChild(el('span', null, text)); return d;
+  }
+  function renderDuty(c) {
+    var box = $('dutyExplain'), td = c.td, v = c.dutiable, kind = S.ptype === 'home' ? 'home' : 'parcel of land';
+    box.textContent = '';
+    var rateLbl = v >= R.luxFrom ? '10%' : '7.5%';
+    var p = el('p'), lead = el('strong', null, 'Transfer duty: ' + money(td.amount) + '. '); p.appendChild(lead);
+    var text = '';
+    if (td.rule === 'standard') text = '7.5% of the dutiable value of ' + money(v) + '.';
+    else if (td.rule === 'luxury') text = '10% of the full ' + money(v) + '. Since 1 January 2026 the higher rate applies to the whole value once it reaches ' + money(R.luxFrom) + ', not just the part above it.';
+    else if (td.rule === 'first-free') text = 'A first-time Caymanian buyer pays nothing on a ' + kind + ' valued up to ' + money(td.free) + '.';
+    else if (td.rule === 'first-taper') text = 'The first ' + money(td.free) + ' is exempt and 3.75% is charged on the ' + money(v - td.free) + ' above it.';
+    else if (td.rule === 'first-over') text = 'The value is over the ' + money(td.upper) + ' ceiling for the first-time buyer concession, so ' + rateLbl + ' applies to the full ' + money(v) + '.';
+    else if (td.rule === 'second-reduced') text = '3.75% of the full value, the reduced rate for a Caymanian’s second property up to ' + money(td.cap) + '.';
+    else if (td.rule === 'second-over') text = 'The value is over the ' + money(td.cap) + ' limit for the second-property rate, so ' + rateLbl + ' applies to the full ' + money(v) + '.';
+    if (c.chattels > 0) text += ' Dutiable value is the price less ' + money(c.chattels) + ' of itemised chattels.';
+    p.appendChild(document.createTextNode(text)); box.appendChild(p);
+
+    if (td.amount < td.std - 0.5) box.appendChild(callout('good', 'The concession saves ' + money(td.std - td.amount) + ' against the standard ' + money(td.std) + '.'));
+    if (td.rule === 'first-taper') box.appendChild(callout('warn', 'Mind the ceiling. One dollar over ' + money(td.upper) + ' and the concession is lost entirely: duty would jump from ' + money((td.upper - td.free) * R.reduced) + ' to about ' + money(td.upper * R.std) + '.'));
+    if (td.rule === 'first-over' || td.rule === 'second-over') {
+      var lim = td.rule === 'first-over' ? td.upper : td.cap;
+      if (v < R.luxFrom) box.appendChild(callout('warn', 'At ' + money(lim) + ' the duty would be ' + money(td.atLimit) + '. Being ' + money(v - lim) + ' over the limit costs an extra ' + money(td.amount - td.atLimit) + ' in duty.'));
+    }
+    if (td.rule === 'luxury' || ((td.rule === 'first-over' || td.rule === 'second-over') && v >= R.luxFrom)) {
+      var under = (R.luxFrom - 1) * R.std;
+      box.appendChild(callout('warn', 'Just under ' + money(R.luxFrom) + ' the duty would be about ' + money(under) + '. Crossing the line adds ' + money(td.amount - under) + ' at this value.'));
+    }
+    if (td.rule === 'standard' && v >= R.luxFrom * 0.95) box.appendChild(callout('warn', 'Close to the ' + money(R.luxFrom) + ' line. If Lands & Survey values the property at or above it, duty becomes 10% of the whole value: at least ' + money(R.luxFrom * R.lux) + '.'));
+
+    var p2 = el('p'); p2.appendChild(el('strong', null, 'Mortgage duty: ' + money(c.md.amount) + '. '));
+    p2.appendChild(document.createTextNode(c.loan > 0
+      ? (c.md.rate === R.mort.low ? '1% of the loan, the rate for charges of ' + money(R.mort.threshold) + ' or less.' : '1.5% of the whole loan, the rate once a charge exceeds ' + money(R.mort.threshold) + '.')
+      : 'Nothing to pay without a loan.'));
+    box.appendChild(p2);
+    var over = c.loan - R.mort.threshold;
+    if (over > 0) {
+      var saving = c.md.amount - R.mort.threshold * R.mort.low;
+      if (saving > over) box.appendChild(callout('good', 'Putting down ' + money(over) + ' more would bring the loan to ' + money(R.mort.threshold) + ' and cut mortgage duty by ' + money(saving) + '.'));
+    }
+    if (curNow === 'USD') box.appendChild(el('p', 'hint', 'Thresholds are set in CI$ and shown here converted at US$1 = CI$' + trimNum(S.fx, 4) + '.'));
+    if (S.status !== 'standard') box.appendChild(el('p', 'hint', 'Concession eligibility is decided by Lands & Survey: for a single purchaser at least one spouse must be Caymanian, for joint purchasers all must be, and nobody may have bought two or more properties before.'));
+  }
+
+  function renderAfford(c, allIn) {
+    var card = $('affordCard');
+    if (!(c.income > 0) || !(c.loan > 0)) { card.hidden = true; return; }
+    card.hidden = false;
+    var grid = $('affordGrid'), note = $('affordNote'); grid.textContent = ''; note.textContent = '';
+    [['Mortgage payment', c.am.pmt + c.extra], ['All-in housing cost', allIn]].forEach(function (r) {
+      var ratio = r[1] / c.income, cls = ratio <= 0.33 ? '' : ratio <= 0.4 ? ' warn' : ' crit';
+      var d = el('div', 'field'); d.appendChild(el('span', 'lab', r[0] + ' as a share of income'));
+      d.appendChild(el('span', 'big', pct(ratio, 1)));
+      var m = el('div', 'meter' + cls), i = el('i'); i.style.width = clamp(ratio / 0.6 * 100, 2, 100) + '%'; m.appendChild(i); d.appendChild(m);
+      var sc = el('div', 'meter-scale');
+      [[0.33, '33%'], [0.4, '40%']].forEach(function (t) { var s = el('span', null, t[1]); s.style.left = (t[0] / 0.6 * 100) + '%'; sc.appendChild(s); });
+      d.appendChild(sc); grid.appendChild(d);
+    });
+    var ratio = (c.am.pmt + c.extra) / c.income, need = c.am.pmt / 0.33;
+    if (ratio <= 0.33) note.appendChild(callout('good', 'Comfortable: the payment is within the one-third of gross income that Cayman lenders and brokers commonly use as a guide.'));
+    else if (ratio <= 0.4) note.appendChild(callout('warn', 'Stretching: the payment is above one-third of gross income. A household income of about ' + money(need) + ' a month would bring it back to 33%.'));
+    else note.appendChild(callout('crit', 'High: the payment is over 40% of gross income, which most lenders will question. About ' + money(need) + ' a month of income would bring it to 33%.'));
+  }
+
+  function renderAmort(c) {
+    var am = c.am, aside = $('amAside');
+    if (!(c.loan > 0)) aside.textContent = '';
+    else if (c.extra > 0 && am.months < am.n) aside.textContent = 'Paid off in ' + span(am.months) + ', ' + span(am.n - am.months) + ' early, saving ' + money(am.baseInterest - am.totalInterest) + ' of interest';
+    else aside.textContent = money(am.totalInterest) + ' of interest over ' + span(am.n);
+    $('tableWrap').hidden = !S.showTable; $('tableMode').hidden = !S.showTable;
+    if (!S.showTable) return;
+    var head = $('amHead'), body = $('amBody'); head.textContent = ''; body.textContent = '';
+    var hr = el('tr'); [S.tmode === 'year' ? 'Year' : 'Month', 'Paid', 'Principal', 'Interest', 'Balance'].forEach(function (h) { var th = el('th', null, h); th.scope = 'col'; hr.appendChild(th); });
+    head.appendChild(hr);
+    var frag = document.createDocumentFragment(), dpn = S.tmode === 'year' ? 0 : 2;
+    function addRow(lbl, pay, p, i, bal) {
+      var tr = el('tr'); tr.appendChild(el('td', null, lbl));
+      [pay, p, i, bal].forEach(function (x) { tr.appendChild(el('td', null, money(x, dpn))); }); frag.appendChild(tr);
+    }
+    if (S.tmode === 'month') am.rows.forEach(function (r) { addRow(String(r.m), r.pay, r.p, r.i, r.bal); });
+    else for (var y = 0; y * 12 < am.rows.length; y++) {
+      var sl = am.rows.slice(y * 12, y * 12 + 12), pay = 0, p = 0, i = 0;
+      sl.forEach(function (r) { pay += r.pay; p += r.p; i += r.i; });
+      addRow(String(y + 1), pay, p, i, sl[sl.length - 1].bal);
+    }
+    body.appendChild(frag);
+  }
+
+  /* ---------- budget: the highest price the inputs support ---------- */
+  var B = null;
+  function solveMax(ok) {
+    var lo = 0, hi = 5e7;
+    if (ok(hi)) return hi;
+    for (var i = 0; i < 50 && hi - lo > 500; i++) { var mid = (lo + hi) / 2; if (ok(mid)) lo = mid; else hi = mid; }
+    return Math.floor(lo / 1000) * 1000;
+  }
+  function budget() {
+    var inc = toKyd(S.income), sav = toKyd(S.savings);
+    if (!(inc > 0) && !(sav > 0)) return null;
+    var out = { byIncome: null, bySavings: null };
+    if (inc > 0) out.byIncome = solveMax(function (p) { return compute({ price: p, light: true }).am.pmt <= inc * 0.33; });
+    if (sav > 0) out.bySavings = solveMax(function (p) { return compute({ price: p, light: true }).cash <= sav; });
+    var vals = [out.byIncome, out.bySavings].filter(function (v) { return v != null; });
+    out.max = Math.min.apply(null, vals);
+    out.binds = out.byIncome != null && out.bySavings != null ? (out.byIncome <= out.bySavings ? 'income' : 'savings') : (out.byIncome != null ? 'income' : 'savings');
+    return out;
+  }
+  function renderBudget(c) {
+    var card = $('budgetCard');
+    if (!B) { card.hidden = true; return; }
+    card.hidden = false;
+    var grid = $('budgetGrid'), note = $('budgetNote'); grid.textContent = ''; note.textContent = '';
+    function tile(k, v, sub, bind) {
+      var d = el('div', bind ? 'bind' : ''); d.appendChild(el('span', 'k', k)); d.appendChild(el('span', 'v', v)); d.appendChild(el('span', 's', sub)); grid.appendChild(d);
+    }
+    var both = B.byIncome != null && B.bySavings != null;
+    if (B.byIncome != null) tile('Limit from your income', money(B.byIncome), 'Payment at 33% of ' + money(c.income) + ' a month', both && B.binds === 'income');
+    if (B.bySavings != null) tile('Limit from your cash', money(B.bySavings), 'Down payment and closing costs within ' + money(c.savings), both && B.binds === 'savings');
+    tile('Your maximum price', money(B.max), both ? 'The lower of the two' : 'On today’s settings', !both);
+    $('budAside').textContent = S.downMaster === 'pct' ? 'At ' + trimNum(S.downPct, 2) + '% down, ' + trimNum(S.rate, 3) + '% over ' + S.term + ' yrs' : 'With ' + money(toKyd(S.downAmt)) + ' down';
+    var gap = B.max - c.price;
+    if (c.price <= 0) return;
+    if (gap >= 0) note.appendChild(callout('good', 'Your price of ' + money(c.price) + ' is within reach, with ' + money(gap) + ' of headroom.'));
+    else note.appendChild(callout(c.price <= B.max * 1.1 ? 'warn' : 'crit', 'Your price of ' + money(c.price) + ' is ' + money(-gap) + ' over what your ' + (B.binds === 'income' ? 'income' : 'cash') + ' supports.' + (B.binds === 'savings' ? ' A larger loan, if the bank agrees, lowers the cash you need.' : ' A longer term or larger down payment would lower the payment.')));
+  }
+
+  /* ---------- light and dark ---------- */
+  var THEME = 'caymanMortgage.theme';
+  var SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5a8.5 8.5 0 1 0 10.8 10.8z"/></svg>';
+  function systemDark() { return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+  function savedTheme() { try { var t = localStorage.getItem(THEME); return t === 'dark' || t === 'light' ? t : null; } catch (e) { return null; } }
+  function applyTheme(t) {
+    var root = document.documentElement;
+    if (t) root.setAttribute('data-theme', t); else root.removeAttribute('data-theme');
+    var dark = t ? t === 'dark' : systemDark(), btn = $('themeBtn');
+    btn.innerHTML = dark ? SUN : MOON;
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label); btn.title = label;
+  }
+  function bindTheme() {
+    applyTheme(savedTheme());
+    $('themeBtn').addEventListener('click', function () {
+      var next = (savedTheme() ? savedTheme() === 'dark' : systemDark()) ? 'light' : 'dark';
+      try { localStorage.setItem(THEME, next); } catch (e) { /* ignore */ }
+      applyTheme(next);
+    });
+    if (window.matchMedia) {
+      var mq = matchMedia('(prefers-color-scheme: dark)');
+      var onChange = function () { if (!savedTheme()) applyTheme(null); };
+      if (mq.addEventListener) mq.addEventListener('change', onChange); else if (mq.addListener) mq.addListener(onChange);
+    }
+  }
+
+  /* ---------- listings ---------- */
+  var LSTORE = 'caymanMortgage.lx.v1', PAGE = 12;
+  var LX = { data: null, items: [], shown: PAGE, off: {}, current: null, timer: null, busy: false };
+  var TYPE_LABEL = { house: 'House', condo: 'Condo', land: 'Land', other: 'Property' };
+
+  function setData(d) {
+    LX.data = d && Array.isArray(d.listings) ? d : { listings: [], sources: [], generated_at: null };
+    LX.data.listings.forEach(function (l, i) { l._i = i; });
+  }
+  // The page carries its listings inline (local server, single-file build) or fetches
+  // listings.json published beside it (the website).
+  function loadListingData(done) {
+    var raw = '';
+    try { raw = $('listingData').textContent.trim(); } catch (e) { raw = ''; }
+    if (raw && raw.charAt(0) === '{') {
+      try { setData(JSON.parse(raw)); } catch (e) { setData(null); }
+      done(); return;
+    }
+    LX.loading = true; setData(null); done();
+    fetch('listings.json', { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(function (d) {
+      LX.loading = false; setData(d); setupListingControls(); renderListings();
+    }).catch(function () {
+      LX.loading = false; LX.loadFailed = true; setupListingControls(); renderListings();
+    });
+  }
+  function loadPrefs() {
+    var p = {};
+    try { p = JSON.parse(localStorage.getItem(LSTORE) || '{}') || {}; } catch (e) { p = {}; }
+    ['lxType', 'lxBeds', 'lxSort'].forEach(function (id) { if (typeof p[id] === 'string') $(id).value = p[id]; if (!$(id).value) $(id).selectedIndex = 0; });
+    LX.pref = p; LX.rangeTouched = typeof p.lxRange === 'string';
+    LX.off = p.off && typeof p.off === 'object' ? p.off : {};
+  }
+  function savePrefs() {
+    try {
+      localStorage.setItem(LSTORE, JSON.stringify({ lxRange: LX.rangeTouched ? $('lxRange').value : undefined, lxType: $('lxType').value, lxArea: $('lxArea').value,
+        lxBeds: $('lxBeds').value, lxSort: $('lxSort').value, off: LX.off }));
+    } catch (e) { /* ignore */ }
+  }
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso); if (isNaN(d)) return '';
+    return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function setupListingControls() {
+    var ls = LX.data.listings, areas = {}, srcCount = {};
+    ls.forEach(function (l) {
+      if (l.location) areas[l.location] = (areas[l.location] || 0) + 1;
+      (l.sources || [l.source]).forEach(function (sname) { srcCount[sname] = (srcCount[sname] || 0) + 1; });
+    });
+    var area = $('lxArea'), keep = area.value || (LX.pref && LX.pref.lxArea) || '';
+    area.textContent = ''; var o0 = el('option', null, 'Anywhere'); o0.value = ''; area.appendChild(o0);
+    Object.keys(areas).sort().forEach(function (a) { var o = el('option', null, a + ' (' + areas[a] + ')'); o.value = a; area.appendChild(o); });
+    area.value = areas[keep] ? keep : '';
+    var chips = $('lxSources'); chips.textContent = '';
+    var names = (LX.data.sources || []).map(function (x) { return x.name; });
+    Object.keys(srcCount).forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+    names.forEach(function (n, i) {
+      if (!srcCount[n]) return;
+      var w = el('span', 'chip'), inp = el('input'); inp.type = 'checkbox'; inp.id = 'lxSrc' + i; inp.checked = !LX.off[n]; inp.dataset.src = n;
+      var lab = el('label'); lab.htmlFor = inp.id; lab.appendChild(document.createTextNode(n + ' ')); lab.appendChild(el('b', null, String(srcCount[n] || 0)));
+      w.appendChild(inp); w.appendChild(lab); chips.appendChild(w);
+    });
+    renderStatus();
+  }
+  function renderStatus() {
+    var box = $('lxStatus'), d = LX.data; box.textContent = '';
+    var srcs = d.sources || [], good = srcs.filter(function (x) { return x.ok; });
+    var live = srcs.filter(function (x) { return x.ok || (x.stale && x.count); });
+    if (d.generated_at) box.appendChild(el('span', null, d.listings.length + ' properties · updated ' + fmtDate(d.generated_at)));
+    if (srcs.length) {
+      var ok = el('span', 'src-dot'); ok.appendChild(el('i'));
+      ok.appendChild(document.createTextNode(good.length + ' of ' + srcs.length + ' websites read'));
+      if (live.length > good.length) ok.className = 'src-dot stale';
+      ok.title = good.map(function (x) { return x.name + ': ' + x.count; }).join('\n');
+      box.appendChild(ok);
+    }
+    srcs.forEach(function (x) {
+      if (x.ok) return;
+      var stale = x.stale && x.count, s = el('span', 'src-dot ' + (stale ? 'stale' : 'bad'));
+      s.appendChild(el('i'));
+      s.appendChild(document.createTextNode(x.name + (stale ? ' from ' + fmtDate(x.as_of) : ' unavailable')));
+      s.title = (stale ? 'Could not be read this time, so its last listings are still shown. ' : '') + (x.error || 'Could not be read');
+      box.appendChild(s);
+    });
+    var lead = $('lxLead'), names = good.slice().sort(function (a, b) { return b.count - a.count; }).map(function (x) { return x.name; });
+    if (names.length > 3) lead.textContent = 'Homes and land for sale in the Cayman Islands, gathered from ' + names.slice(0, 3).join(', ') +
+      ' and ' + (names.length - 3) + ' more agency websites. Each one is priced through your calculator settings above.';
+    if (d.local) {
+      var b = el('button', 'btn', LX.busy ? 'Refreshing…' : 'Refresh listings'); b.type = 'button'; b.id = 'lxRefresh'; b.disabled = LX.busy;
+      b.addEventListener('click', refreshListings); box.appendChild(b);
+    }
+  }
+  function refreshListings() {
+    LX.busy = true; renderStatus(); toast('Checking the agency websites. This takes a minute or two.');
+    fetch('/api/refresh', { method: 'POST' }).then(function () {
+      var poll = setInterval(function () {
+        fetch('/api/status').then(function (r) { return r.json(); }).then(function (st) {
+          if (st.running) return;
+          clearInterval(poll);
+          return fetch('/api/listings').then(function (r) { return r.json(); }).then(function (data) {
+            LX.busy = false; LX.data = data; LX.data.listings.forEach(function (l, i) { l._i = i; });
+            setupListingControls(); renderListings(); toast('Listings updated: ' + data.listings.length + ' found.');
+          });
+        }).catch(function () { clearInterval(poll); LX.busy = false; renderStatus(); toast('The refresh failed. Check the terminal running server.py.'); });
+      }, 3000);
+    }).catch(function () { LX.busy = false; renderStatus(); toast('Could not reach the local server.'); });
+  }
+
+  function rangeFor(c) {
+    // until the viewer picks a range, follow the budget when there is one
+    var sel = $('lxRange'), want = LX.rangeTouched ? (sel.value || LX.pref.lxRange) : (B ? 'budget' : 'near');
+    var opts = [['near', 'Near my price: ' + compact(c.price * 0.85) + ' – ' + compact(c.price * 1.15)],
+                ['under', 'Up to my price: ' + compact(c.price)]];
+    if (B) opts.unshift(['budget', 'Up to my maximum: ' + compact(B.max)]);
+    opts.push(['any', 'Any price']);
+    sel.textContent = '';
+    opts.forEach(function (o) { var op = el('option', null, o[1]); op.value = o[0]; sel.appendChild(op); });
+    sel.value = opts.some(function (o) { return o[0] === want; }) ? want : 'near';
+    var v = sel.value;
+    if (v === 'budget') return { lo: 0, hi: B.max, target: B.max, label: 'up to your maximum of ' + money(B.max) };
+    if (v === 'under') return { lo: 0, hi: c.price, target: c.price, label: 'up to your price of ' + money(c.price) };
+    if (v === 'near') return { lo: c.price * 0.85, hi: c.price * 1.15, target: c.price, label: 'within 15% of ' + money(c.price) };
+    return { lo: 0, hi: Infinity, target: c.price, label: 'at any price' };
+  }
+  function typeOk(l, t) {
+    if (t === 'all') return true;
+    if (t === 'match') return S.ptype === 'land' ? l.ptype === 'land' : l.ptype !== 'land';
+    return l.ptype === t;
+  }
+  function fitFor(l, c) {
+    if (B) {
+      if (l.price_kyd <= B.max) return ['good', 'Within budget'];
+      if (l.price_kyd <= B.max * 1.1) return ['warn', 'A stretch'];
+      return ['crit', 'Over budget'];
+    }
+    if (!(c.price > 0)) return null;
+    var d = (l.price_kyd - c.price) / c.price;
+    if (Math.abs(d) < 0.005) return ['neutral', 'At your price'];
+    return ['neutral', (d > 0 ? '+' : '−') + pct(Math.abs(d), 0) + ' vs your price'];
+  }
+  function scheduleListings() { clearTimeout(LX.timer); LX.timer = setTimeout(renderListings, 120); }
+
+  function renderListings() {
+    if (!LX.data) return;
+    var c = last, rg = rangeFor(c), t = $('lxType').value, area = $('lxArea').value, beds = +$('lxBeds').value, sort = $('lxSort').value;
+    var all = LX.data.listings;
+    var items = all.filter(function (l) {
+      if (!(l.price_kyd > 0)) return false;
+      if (l.price_kyd < rg.lo || l.price_kyd > rg.hi) return false;
+      if (!typeOk(l, t)) return false;
+      if (area && l.location !== area) return false;
+      if (beds && !(l.beds >= beds)) return false;
+      var srcs = l.sources || [l.source];
+      return srcs.some(function (n) { return !LX.off[n]; });
+    });
+    var cmp = {
+      'fit': function (a, b) { return Math.abs(a.price_kyd - rg.target) - Math.abs(b.price_kyd - rg.target); },
+      'price-asc': function (a, b) { return a.price_kyd - b.price_kyd; },
+      'price-desc': function (a, b) { return b.price_kyd - a.price_kyd; },
+      'size': function (a, b) { return (b.sqft || 0) - (a.sqft || 0); }
+    }[sort] || function () { return 0; };
+    items.sort(cmp);
+    LX.items = items;
+    $('jumpCount').textContent = String(items.length);
+
+    var grid = $('lxGrid'); grid.textContent = '';
+    $('lxCount').textContent = '';
+    var cnt = $('lxCount');
+    if (!all.length) {
+      var e = el('div', 'panel lx-empty');
+      if (LX.loading) {
+        e.appendChild(el('strong', null, 'Loading listings…'));
+      } else if (LX.loadFailed) {
+        e.appendChild(el('strong', null, 'The listings could not be loaded'));
+        e.appendChild(el('span', null, 'Reload the page to try again. The calculator above works without them.'));
+      } else {
+        e.appendChild(el('strong', null, 'No listings loaded yet'));
+        var p = el('p'); p.appendChild(document.createTextNode('Start the local app with '));
+        p.appendChild(el('code', null, 'python server.py'));
+        p.appendChild(document.createTextNode(' in the project folder to read the agency websites.'));
+        e.appendChild(p);
+      }
+      grid.appendChild(e); $('lxMore').hidden = true; $('lxBasis').textContent = ''; return;
+    }
+    cnt.appendChild(el('strong', null, items.length + (items.length === 1 ? ' listing' : ' listings')));
+    cnt.appendChild(document.createTextNode(' match, ' + rg.label + '.'));
+    $('lxBasis').textContent = 'Payments use your rate, term and ' + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : 'down payment') + '.';
+    if (!items.length) {
+      var e2 = el('div', 'panel lx-empty'); e2.style.gridColumn = '1/-1';
+      e2.appendChild(el('strong', null, 'Nothing matches these filters'));
+      e2.appendChild(el('span', null, 'Try a wider price range, another area or fewer bedrooms.'));
+      var rb = el('button', 'btn', 'Show every price and area'); rb.type = 'button';
+      rb.addEventListener('click', function () { LX.rangeTouched = true; $('lxRange').value = 'any'; $('lxArea').value = ''; $('lxBeds').value = '0'; savePrefs(); renderListings(); });
+      e2.appendChild(rb); grid.appendChild(e2); $('lxMore').hidden = true; return;
+    }
+    var frag = document.createDocumentFragment();
+    items.slice(0, LX.shown).forEach(function (l) { frag.appendChild(card(l, c)); });
+    grid.appendChild(frag);
+    var more = $('lxMore'), left = items.length - LX.shown;
+    more.hidden = left <= 0;
+    more.textContent = 'Show ' + Math.min(PAGE, left) + ' more of ' + left;
+  }
+
+  function fmtOriginal(l) {
+    if (!l.price) return '';
+    var s = l.currency === 'KYD' ? 'CI$' : 'US$';
+    if ((l.currency === 'KYD') === (curNow === 'KYD')) return '';
+    return 'listed at ' + s + group(l.price, 0);
+  }
+  function placeholder(l) {
+    var ph = el('div', 'lx-ph'); ph.appendChild(el('span', null, TYPE_LABEL[l.ptype] || 'Property'));
+    ph.appendChild(el('b', null, l.location || 'Cayman Islands')); return ph;
+  }
+  function card(l, c) {
+    var lc = compute({ price: l.price_kyd, ptype: l.ptype === 'land' ? 'land' : 'home', light: true });
+    var art = el('article', 'lx-card' + (LX.current === l.url ? ' current' : ''));
+    var ph = el('div', 'lx-photo');
+    if (l.image) {
+      var img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = ''; img.referrerPolicy = 'no-referrer';
+      img.addEventListener('error', function () { img.remove(); ph.insertBefore(placeholder(l), ph.firstChild); });
+      img.src = l.image; ph.appendChild(img);
+    } else ph.appendChild(placeholder(l));
+    var tags = el('div', 'lx-tags'); tags.appendChild(el('span', 'tag', (l.sources || [l.source])[0]));
+    var fit = fitFor(l, c); if (fit) tags.appendChild(el('span', 'pill ' + fit[0], fit[1]));
+    ph.appendChild(tags); art.appendChild(ph);
+
+    var body = el('div', 'lx-body');
+    var pr = el('div', 'lx-price'); pr.appendChild(document.createTextNode(money(l.price_kyd)));
+    var orig = fmtOriginal(l); if (orig) pr.appendChild(el('small', null, orig));
+    body.appendChild(pr);
+    body.appendChild(el('div', 'lx-title', l.title || (TYPE_LABEL[l.ptype] + ' in ' + (l.location || 'Cayman'))));
+    var loc = [l.location, l.status && !/for sale|active/i.test(l.status) ? l.status : ''].filter(Boolean).join(' · ');
+    if (loc) body.appendChild(el('div', 'lx-loc', loc));
+    var facts = el('div', 'lx-facts');
+    if (l.beds) facts.appendChild(el('span', null, trimNum(l.beds, 1) + ' bed'));
+    if (l.baths) facts.appendChild(el('span', null, trimNum(l.baths, 1) + ' bath'));
+    if (l.sqft && l.ptype !== 'land') facts.appendChild(el('span', null, group(l.sqft, 0) + ' sq ft'));
+    if (l.acres) facts.appendChild(el('span', null, trimNum(l.acres, 2) + ' acres'));
+    else if (l.sqft && l.ptype === 'land') facts.appendChild(el('span', null, group(l.sqft, 0) + ' sq ft lot'));
+    if (l.mls) facts.appendChild(el('span', null, 'MLS ' + l.mls));
+    if (facts.childNodes.length) body.appendChild(facts);
+    art.appendChild(body);
+
+    var calc = el('div', 'lx-calc');
+    [['Monthly payment', money(lc.am.pmt)], ['Cash to close', money(lc.cash)]].forEach(function (r) {
+      var d = el('div'); d.appendChild(el('span', 'k', r[0])); d.appendChild(el('span', 'v', r[1])); calc.appendChild(d);
+    });
+    art.appendChild(calc);
+
+    var act = el('div', 'lx-actions');
+    var use = el('button', 'btn primary', 'Run the numbers'); use.type = 'button'; use.dataset.i = l._i;
+    use.setAttribute('aria-label', 'Load ' + (l.title || 'this listing') + ' into the calculator');
+    act.appendChild(use);
+    var a = el('a', 'btn', 'View listing ↗'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; act.appendChild(a);
+    if (l.also && l.also.length) act.appendChild(el('span', 'also', 'Also with ' + l.also.map(function (x) { return x.source; }).join(', ')));
+    art.appendChild(act);
+    return art;
+  }
+  function useListing(l) {
+    LX.current = l.url;
+    $('price').value = group(Math.round(disp(l.price_kyd)), 0);
+    setRadio('ptype', l.ptype === 'land' ? 'land' : 'home');
+    syncDown(); render();
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelector('.results').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    toast('Calculator set to ' + money(l.price_kyd) + (l.title ? ': ' + l.title : ''));
+  }
+  var toastT = null;
+  function toast(msg) {
+    var t = $('toast');
+    if (!t) { t = el('div', 'toast'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3800);
+  }
+  function bindListings() {
+    ['lxRange', 'lxType', 'lxArea', 'lxBeds', 'lxSort'].forEach(function (id) {
+      $(id).addEventListener('change', function () { if (id === 'lxRange') LX.rangeTouched = true; LX.shown = PAGE; savePrefs(); renderListings(); });
+    });
+    $('lxSources').addEventListener('change', function (e) {
+      var n = e.target.dataset.src; if (!n) return;
+      if (e.target.checked) delete LX.off[n]; else LX.off[n] = true;
+      LX.shown = PAGE; savePrefs(); renderListings();
+    });
+    $('lxMore').addEventListener('click', function () { LX.shown += PAGE; renderListings(); });
+    $('lxGrid').addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('button[data-i]'); if (!b) return;
+      var l = LX.data.listings[+b.dataset.i]; if (l) useListing(l);
+    });
+  }
+
+  /* ---------- chart ---------- */
+  var G = null;
+  function niceTicks(max, count) {
+    if (!(max > 0)) return [0, 1];
+    var raw = max / count, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+    var step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag, out = [];
+    for (var t = 0; t < max + step * 0.999; t += step) out.push(t);
+    return out;
+  }
+  function drawChart() {
+    var wrap = $('chart'), c = last; if (!c) return;
+    var old = wrap.querySelector('svg'); if (old) old.remove();
+    $('tip').hidden = true; G = null;
+    if (!(c.loan > 0)) return;
+    var am = c.am, W = Math.max(280, Math.round(wrap.clientWidth)), H = W < 520 ? 230 : 290;
+    var M = { l: 60, r: 14, t: 28, b: 30 }, pw = W - M.l - M.r, ph = H - M.t - M.b;
+    var ticksD = niceTicks(Math.max(disp(c.loan), disp(am.totalInterest)), 4), top = ticksD[ticksD.length - 1];
+    var f = curNow === 'USD' ? 1 / S.fx : 1;
+    var X = function (m) { return M.l + pw * m / am.n; }, Y = function (kyd) { return M.t + ph * (1 - kyd * f / top); };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true">';
+    ticksD.forEach(function (t) {
+      var y = M.t + ph * (1 - t / top);
+      s += '<line class="grid" x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + y + '" y2="' + y + '"/>';
+      s += '<text class="axis-text" text-anchor="end" x="' + (M.l - 8) + '" y="' + (y + 4) + '">' + compact(t / f) + '</text>';
+    });
+    var years = am.n / 12, ystep = years <= 10 ? 1 : years <= 20 ? 2 : 5;
+    if (W < 520 && years > 10) ystep = years <= 20 ? 5 : 10;
+    for (var yr = 0; yr <= years; yr += ystep) {
+      s += '<text class="axis-text" text-anchor="middle" x="' + X(yr * 12) + '" y="' + (H - 8) + '">' + (yr === 0 ? 'Now' : 'Yr ' + yr) + '</text>';
+    }
+    var p1 = '', p2 = '';
+    for (var m = 0; m < am.bals.length; m++) {
+      p1 += (m ? 'L' : 'M') + X(m).toFixed(1) + ' ' + Y(am.bals[m]).toFixed(1);
+      p2 += (m ? 'L' : 'M') + X(m).toFixed(1) + ' ' + Y(am.ints[m]).toFixed(1);
+    }
+    var endM = am.bals.length - 1, base = M.t + ph;
+    s += '<path class="area1" d="' + p1 + 'L' + X(endM).toFixed(1) + ' ' + base + 'L' + M.l + ' ' + base + 'Z"/>';
+    s += '<path class="ln ln1" d="' + p1 + '"/><path class="ln ln2" d="' + p2 + '"/>';
+    var ex = X(endM), ey = Y(am.ints[endM]), by = Y(am.bals[0]);
+    var tight = W < 560 && Math.abs(ey - by) < 22, sfx = function (t) { return tight ? '' : '<tspan class="mut"> ' + t + '</tspan>'; };
+    s += '<circle class="dot2" r="4.5" cx="' + ex + '" cy="' + ey + '"/>';
+    s += '<text class="dlabel" text-anchor="end" x="' + (ex - 9) + '" y="' + (ey - 9 < 12 ? ey + 18 : ey - 9) + '">' + compact(am.totalInterest) + sfx('interest') + '</text>';
+    s += '<circle class="dot1" r="4.5" cx="' + X(0) + '" cy="' + by + '"/>';
+    s += '<text class="dlabel" text-anchor="start" x="' + (X(0) + 9) + '" y="' + (by - 9) + '">' + compact(c.loan) + sfx('borrowed') + '</text>';
+    s += '<g id="hov" visibility="hidden"><line class="cross" id="hx" y1="' + M.t + '" y2="' + base + '"/><circle class="dot1" id="h1" r="4.5"/><circle class="dot2" id="h2" r="4.5"/></g>';
+    s += '</svg>';
+    wrap.insertAdjacentHTML('afterbegin', s);
+    G = { X: X, Y: Y, M: M, W: W, pw: pw, am: am };
+    if (hoverIdx != null && document.activeElement === wrap) showAt(Math.min(hoverIdx, endM));
+  }
+  function showAt(m) {
+    if (!G) return;
+    var am = G.am, endM = am.bals.length - 1; m = clamp(Math.round(m), 0, endM); hoverIdx = m;
+    var x = G.X(m), tip = $('tip'), wrap = $('chart');
+    document.getElementById('hov').setAttribute('visibility', 'visible');
+    var hx = document.getElementById('hx'); hx.setAttribute('x1', x); hx.setAttribute('x2', x);
+    var h1 = document.getElementById('h1'), h2 = document.getElementById('h2');
+    h1.setAttribute('cx', x); h1.setAttribute('cy', G.Y(am.bals[m])); h2.setAttribute('cx', x); h2.setAttribute('cy', G.Y(am.ints[m]));
+    tip.textContent = ''; tip.appendChild(el('div', 'th', m === 0 ? 'At the start' : 'After ' + span(m)));
+    [['k1', am.bals[m], 'balance'], ['k2', am.ints[m], 'interest paid'], ['k0', am.bals[0] - am.bals[m], 'principal repaid']].forEach(function (r) {
+      var row = el('div', 'tr'); row.appendChild(el('i', 'lk ' + r[0])); row.appendChild(el('b', null, money(r[1]))); row.appendChild(el('span', 'n', r[2])); tip.appendChild(row);
+    });
+    tip.hidden = false;
+    var scale = wrap.clientWidth / G.W, px = x * scale, tw = tip.offsetWidth, left = px + 14;
+    if (left + tw > wrap.clientWidth) left = px - tw - 14;
+    tip.style.transform = 'translate(' + Math.max(0, left) + 'px,' + (G.M.t + 4) + 'px)';
+  }
+  function hideHover() { $('tip').hidden = true; var h = document.getElementById('hov'); if (h) h.setAttribute('visibility', 'hidden'); }
+  function bindChart() {
+    var wrap = $('chart');
+    wrap.addEventListener('pointermove', function (e) {
+      if (!G) return; var r = wrap.getBoundingClientRect(), x = (e.clientX - r.left) * (G.W / r.width);
+      showAt((x - G.M.l) / G.pw * G.am.n);
+    });
+    wrap.addEventListener('pointerleave', function () { if (document.activeElement !== wrap) hideHover(); });
+    wrap.addEventListener('focus', function () { if (G) showAt(hoverIdx == null ? Math.round(G.am.n / 2 / 12) * 12 : hoverIdx); });
+    wrap.addEventListener('blur', hideHover);
+    wrap.addEventListener('keydown', function (e) {
+      if (!G) return; var k = e.key, cur = hoverIdx == null ? 0 : hoverIdx;
+      if (k === 'ArrowRight') showAt(cur + 12); else if (k === 'ArrowLeft') showAt(cur - 12);
+      else if (k === 'Home') showAt(0); else if (k === 'End') showAt(G.am.bals.length - 1); else return;
+      e.preventDefault();
+    });
+    if (window.ResizeObserver) { var lastW = 0; new ResizeObserver(function () { var w = Math.round(wrap.clientWidth); if (w !== lastW) { lastW = w; drawChart(); } }).observe(wrap); }
+    else window.addEventListener('resize', drawChart);
+  }
+
+  /* ---------- stacked-bar tooltip ---------- */
+  function bindStackTip() {
+    var st = $('stack'), tipEl = el('div', 'tip'); tipEl.hidden = true; tipEl.style.position = 'fixed'; document.body.appendChild(tipEl);
+    function show(seg) {
+      var r = seg.getBoundingClientRect(); tipEl.textContent = '';
+      tipEl.appendChild(el('div', 'th', seg.dataset.tipHead));
+      var row = el('div', 'tr'); row.appendChild(el('b', null, seg.dataset.tipVal)); row.appendChild(el('span', 'n', seg.dataset.tipSub)); tipEl.appendChild(row);
+      tipEl.hidden = false;
+      var left = clamp(r.left + r.width / 2 - tipEl.offsetWidth / 2, 8, window.innerWidth - tipEl.offsetWidth - 8);
+      tipEl.style.transform = 'translate(' + left + 'px,' + (r.top - tipEl.offsetHeight - 8) + 'px)';
+    }
+    function over(e) { var s = e.target.closest && e.target.closest('.segm'); if (s) show(s); }
+    st.addEventListener('pointerover', over); st.addEventListener('focusin', over);
+    st.addEventListener('pointerleave', function () { tipEl.hidden = true; });
+    st.addEventListener('focusout', function () { tipEl.hidden = true; });
+    window.addEventListener('scroll', function () { tipEl.hidden = true; }, { passive: true });
+  }
+
+  /* ---------- events ---------- */
+  function switchCurrency(next) {
+    if (next === curNow) return;
+    var fx = clamp(parseNum($('fx').value) || 0.82, 0.5, 1.5);
+    MONEY.forEach(function (k) {
+      var v = parseNum($(k).value); if (!v) return;
+      $(k).value = group(Math.round(next === 'USD' ? v / fx : v * fx), 0);
+    });
+    curNow = next; syncCurrencyLabels();
+  }
+  function bind() {
+    var form = $('form');
+    form.addEventListener('input', function (e) {
+      var id = e.target.id;
+      if (id === 'downPct') syncDown('pct'); else if (id === 'downAmt') syncDown('amt'); else if (id === 'price') syncDown();
+      render();
+    });
+    form.addEventListener('change', render);
+    form.addEventListener('focusout', function (e) {
+      var t = e.target; if (!t || !t.matches) return;
+      if (t.matches('[data-money]')) { var v = parseNum(t.value); t.value = v ? group(Math.round(v), 0) : (t.id === 'price' || t.id === 'downAmt' ? '0' : ''); }
+      if (t.id === 'downPct' || t.id === 'downAmt' || t.id === 'price') syncDown();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="cur"]'), function (r) {
+      r.addEventListener('change', function () { switchCurrency(r.value); render(); });
+    });
+    $('showTable').addEventListener('change', render);
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="tmode"]'), function (r) { r.addEventListener('change', render); });
+    $('resetBtn').addEventListener('click', function () {
+      try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+      writeForm(DEFAULTS); syncDown(); render();
+    });
+  }
+
+  function start() {
+    bindTheme(); loadPrefs(); bindListings();
+    writeForm(load()); syncDown(); bind(); bindChart(); bindStackTip();
+    loadListingData(function () { setupListingControls(); render(); renderListings(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
+  }
+  start();
+})();
+
+</script>
+

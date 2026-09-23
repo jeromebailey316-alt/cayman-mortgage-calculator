@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# built by build_site.py and by the workflow
+site/
+
+# single-file build, and the photo thumbnails it caches
+dist/
+data/thumbs/
+data/*.tmp
