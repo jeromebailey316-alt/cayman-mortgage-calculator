@@ -60,6 +60,16 @@ The site is then at `https://<you>.github.io/cayman-mortgage/`, and refreshes at
 (cached in `data/raw/`) and the page marks it "from &lt;date&gt;" instead of dropping it. The
 workflow only refuses to publish if fewer than 100 properties survive a run.
 
+### Topping up from your Mac
+
+ERA, Property Cayman and MOD Realty answer 403 to GitHub's datacenter addresses but are
+fine from a home connection, so those three run from cache on the hosted schedule. To
+refresh them, run a scrape here and push it — that republishes the site too:
+
+```bash
+.venv/bin/python -m scraper.run && git add data && git commit -m "Listings from a local run" && git push
+```
+
 **Changing the schedule:** edit the `cron` line in the workflow. GitHub runs scheduled jobs
 on a best-effort basis, so a run can start a few minutes late, or be skipped when GitHub is busy.
 

@@ -8,7 +8,9 @@ on:
     branches: [main]
     paths-ignore:
       - "README.md"
-      - "data/**"
+    # data/** is NOT ignored: pushing a local scrape (see "Topping up from your Mac" in
+    # the README) republishes the site. The workflow's own commits use GITHUB_TOKEN,
+    # which GitHub deliberately does not let trigger another run, so there is no loop.
 
 permissions:
   contents: write      # commit the refreshed listings
