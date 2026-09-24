@@ -52,7 +52,21 @@ listings and republishes to GitHub Pages. Nothing needs to run on your Mac.
    (the workflow commits the refreshed listings).
 5. Run it once by hand: **Actions → Update listings and publish → Run workflow**.
 
-The site is then at `https://<you>.github.io/cayman-mortgage/`, and refreshes at
+### Custom domain
+
+The site runs at **https://caymanmortgagecalculator.com/**. The domain is set in two places:
+
+- `DOMAIN` in the workflow's "Build the site" step, which makes `build_site.py` write
+  `site/CNAME` into every deploy. Deploys from Actions replace the whole site, so without
+  that file GitHub Pages would drop the domain.
+- Settings → Pages → Custom domain in the repository.
+
+DNS at the registrar (GoDaddy): four A records on `@` pointing at `185.199.108.153`,
+`185.199.109.153`, `185.199.110.153` and `185.199.111.153`, plus a CNAME on `www` pointing
+at `jeromebailey316-alt.github.io`. To move back to the github.io address, clear `DOMAIN`
+in the workflow and the custom domain in Settings.
+
+The github.io address is `https://<you>.github.io/cayman-mortgage-calculator/`. The site refreshes at
 01:07, 05:07, 09:07, 13:07, 17:07 and 21:07 UTC (that's 20:07, 00:07, 04:07, 08:07,
 12:07 and 16:07 in Cayman). To use your own domain, add it under Settings → Pages.
 

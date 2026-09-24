@@ -76,7 +76,16 @@ jobs:
         id: pages
 
       - name: Build the site
-        run: python build_site.py --url "${{ steps.pages.outputs.base_url }}"
+        # DOMAIN also writes site/CNAME, which is what keeps the custom domain
+        # attached across deploys. Clear it to fall back to the github.io address.
+        env:
+          DOMAIN: caymanmortgagecalculator.com
+        run: |
+          if [ -n "$DOMAIN" ]; then
+            python build_site.py --domain "$DOMAIN"
+          else
+            python build_site.py --url "${{ steps.pages.outputs.base_url }}"
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
