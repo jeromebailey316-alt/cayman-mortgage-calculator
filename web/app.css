@@ -450,8 +450,12 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 @media (max-width:620px){
   .site{padding-block:4px 10px;gap:8px;margin-bottom:14px}
   .site .logo{height:38px}
-  .site-nav{order:3;width:100%;margin:0;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .site-nav{order:3;width:100%;margin:0;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;
+    scroll-padding-inline:12px}
   .site-nav::-webkit-scrollbar{display:none}
+  /* hint that the row scrolls; the class is dropped once it is scrolled to the end */
+  .site-nav.more{-webkit-mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15));
+    mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15))}
   .site-nav a{padding:6px 10px;font-size:13.5px;white-space:nowrap}
   .site-tools{margin-left:auto}
   .hero-band{border-radius:14px}

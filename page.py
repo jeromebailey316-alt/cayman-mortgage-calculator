@@ -84,6 +84,25 @@ THEME_JS = """
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+
+  // On a phone the nav scrolls sideways: bring the current page's tab into view,
+  // and fade the right edge while there is more to see.
+  function navScroll() {
+    var nav = document.querySelector('.site-nav');
+    if (!nav) return;
+    var here = nav.querySelector('a[aria-current="page"]');
+    if (here && here.scrollIntoView) {
+      try { here.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) { /* ignore */ }
+    }
+    var mark = function () {
+      var more = nav.scrollWidth - nav.clientWidth - nav.scrollLeft > 8;
+      nav.classList.toggle('more', more);
+    };
+    mark();
+    nav.addEventListener('scroll', mark, { passive: true });
+    window.addEventListener('resize', mark);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navScroll); else navScroll();
 })();
 """
 
@@ -106,10 +125,10 @@ def nav(active: str, root: str = "/") -> str:
         '</a>'
         '<nav class="site-nav" aria-label="Site">'
         + link("home", "Home")
-        + link("calculator", "Calculator")
+        + link("calculator", "Mortgage Calculator")
+        + link("equity", "Equity Calculator")
         + f'<a href="{root}calculator/#listings">Listings</a>'
-        + link("rent", "Rent vs buy")
-        + link("equity", "Equity")
+        + link("rent", "Rent vs Buy")
         + '</nav>'
         '<div class="site-tools">'
         '<button class="btn icon" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>'
