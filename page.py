@@ -23,7 +23,7 @@ CSS_HREF = "/assets/app.css"
 
 # Cloudflare Web Analytics: cookieless, so no consent banner is needed. Paste the
 # token from the Cloudflare dashboard (Analytics -> Web Analytics) to switch it on.
-CF_ANALYTICS_TOKEN = ""
+CF_ANALYTICS_TOKEN = "b24be8194698467584c89adf2b99a705"
 # Only needed if Search Console is verified by meta tag instead of a DNS record.
 GOOGLE_SITE_VERIFICATION = ""
 CORE_HREF = "/assets/core.js"
@@ -218,7 +218,7 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         + ("" if inline_css else json_ld(page))
         + (f'<meta name="google-site-verification" content="{GOOGLE_SITE_VERIFICATION}">'
            if GOOGLE_SITE_VERIFICATION and not inline_css else "")
-        + (f"<script defer src='https://static.cloudflareinsights.com/beacon.min.js' "
+        + (f"<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
            f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
            if CF_ANALYTICS_TOKEN and not inline_css else "")
         + css
