@@ -371,13 +371,20 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* ================= site header and nav (every page) ================= */
-.site{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between;
+/* one line: a flex row wraps an item before it shrinks it, so the nav scrolls instead */
+.site{display:flex;flex-wrap:nowrap;gap:12px 20px;align-items:center;justify-content:space-between;
   padding-block:6px 14px;margin-bottom:18px;border-bottom:1px solid var(--line)}
 .site .brand{display:block;line-height:0;flex:none}
-.site .logo{height:clamp(42px,5.4vw,62px);width:auto;max-width:100%;display:block}
-.site-nav{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-right:auto;margin-left:8px}
+/* no display here: it would outrank .dark-only{display:none} and show both logos */
+.site .logo{height:clamp(42px,5.4vw,62px);width:auto;max-width:100%}
+.site-nav{display:flex;flex-wrap:nowrap;gap:4px;align-items:center;margin-right:auto;margin-left:8px;
+  flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;scroll-padding-inline:12px}
+.site-nav::-webkit-scrollbar{display:none}
+/* hint that the row scrolls; the class comes off once it is scrolled to the end */
+.site-nav.more{-webkit-mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15));
+  mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15))}
 .site-nav a{display:inline-block;padding:8px 13px;border-radius:9px;text-decoration:none;color:var(--ink-2);
-  font-weight:600;font-size:14.5px;font-family:var(--display)}
+  font-weight:600;font-size:14.5px;font-family:var(--display);white-space:nowrap;flex:none}
 .site-nav a:hover{color:var(--ink);background:var(--surface-2)}
 .site-nav a[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
 .site-nav a.soon{color:var(--ink-3);cursor:default}
@@ -448,14 +455,9 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 
 /* compact header on phones: logo and toggle on one line, links scrolling beneath */
 @media (max-width:620px){
-  .site{padding-block:4px 10px;gap:8px;margin-bottom:14px}
+  .site{padding-block:4px 10px;gap:8px;margin-bottom:14px;flex-wrap:wrap}
   .site .logo{height:38px}
-  .site-nav{order:3;width:100%;margin:0;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;
-    scroll-padding-inline:12px}
-  .site-nav::-webkit-scrollbar{display:none}
-  /* hint that the row scrolls; the class is dropped once it is scrolled to the end */
-  .site-nav.more{-webkit-mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15));
-    mask-image:linear-gradient(to right,#000 82%,rgba(0,0,0,.15))}
+  .site-nav{order:3;width:100%;margin:0;gap:2px}
   .site-nav a{padding:6px 10px;font-size:13.5px;white-space:nowrap}
   .site-tools{margin-left:auto}
   .hero-band{border-radius:14px}
