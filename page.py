@@ -18,34 +18,65 @@ CSS = WEB / "app.css"
 CORE = WEB / "core.js"
 
 SITE_NAME = "Cayman Mortgage Calculator"
+SITE_URL = "https://caymanmortgagecalculator.com"
 CSS_HREF = "/assets/app.css"
+
+# Cloudflare Web Analytics: cookieless, so no consent banner is needed. Paste the
+# token from the Cloudflare dashboard (Analytics -> Web Analytics) to switch it on.
+CF_ANALYTICS_TOKEN = ""
+# Only needed if Search Console is verified by meta tag instead of a DNS record.
+GOOGLE_SITE_VERIFICATION = ""
 CORE_HREF = "/assets/core.js"
+
+# Questions and answers shown on the front page and repeated as FAQ structured data.
+# Both must stay in step: Google treats FAQ markup that is not visible as a violation.
+FAQ = [
+    ("How much is stamp duty when buying property in the Cayman Islands?",
+     "Stamp duty on a transfer is 7.5% of the dutiable value, or 10% of the whole value once the price reaches "
+     "CI$2,000,000. A Caymanian buying a first property pays nothing up to CI$550,000 on a home, then 3.75% on the "
+     "next CI$100,000; buying jointly, two to ten Caymanians have a CI$600,000 threshold."),
+    ("Is there property tax in the Cayman Islands?",
+     "No. There is no annual property tax, no income tax and no capital gains tax in the Cayman Islands. The costs "
+     "to plan for are the one-off duty and fees when you buy, and then strata fees, insurance and upkeep."),
+    ("Is stamp duty charged on the mortgage as well?",
+     "Yes. Mortgage stamp duty is 1% of the sum secured up to CI$300,000, and 1.5% of the whole sum above that. It "
+     "is charged on the charge document, so it applies to a new mortgage and to further borrowing."),
+    ("When does stamp duty have to be paid?",
+     "Within 45 days of the documents being executed. After that, interest accrues on the unpaid duty."),
+    ("Can a foreigner buy property in the Cayman Islands?",
+     "Yes. There are no restrictions on foreign ownership of residential property and no licence is needed for a "
+     "normal purchase, though a land holding licence can apply to large acreage or business use. Title is "
+     "registered and guaranteed by the government."),
+    ("How much deposit do Cayman banks ask for?",
+     "Commonly 10% to 15% on a primary home for Caymanians and residents, and more from non-residents, where "
+     "financing is generally available up to about 70% of value over shorter terms. Raw land usually needs around "
+     "50% down. Each bank sets its own criteria."),
+]
 
 PAGES = {
     "home": {
         "path": "",
-        "title": f"{SITE_NAME} — stamp duty, closing costs and listings",
-        "description": ("What buying in the Cayman Islands really costs: stamp duty, mortgage duty, Land Registry, "
-                        "legal and bank fees, plus the homes and land for sale that fit your budget."),
+        "title": f"{SITE_NAME}: stamp duty and closing costs",
+        "description": ("What buying in the Cayman Islands really costs: stamp duty, mortgage duty, registry, legal "
+                        "and bank fees — plus the homes for sale that fit your budget."),
     },
     "rent": {
         "path": "rent-vs-buy/",
-        "title": f"Rent or buy in Cayman — {SITE_NAME}",
-        "description": ("Should you rent or buy in the Cayman Islands? Mortgage, strata, insurance, upkeep and stamp "
-                        "duty against rent and rent rises, with the year buying pulls ahead."),
+        "title": "Rent or buy in Cayman: the break-even year",
+        "description": ("Renting against buying in Cayman: mortgage, strata, insurance, upkeep and duty versus rent "
+                        "and rent rises, with the year buying pulls ahead."),
     },
     "equity": {
         "path": "equity/",
-        "title": f"Equity calculator — {SITE_NAME}",
-        "description": ("How much equity is in your Cayman property, and how much of it a bank would lend against — "
-                        "with the loan-to-value ratios Cayman lenders publish for Caymanians, residents and "
-                        "non-residents."),
+        "title": "Cayman home equity calculator: how much can you release?",
+        "description": ("How much equity is in your Cayman property, how much a bank would lend against it at 90, 80 "
+                        "or 70% loan-to-value, and what releasing it would cost."),
     },
     "calculator": {
         "path": "calculator/",
-        "title": f"Mortgage and stamp duty calculator — {SITE_NAME}",
-        "description": ("Work out your monthly payment and the real cash needed to close in the Cayman Islands, then "
-                        "see the listings that fit — priced through your own rate, term and deposit."),
+        "title": "Cayman mortgage and stamp duty calculator",
+        "description": ("Work out your monthly payment and the real cash to close in the Cayman Islands, then see the "
+                        "listings that fit, priced through your own rate, term and deposit."),
     },
 }
 
@@ -137,6 +168,30 @@ def nav(active: str, root: str = "/") -> str:
     )
 
 
+def json_ld(page: str) -> str:
+    """Structured data. The FAQ answers repeat what the front page says in visible
+    text — Google requires the two to match."""
+    site = {"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": SITE_URL + "/"}
+    blocks = [site]
+    if page == "calculator":
+        blocks.append({
+            "@context": "https://schema.org", "@type": "WebApplication",
+            "name": "Cayman mortgage and stamp duty calculator",
+            "url": f"{SITE_URL}/calculator/",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any",
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KYD"},
+            "description": PAGES["calculator"]["description"],
+        })
+    if page == "home":
+        blocks.append({
+            "@context": "https://schema.org", "@type": "FAQPage",
+            "mainEntity": [{"@type": "Question", "name": q,
+                            "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ],
+        })
+    return "".join(f'<script type="application/ld+json">{json.dumps(b, ensure_ascii=False)}</script>' for b in blocks)
+
+
 def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
     meta = PAGES[page]
     css = f"<style>{CSS.read_text()}</style>" if inline_css else f'<link rel="stylesheet" href="{CSS_HREF}">'
@@ -160,6 +215,12 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">'
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
+        + ("" if inline_css else json_ld(page))
+        + (f'<meta name="google-site-verification" content="{GOOGLE_SITE_VERIFICATION}">'
+           if GOOGLE_SITE_VERIFICATION and not inline_css else "")
+        + (f"<script defer src='https://static.cloudflareinsights.com/beacon.min.js' "
+           f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
+           if CF_ANALYTICS_TOKEN and not inline_css else "")
         + css
         + (f"<script>{CORE.read_text()}</script>" if inline_css else f'<script src="{CORE_HREF}"></script>')
         + f"<script>{THEME_JS}</script>"

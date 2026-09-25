@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 
 import home
@@ -25,7 +26,26 @@ ROOT = Path(__file__).resolve().parent
 SITE = ROOT / "site"
 STATIC = ROOT / "web" / "static"     # favicons, manifest, logos — copied to the site root
 
-ROBOTS = "User-agent: *\nAllow: /\n"
+def robots(base: str) -> str:
+    lines = ["User-agent: *", "Allow: /"]
+    if base:
+        lines.append(f"Sitemap: {base}sitemap.xml")
+    return "\n".join(lines) + "\n"
+
+
+def sitemap(base: str, lastmod: str) -> str:
+    """Every page, newest data first. lastmod is the day the listings were refreshed:
+    the pages are rebuilt each time, so that is genuinely when they last changed."""
+    urls = [("", "1.0"), ("calculator/", "0.9"), ("equity/", "0.8"), ("rent-vs-buy/", "0.8")]
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for path, priority in urls:
+        out += ["  <url>", f"    <loc>{base}{path}</loc>",
+                f"    <lastmod>{lastmod}</lastmod>",
+                "    <changefreq>daily</changefreq>",
+                f"    <priority>{priority}</priority>", "  </url>"]
+    out.append("</urlset>")
+    return "\n".join(out) + "\n"
 
 
 def build(data: dict, canonical: str = "", domain: str = "") -> Path:
@@ -46,7 +66,9 @@ def build(data: dict, canonical: str = "", domain: str = "") -> Path:
     (SITE / "assets" / "core.js").write_text(page.CORE.read_text())
     (SITE / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (calc / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
-    (SITE / "robots.txt").write_text(ROBOTS)
+    (SITE / "robots.txt").write_text(robots(base or page.SITE_URL + "/"))
+    lastmod = (data.get("generated_at") or "")[:10] or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    (SITE / "sitemap.xml").write_text(sitemap(base or page.SITE_URL + "/", lastmod))
     (SITE / ".nojekyll").write_text("")      # GitHub Pages: serve the files as they are
     if domain:
         # Deploys from Actions replace the whole site, so the custom domain has to ship

@@ -465,3 +465,14 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 
 .example-note{background:var(--accent-soft);color:var(--accent);border-radius:9px;padding:8px 12px;
   font-size:13.5px;font-weight:600;align-self:flex-start;max-width:70ch}
+
+/* ---------- questions and answers ---------- */
+.faq{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.faq-item{background:var(--surface)}
+.faq-item summary{cursor:pointer;padding:15px 18px;font-family:var(--display);font-weight:600;font-size:16px;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;color:var(--ink)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-family:var(--body);font-weight:400;font-size:22px;color:var(--ink-3);line-height:1}
+.faq-item[open] summary::after{content:"\2212"}
+.faq-item summary:hover{background:var(--surface-2)}
+.faq-item p{padding:0 18px 16px;color:var(--ink-2);font-size:14.5px;line-height:1.55;max-width:75ch}
