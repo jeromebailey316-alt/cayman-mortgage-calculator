@@ -315,6 +315,61 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .lx-actions{display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .lx-actions .btn{padding:6px 11px;font-size:13.5px}
 .lx-actions .also{font-size:12px;color:var(--ink-3);margin-left:auto}
+/* saved + compare */
+.fav{position:absolute;right:10px;bottom:10px;width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;
+  display:grid;place-items:center;background:rgba(8,26,40,.72);color:#fff;padding:0}
+.fav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.fav[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.fav[aria-pressed="true"] svg{fill:currentColor}
+.fav:hover{filter:brightness(1.12)}
+.fav:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lx-actions .cmp{font-size:13px;gap:7px;margin-left:auto;white-space:nowrap}
+.lx-actions .cmp input{width:16px;height:16px}
+.lx-card.picked{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.lx-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lx-tools .btn{padding:6px 11px;font-size:13.5px}
+.lx-tools .btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.banner{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;
+  background:var(--accent-soft);border:1px solid var(--accent);border-radius:11px;padding:11px 14px;font-size:14px;color:var(--ink)}
+.banner .btn{padding:5px 10px;font-size:13px}
+
+.cmpbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--hero-bg);color:var(--hero-ink);
+  display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;
+  padding:11px clamp(14px,3vw,28px) calc(11px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(0,0,0,.22)}
+.cmpbar .picks{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;min-width:0}
+.cmpbar .pick{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border-radius:8px;padding:4px 6px 4px 8px;max-width:230px}
+.cmpbar .pick span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.cmpbar .pick button{background:none;border:0;color:var(--hero-ink-2);cursor:pointer;font-size:16px;line-height:1;padding:0 2px}
+.cmpbar .pick button:hover{color:var(--hero-ink)}
+.cmpbar .acts{display:flex;gap:8px;align-items:center}
+.cmpbar .btn{color:var(--hero-ink);border-color:rgba(255,255,255,.35)}
+.cmpbar .btn:hover{color:var(--hero-ink);border-color:#fff}
+.cmpbar .btn.primary{background:var(--hero-ink);color:var(--hero-bg);border-color:var(--hero-ink)}
+@media (max-width:939.98px){
+  .wrap{padding-bottom:110px}
+  body.has-cmp .wrap{padding-bottom:230px}
+  .cmpbar{bottom:62px}
+  .cmpbar .pick{max-width:150px}
+}
+
+.cmp-panel{position:fixed;inset:0;z-index:40;background:rgba(6,18,30,.55);display:flex;align-items:flex-start;justify-content:center;
+  padding:clamp(12px,4vh,48px) 12px;overflow:auto}
+.cmp-card{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);width:min(980px,100%);padding:clamp(16px,2.5vw,24px);
+  display:flex;flex-direction:column;gap:14px}
+.cmp-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.cmp-head h2{font-size:21px;font-weight:600}
+.cmp-scroll{overflow-x:auto}
+.cmp-table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+.cmp-table th,.cmp-table td{padding:9px 12px;border-top:1px solid var(--line);text-align:left;vertical-align:top}
+.cmp-table thead th{border-top:0;vertical-align:bottom}
+.cmp-table tbody th{font-weight:600;color:var(--ink-2);font-size:13px;white-space:nowrap}
+.cmp-table td{font-variant-numeric:tabular-nums}
+.cmp-table td.best{color:var(--good-ink);background:var(--good-bg);font-weight:600}
+.cmp-table td.best::after{content:" ✓";font-weight:700}
+.cmp-col{display:flex;flex-direction:column;gap:6px;min-width:150px}
+.cmp-col img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:9px;display:block}
+.cmp-col .t{font-weight:600;font-size:13.5px;line-height:1.35}
+.cmp-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-3)}
 .lx-empty{padding:28px;text-align:center;color:var(--ink-2);display:flex;flex-direction:column;gap:10px;align-items:center}
 .lx-empty code{background:var(--surface-2);padding:2px 6px;border-radius:5px;font-size:13px}
 .lx-more{display:flex;justify-content:center}
@@ -579,7 +634,7 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
       <div class="field">
         <span class="lab" id="lxAreaLab">Area</span>
         <details class="multi" id="lxAreaWrap">
-          <summary id="lxAreaSummary" aria-label="Choose areas">Anywhere</summary>
+          <summary id="lxAreaSummary" aria-label="Choose areas">All areas</summary>
           <div class="multi-menu" id="lxAreaMenu" role="group" aria-labelledby="lxAreaLab"></div>
         </details>
       </div>
@@ -604,10 +659,34 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
       </div>
     </div>
 
-    <div class="lx-summary"><span id="lxCount"></span><span class="hint" id="lxBasis"></span></div>
+    <div id="lxBanner" hidden></div>
+    <div class="lx-summary">
+      <span id="lxCount"></span>
+      <span class="lx-tools" id="lxTools"></span>
+      <span class="hint" id="lxBasis"></span>
+    </div>
     <div class="lx-grid" id="lxGrid"></div>
     <div class="lx-more"><button class="btn" id="lxMore" type="button" hidden>Show more listings</button></div>
   </section>
+
+  <div class="cmpbar" id="cmpBar" hidden>
+    <div class="picks" id="cmpPicks"></div>
+    <div class="acts">
+      <button class="btn" type="button" id="cmpClear">Clear</button>
+      <button class="btn primary" type="button" id="cmpOpen">Compare</button>
+    </div>
+  </div>
+
+  <div class="cmp-panel" id="cmpPanel" hidden role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
+    <div class="cmp-card">
+      <div class="cmp-head">
+        <h2 id="cmpTitle">Side by side</h2>
+        <button class="btn" type="button" id="cmpClose">Close</button>
+      </div>
+      <div class="cmp-scroll"><table class="cmp-table"><thead id="cmpHead"></thead><tbody id="cmpBody"></tbody></table></div>
+      <div class="cmp-foot"><span>Payments and closing costs use your calculator settings. A green figure is the best of the ones shown.</span></div>
+    </div>
+  </div>
 
   <footer>
     <div class="notes">
@@ -1112,8 +1191,10 @@ if (typeof document !== 'undefined') (function () {
   }
 
   /* ---------- listings ---------- */
-  var LSTORE = 'caymanMortgage.lx.v1', PAGE = 12;
-  var LX = { data: null, items: [], shown: PAGE, off: {}, areas: {}, byDistrict: {}, current: null, timer: null, busy: false };
+  var LSTORE = 'caymanMortgage.lx.v1', FSTORE = 'caymanMortgage.saved.v1', PAGE = 12, CMP_MAX = 3;
+  var LX = { data: null, items: [], shown: PAGE, off: {}, areas: {}, byDistrict: {}, current: null, timer: null, busy: false,
+             fav: {}, cmp: [], savedOnly: false, shared: 0 };
+  var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></svg>';
   var TYPE_LABEL = { house: 'House', condo: 'Condo', land: 'Land', other: 'Property' };
 
   function setData(d) {
@@ -1122,6 +1203,55 @@ if (typeof document !== 'undefined') (function () {
   }
   // The page carries its listings inline (local server, single-file build) or fetches
   // listings.json published beside it (the website).
+  // A listing needs an id that survives a rescrape: the MLS number where there is one,
+  // otherwise a hash of its address.
+  function listingId(l) {
+    var mls = String(l.mls || '').replace(/\D/g, '');
+    if (mls) return 'm' + mls;
+    var h = 5381, u = l.url || '';
+    for (var i = 0; i < u.length; i++) h = ((h << 5) + h + u.charCodeAt(i)) >>> 0;
+    return 'u' + h.toString(36);
+  }
+  function loadSaved() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(FSTORE) || '[]');
+      if (Array.isArray(raw)) raw.forEach(function (id) { LX.fav[id] = true; });
+    } catch (e) { /* ignore */ }
+  }
+  function saveSaved() {
+    try { localStorage.setItem(FSTORE, JSON.stringify(Object.keys(LX.fav))); } catch (e) { /* ignore */ }
+  }
+  // A shortlist travels in the address: #saved=m421014,m420962
+  function readSharedList() {
+    var m = /(?:^|[#&])saved=([^&]+)/.exec(location.hash || '');
+    if (!m) return;
+    var ids = decodeURIComponent(m[1]).split(',').filter(Boolean);
+    if (!ids.length) return;
+    ids.forEach(function (id) { LX.fav[id] = true; });
+    LX.shared = ids.length; LX.savedOnly = true;
+    saveSaved();
+  }
+  function shareUrl() {
+    var ids = Object.keys(LX.fav);
+    return location.origin + location.pathname + '#saved=' + ids.join(',');
+  }
+  function copyShortlist() {
+    var url = shareUrl();
+    function fallback() {
+      var ta = el('textarea'); ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      ta.remove();
+      toast(ok ? 'Shortlist link copied. Anyone you send it to sees these listings.' : url);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        toast('Shortlist link copied. Anyone you send it to sees these listings.');
+      }).catch(fallback);
+    } else fallback();
+  }
+
   function loadListingData(done) {
     var raw = '';
     try { raw = $('listingData').textContent.trim(); } catch (e) { raw = ''; }
@@ -1162,7 +1292,7 @@ if (typeof document !== 'undefined') (function () {
   }
   function areaLabel() {
     var chosen = Object.keys(LX.areas);
-    if (!chosen.length) return 'Anywhere';
+    if (!chosen.length) return 'All areas';
     // name whole districts where every area is ticked, and count the loose ones
     var whole = [], covered = {};
     Object.keys(LX.byDistrict).forEach(function (d) {
@@ -1181,6 +1311,11 @@ if (typeof document !== 'undefined') (function () {
   function buildAreaMenu(counts) {
     var menu = $('lxAreaMenu'); menu.textContent = '';
     LX.byDistrict = {};
+    var allRow = el('div', 'grp'), allLab = el('label', 'district all'), allBox = el('input');
+    allBox.type = 'checkbox'; allBox.dataset.all = '1'; allBox.id = 'lxAreaAll';
+    allLab.appendChild(allBox); allLab.appendChild(document.createTextNode('All areas'));
+    allLab.appendChild(el('span', 'n', String(Object.keys(counts).reduce(function (n, a) { return n + counts[a]; }, 0))));
+    allRow.appendChild(allLab); menu.appendChild(allRow);
     Object.keys(counts).forEach(function (a) {
       var d = districtOf(a);
       (LX.byDistrict[d] = LX.byDistrict[d] || []).push(a);
@@ -1213,6 +1348,8 @@ if (typeof document !== 'undefined') (function () {
     syncAreaMenu();
   }
   function syncAreaMenu() {
+    var all = $('lxAreaAll');
+    if (all) { all.checked = !Object.keys(LX.areas).length; all.indeterminate = false; }
     Object.keys(LX.byDistrict || {}).forEach(function (d) {
       var areas = LX.byDistrict[d], on = areas.filter(function (a) { return LX.areas[a]; }).length;
       var box = $('lxAreaMenu').querySelector('input[data-district="' + d.replace(/"/g, '\\"') + '"]');
@@ -1340,6 +1477,34 @@ if (typeof document !== 'undefined') (function () {
     if (Math.abs(d) < 0.005) return ['neutral', 'At your price'];
     return ['neutral', (d > 0 ? '+' : '−') + pct(Math.abs(d), 0) + ' vs your price'];
   }
+  function renderTools() {
+    var box = $('lxTools'), saved = Object.keys(LX.fav).length;
+    box.textContent = '';
+    if (saved) {
+      var t = el('button', 'btn', (LX.savedOnly ? 'Showing saved' : 'Saved') + ' (' + saved + ')');
+      t.type = 'button'; t.setAttribute('aria-pressed', LX.savedOnly ? 'true' : 'false');
+      t.addEventListener('click', function () { LX.savedOnly = !LX.savedOnly; LX.shown = PAGE; renderListings(); });
+      box.appendChild(t);
+      var sh = el('button', 'btn', 'Copy shortlist link'); sh.type = 'button';
+      sh.addEventListener('click', copyShortlist); box.appendChild(sh);
+    }
+    var banner = $('lxBanner');
+    banner.textContent = '';
+    if (LX.shared) {
+      banner.hidden = false;
+      var b = el('div', 'banner');
+      b.appendChild(el('span', null, 'You opened a shared shortlist of ' + LX.shared +
+        (LX.shared === 1 ? ' listing' : ' listings') + '. It has been saved in this browser.'));
+      var keep = el('button', 'btn', 'Show all listings'); keep.type = 'button';
+      keep.addEventListener('click', function () {
+        LX.shared = 0; LX.savedOnly = false;
+        if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+        LX.shown = PAGE; renderListings();
+      });
+      b.appendChild(keep); banner.appendChild(b);
+    } else banner.hidden = true;
+  }
+
   function scheduleListings() { clearTimeout(LX.timer); LX.timer = setTimeout(renderListings, 120); }
 
   function renderListings() {
@@ -1347,15 +1512,18 @@ if (typeof document !== 'undefined') (function () {
     var c = last, rg = rangeFor(c), t = $('lxType').value, beds = +$('lxBeds').value, sort = $('lxSort').value;
     var areaKeys = Object.keys(LX.areas), anyArea = areaKeys.length > 0;
     var all = LX.data.listings;
-    var items = all.filter(function (l) {
-      if (!(l.price_kyd > 0)) return false;
-      if (l.price_kyd < rg.lo || l.price_kyd > rg.hi) return false;
-      if (!typeOk(l, t)) return false;
-      if (anyArea && !LX.areas[l.location]) return false;
-      if (beds && !(l.beds >= beds)) return false;
-      var srcs = l.sources || [l.source];
-      return srcs.some(function (n) { return !LX.off[n]; });
-    });
+    var items = LX.savedOnly
+      // everything saved, whatever the filters say — a shared shortlist must arrive whole
+      ? all.filter(function (l) { return LX.fav[listingId(l)]; })
+      : all.filter(function (l) {
+          if (!(l.price_kyd > 0)) return false;
+          if (l.price_kyd < rg.lo || l.price_kyd > rg.hi) return false;
+          if (!typeOk(l, t)) return false;
+          if (anyArea && !LX.areas[l.location]) return false;
+          if (beds && !(l.beds >= beds)) return false;
+          var srcs = l.sources || [l.source];
+          return srcs.some(function (n) { return !LX.off[n]; });
+        });
     var cmp = {
       'fit': function (a, b) { return Math.abs(a.price_kyd - rg.target) - Math.abs(b.price_kyd - rg.target); },
       'price-asc': function (a, b) { return a.price_kyd - b.price_kyd; },
@@ -1365,6 +1533,7 @@ if (typeof document !== 'undefined') (function () {
     items.sort(cmp);
     LX.items = items;
     $('jumpCount').textContent = String(items.length);
+    renderTools(); renderCmpBar();
 
     var grid = $('lxGrid'); grid.textContent = '';
     $('lxCount').textContent = '';
@@ -1385,9 +1554,22 @@ if (typeof document !== 'undefined') (function () {
       }
       grid.appendChild(e); $('lxMore').hidden = true; $('lxBasis').textContent = ''; return;
     }
-    cnt.appendChild(el('strong', null, items.length + (items.length === 1 ? ' listing' : ' listings')));
-    cnt.appendChild(document.createTextNode(' match, ' + rg.label + '.'));
+    if (LX.savedOnly) {
+      cnt.appendChild(el('strong', null, items.length + (items.length === 1 ? ' saved listing' : ' saved listings')));
+      cnt.appendChild(document.createTextNode(items.length ? ', whatever the filters above say.' : '.'));
+    } else {
+      cnt.appendChild(el('strong', null, items.length + (items.length === 1 ? ' listing' : ' listings')));
+      cnt.appendChild(document.createTextNode(' match, ' + rg.label + '.'));
+    }
     $('lxBasis').textContent = 'Payments use your rate, term and ' + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : 'down payment') + '.';
+    if (!items.length && LX.savedOnly) {
+      var e3 = el('div', 'panel lx-empty'); e3.style.gridColumn = '1/-1';
+      e3.appendChild(el('strong', null, 'Nothing saved yet'));
+      e3.appendChild(el('span', null, 'Tap the star on a listing to keep it here. Saved listings stay in this browser.'));
+      var sb = el('button', 'btn', 'Show all listings'); sb.type = 'button';
+      sb.addEventListener('click', function () { LX.savedOnly = false; LX.shown = PAGE; renderListings(); });
+      e3.appendChild(sb); grid.appendChild(e3); $('lxMore').hidden = true; return;
+    }
     if (!items.length) {
       var e2 = el('div', 'panel lx-empty'); e2.style.gridColumn = '1/-1';
       e2.appendChild(el('strong', null, 'Nothing matches these filters'));
@@ -1429,7 +1611,14 @@ if (typeof document !== 'undefined') (function () {
     } else ph.appendChild(placeholder(l));
     var tags = el('div', 'lx-tags'); tags.appendChild(el('span', 'tag', (l.sources || [l.source])[0]));
     var fit = fitFor(l, c); if (fit) tags.appendChild(el('span', 'pill ' + fit[0], fit[1]));
-    ph.appendChild(tags); art.appendChild(ph);
+    ph.appendChild(tags);
+    var id = listingId(l), fav = el('button', 'fav'); fav.type = 'button'; fav.innerHTML = STAR;
+    fav.dataset.fav = id;
+    fav.setAttribute('aria-pressed', LX.fav[id] ? 'true' : 'false');
+    fav.setAttribute('aria-label', (LX.fav[id] ? 'Remove from' : 'Save to') + ' your shortlist: ' + (l.title || 'this listing'));
+    ph.appendChild(fav);
+    art.appendChild(ph);
+    if (LX.cmp.indexOf(id) >= 0) art.className += ' picked';
 
     var body = el('div', 'lx-body');
     var pr = el('div', 'lx-price'); pr.appendChild(document.createTextNode(money(l.price_kyd)));
@@ -1459,10 +1648,123 @@ if (typeof document !== 'undefined') (function () {
     use.setAttribute('aria-label', 'Load ' + (l.title || 'this listing') + ' into the calculator');
     act.appendChild(use);
     var a = el('a', 'btn', 'View listing ↗'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; act.appendChild(a);
+    var cl = el('label', 'check cmp'), cb = el('input');
+    cb.type = 'checkbox'; cb.dataset.cmp = id; cb.checked = LX.cmp.indexOf(id) >= 0;
+    cl.appendChild(cb); cl.appendChild(el('span', null, 'Compare'));
+    act.appendChild(cl);
     if (l.also && l.also.length) act.appendChild(el('span', 'also', 'Also with ' + l.also.map(function (x) { return x.source; }).join(', ')));
     art.appendChild(act);
     return art;
   }
+  function byId(id) {
+    var all = LX.data ? LX.data.listings : [];
+    for (var i = 0; i < all.length; i++) if (listingId(all[i]) === id) return all[i];
+    return null;
+  }
+  function renderCmpBar() {
+    var bar = $('cmpBar'), picks = $('cmpPicks');
+    bar.hidden = LX.cmp.length === 0;
+    document.body.classList.toggle('has-cmp', !bar.hidden);
+    if (bar.hidden) return;
+    picks.textContent = '';
+    picks.appendChild(el('span', null, LX.cmp.length + ' selected'));
+    LX.cmp.forEach(function (id) {
+      var l = byId(id); if (!l) return;
+      var w = el('span', 'pick');
+      w.appendChild(el('span', null, l.title || money(l.price_kyd)));
+      var x = el('button', null, '×'); x.type = 'button'; x.setAttribute('aria-label', 'Remove from comparison');
+      x.addEventListener('click', function () { toggleCompare(id, false); });
+      w.appendChild(x); picks.appendChild(w);
+    });
+    $('cmpOpen').disabled = LX.cmp.length < 2;
+    $('cmpOpen').textContent = LX.cmp.length < 2 ? 'Pick one more' : 'Compare ' + LX.cmp.length;
+  }
+  function cardFor(id) {
+    var box = $('lxGrid').querySelector('input[data-cmp="' + id + '"]');
+    return box ? { box: box, card: box.closest('.lx-card') } : null;
+  }
+  function toggleCompare(id, on) {
+    var at = LX.cmp.indexOf(id);
+    if (on === undefined) on = at < 0;
+    if (on && at < 0) {
+      if (LX.cmp.length >= CMP_MAX) {
+        toast('You can compare up to ' + CMP_MAX + ' listings at once. Remove one first.');
+        var f = cardFor(id); if (f) f.box.checked = false;
+        return;
+      }
+      LX.cmp.push(id);
+    } else if (!on && at >= 0) LX.cmp.splice(at, 1);
+    else return;
+    var hit = cardFor(id);
+    if (hit) {
+      hit.box.checked = on;
+      if (hit.card) hit.card.classList.toggle('picked', on);
+    }
+    renderCmpBar();
+    if (!$('cmpPanel').hidden) { if (LX.cmp.length < 2) closeCompare(); else openCompare(); }
+  }
+  function openCompare() {
+    var ls = LX.cmp.map(byId).filter(Boolean);
+    if (ls.length < 2) return;
+    var rows = ls.map(function (l) {
+      return { l: l, c: compute({ price: l.price_kyd, ptype: l.ptype === 'land' ? 'land' : 'home', light: true }) };
+    });
+    var head = $('cmpHead'), body = $('cmpBody'); head.textContent = ''; body.textContent = '';
+    var hr = el('tr'); hr.appendChild(el('th', null, ''));
+    rows.forEach(function (r) {
+      var th = el('th'), col = el('div', 'cmp-col');
+      if (r.l.image) { var im = el('img'); im.src = r.l.image; im.alt = ''; im.loading = 'lazy'; im.referrerPolicy = 'no-referrer'; col.appendChild(im); }
+      col.appendChild(el('span', 't', r.l.title || TYPE_LABEL[r.l.ptype]));
+      var a = el('a', null, 'View listing ↗'); a.href = r.l.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.fontSize = '13px'; col.appendChild(a);
+      th.appendChild(col); hr.appendChild(th);
+    });
+    head.appendChild(hr);
+
+    // lower is better for money rows; higher is better for size
+    function row(label, get, better) {
+      var vals = rows.map(get), tr = el('tr'), th = el('th', null, label); th.scope = 'row'; tr.appendChild(th);
+      var nums = vals.map(function (v) { return v && typeof v.n === 'number' ? v.n : null; }).filter(function (n) { return n != null; });
+      var best = nums.length > 1 ? (better === 'high' ? Math.max.apply(null, nums) : Math.min.apply(null, nums)) : null;
+      // only flag a clear winner: a tie tells the reader nothing
+      var unique = best != null && nums.filter(function (n) { return n === best; }).length === 1;
+      vals.forEach(function (v) {
+        var td = el('td', null, v ? v.t : '—');
+        if (unique && v && v.n === best) td.className = 'best';
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    }
+    row('Asking price', function (r) { return { n: r.l.price_kyd, t: money(r.l.price_kyd) }; });
+    row('Monthly payment', function (r) { return { n: r.c.am.pmt, t: money(r.c.am.pmt) }; });
+    row('Cash to close', function (r) { return { n: r.c.cash, t: money(r.c.cash) }; });
+    row('Stamp duty', function (r) { return { n: r.c.td.amount + r.c.md.amount, t: money(r.c.td.amount + r.c.md.amount) }; });
+    row('Loan amount', function (r) { return { n: r.c.loan, t: money(r.c.loan) }; }, 'high');
+    row('Price per sq ft', function (r) {
+      if (!r.l.sqft) return null;
+      var v = r.l.price_kyd / r.l.sqft; return { n: v, t: money(v, 0) };
+    });
+    row('Bedrooms', function (r) { return r.l.beds ? { n: r.l.beds, t: trimNum(r.l.beds, 1) } : null; }, 'high');
+    row('Bathrooms', function (r) { return r.l.baths ? { n: r.l.baths, t: trimNum(r.l.baths, 1) } : null; }, 'high');
+    row('Floor area', function (r) { return r.l.sqft ? { n: r.l.sqft, t: group(r.l.sqft, 0) + ' sq ft' } : null; }, 'high');
+    row('Land', function (r) { return r.l.acres ? { n: r.l.acres, t: trimNum(r.l.acres, 2) + ' acres' } : null; }, 'high');
+    row('Type', function (r) { return { t: TYPE_LABEL[r.l.ptype] || 'Property' }; });
+    row('Area', function (r) { return { t: r.l.location || '—' }; });
+    row('Listed by', function (r) { return { t: (r.l.sources || [r.l.source]).join(', ') }; });
+    row('MLS', function (r) { return { t: r.l.mls || 'not shown' }; });
+
+    var tr = el('tr'), th = el('th', null, ''); tr.appendChild(th);
+    rows.forEach(function (r) {
+      var td = el('td'), b = el('button', 'btn primary', 'Run the numbers'); b.type = 'button';
+      b.addEventListener('click', function () { closeCompare(); useListing(r.l); });
+      td.appendChild(b); tr.appendChild(td);
+    });
+    body.appendChild(tr);
+    $('cmpPanel').hidden = false;
+    $('cmpClose').focus();
+  }
+  function closeCompare() { $('cmpPanel').hidden = true; }
+
   function useListing(l) {
     LX.current = l.url;
     $('price').value = group(Math.round(disp(l.price_kyd)), 0);
@@ -1485,7 +1787,11 @@ if (typeof document !== 'undefined') (function () {
     var wrap = $('lxAreaWrap');
     $('lxAreaMenu').addEventListener('change', function (e) {
       var t = e.target;
-      if (t.dataset.district) {
+      if (t.dataset.all) {
+        LX.areas = {};   // "All areas" simply means nothing is narrowed down
+        Array.prototype.forEach.call($('lxAreaMenu').querySelectorAll('input[data-area],input[data-district]'),
+          function (i) { i.checked = false; i.indeterminate = false; });
+      } else if (t.dataset.district) {
         (LX.byDistrict[t.dataset.district] || []).forEach(function (a) {
           if (t.checked) LX.areas[a] = true; else delete LX.areas[a];
           var box = $('lxAreaMenu').querySelector('input[data-area="' + a.replace(/"/g, '\\"') + '"]');
@@ -1512,9 +1818,33 @@ if (typeof document !== 'undefined') (function () {
     });
     $('lxMore').addEventListener('click', function () { LX.shown += PAGE; renderListings(); });
     $('lxGrid').addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('button[data-i]'); if (!b) return;
-      var l = LX.data.listings[+b.dataset.i]; if (l) useListing(l);
+      var t = e.target.closest && e.target.closest('button[data-i],button[data-fav]');
+      if (!t) return;
+      if (t.dataset.fav) {
+        var id = t.dataset.fav, on = !LX.fav[id];
+        if (on) LX.fav[id] = true; else delete LX.fav[id];
+        saveSaved();
+        // repaint just this button, so the card under the cursor stays put
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
+        var name = (t.getAttribute('aria-label') || '').replace(/^(Save to|Remove from) your shortlist: /, '');
+        t.setAttribute('aria-label', (on ? 'Remove from' : 'Save to') + ' your shortlist: ' + name);
+        renderTools();
+        if (LX.savedOnly) { LX.shown = PAGE; renderListings(); }
+        return;
+      }
+      var l = LX.data.listings[+t.dataset.i]; if (l) useListing(l);
     });
+    $('lxGrid').addEventListener('change', function (e) {
+      if (e.target.dataset && e.target.dataset.cmp) toggleCompare(e.target.dataset.cmp, e.target.checked);
+    });
+    $('cmpOpen').addEventListener('click', openCompare);
+    $('cmpClear').addEventListener('click', function () {
+      LX.cmp.slice().forEach(function (id) { toggleCompare(id, false); });
+      LX.cmp = []; closeCompare(); renderCmpBar();
+    });
+    $('cmpClose').addEventListener('click', closeCompare);
+    $('cmpPanel').addEventListener('click', function (e) { if (e.target === $('cmpPanel')) closeCompare(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('cmpPanel').hidden) closeCompare(); });
   }
 
   /* ---------- chart ---------- */
@@ -1657,7 +1987,7 @@ if (typeof document !== 'undefined') (function () {
   }
 
   function start() {
-    bindTheme(); loadPrefs(); bindListings();
+    bindTheme(); loadPrefs(); loadSaved(); readSharedList(); bindListings();
     writeForm(load()); syncDown(); bind(); bindChart(); bindStackTip();
     loadListingData(function () { setupListingControls(); render(); renderListings(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
