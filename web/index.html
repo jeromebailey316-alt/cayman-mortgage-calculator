@@ -262,6 +262,29 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .chip input:checked+label{color:var(--ink);border-color:var(--accent);background:var(--accent-soft)}
 .chip input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
 .chip label b{font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.multi{position:relative}
+.multi summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);color:var(--ink);
+  font-size:14.5px;padding:8px 10px;min-height:38px}
+.multi summary::-webkit-details-marker{display:none}
+.multi summary::after{content:"";width:7px;height:7px;flex:none;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:translateY(-2px) rotate(45deg)}
+.multi[open] summary::after{transform:translateY(2px) rotate(225deg)}
+.multi summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.multi[open] summary{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.multi-menu{position:absolute;z-index:15;top:calc(100% + 6px);left:0;right:auto;min-width:min(300px,84vw);max-width:calc(100vw - 32px);max-height:340px;overflow:auto;
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:11px;box-shadow:var(--shadow);padding:6px}
+@media (min-width:560px){.multi-menu{left:auto;right:0}}
+.multi-menu .grp{border-top:1px solid var(--line);padding-top:4px;margin-top:4px}
+.multi-menu .grp:first-child{border-top:0;margin-top:0;padding-top:0}
+.multi-menu label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:14px;color:var(--ink-2);cursor:pointer}
+.multi-menu label:hover{background:var(--surface-2)}
+.multi-menu label.district{font-weight:600;color:var(--ink);font-family:var(--display);font-size:14.5px}
+.multi-menu label.area{padding-left:30px;font-size:13.5px}
+.multi-menu input{width:16px;height:16px;flex:none;accent-color:var(--accent);margin:0}
+.multi-menu .n{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.multi-foot{display:flex;justify-content:space-between;gap:8px;padding:6px 4px 2px;border-top:1px solid var(--line);margin-top:4px}
+.multi-foot button{font:inherit;font-size:13px;font-weight:600;color:var(--accent);background:none;border:0;cursor:pointer;padding:4px 6px;border-radius:6px}
+.multi-foot button:hover{background:var(--accent-soft)}
 .lx-summary{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline;font-size:14px;color:var(--ink-2)}
 .lx-summary strong{color:var(--ink)}
 .lx-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,272px),1fr))}
@@ -554,8 +577,11 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
         </select></div>
       </div>
       <div class="field">
-        <label for="lxArea">Area</label>
-        <div class="control"><select id="lxArea"><option value="">Anywhere</option></select></div>
+        <span class="lab" id="lxAreaLab">Area</span>
+        <details class="multi" id="lxAreaWrap">
+          <summary id="lxAreaSummary" aria-label="Choose areas">Anywhere</summary>
+          <div class="multi-menu" id="lxAreaMenu" role="group" aria-labelledby="lxAreaLab"></div>
+        </details>
       </div>
       <div class="field">
         <label for="lxBeds">Bedrooms</label>
@@ -1087,7 +1113,7 @@ if (typeof document !== 'undefined') (function () {
 
   /* ---------- listings ---------- */
   var LSTORE = 'caymanMortgage.lx.v1', PAGE = 12;
-  var LX = { data: null, items: [], shown: PAGE, off: {}, current: null, timer: null, busy: false };
+  var LX = { data: null, items: [], shown: PAGE, off: {}, areas: {}, byDistrict: {}, current: null, timer: null, busy: false };
   var TYPE_LABEL = { house: 'House', condo: 'Condo', land: 'Land', other: 'Property' };
 
   function setData(d) {
@@ -1113,17 +1139,103 @@ if (typeof document !== 'undefined') (function () {
       LX.loading = false; LX.loadFailed = true; setupListingControls(); renderListings();
     });
   }
+  // The sites label areas differently ("W Bay South", "Seven Mile Corridor"), so each
+  // label is sorted into one of the Cayman Islands districts. Order matters: the first
+  // match wins, so Little Cayman is tested before Cayman Brac, and Seven Mile Beach
+  // before West Bay.
+  var DISTRICTS = [
+    ['Little Cayman', [/little cayman/]],
+    ['Cayman Brac', [/cayman brac/, /\bbrac\b/]],
+    ['Seven Mile Beach', [/seven ?mile/, /w\.? ?bay b(ea)?ch/, /west bay beach/, /governor'?s harbour/]],
+    ['West Bay', [/west bay/, /w bay/]],
+    ['George Town', [/george ?town/, /south sound/, /prospect/, /spotts/, /red bay/]],
+    ['Bodden Town', [/bodden town/, /savannah/, /lower valley/, /newlands/, /breakers/, /midland/, /pedro/]],
+    ['East End', [/east end/, /high rock/, /colliers/, /east interior/, /n\.?e\.? coast/, /north ?east coast/]],
+    ['North Side', [/north ?side/, /rum point/, /cayman kai/, /kaibo/]]
+  ];
+  function districtOf(area) {
+    var a = (area || '').toLowerCase();
+    for (var i = 0; i < DISTRICTS.length; i++) {
+      for (var j = 0; j < DISTRICTS[i][1].length; j++) if (DISTRICTS[i][1][j].test(a)) return DISTRICTS[i][0];
+    }
+    return 'Elsewhere';
+  }
+  function areaLabel() {
+    var chosen = Object.keys(LX.areas);
+    if (!chosen.length) return 'Anywhere';
+    // name whole districts where every area is ticked, and count the loose ones
+    var whole = [], covered = {};
+    Object.keys(LX.byDistrict).forEach(function (d) {
+      var areas = LX.byDistrict[d];
+      if (areas.length && areas.every(function (a) { return LX.areas[a]; })) {
+        whole.push(d);
+        areas.forEach(function (a) { covered[a] = 1; });
+      }
+    });
+    var loose = chosen.filter(function (a) { return !covered[a]; }).length;
+    var names = whole.length > 2 ? whole.length + ' districts' : whole.join(' and ');
+    if (whole.length && !loose) return names;
+    if (whole.length) return names + ' +' + loose + (loose === 1 ? ' area' : ' areas');
+    return chosen.length === 1 ? chosen[0] : chosen.length + ' areas';
+  }
+  function buildAreaMenu(counts) {
+    var menu = $('lxAreaMenu'); menu.textContent = '';
+    LX.byDistrict = {};
+    Object.keys(counts).forEach(function (a) {
+      var d = districtOf(a);
+      (LX.byDistrict[d] = LX.byDistrict[d] || []).push(a);
+    });
+    var order = ['West Bay', 'Seven Mile Beach', 'George Town', 'Bodden Town',
+                 'North Side', 'East End', 'Cayman Brac', 'Little Cayman', 'Elsewhere'];
+    order.forEach(function (d) {
+      var areas = (LX.byDistrict[d] || []).sort();
+      if (!areas.length) return;
+      var total = areas.reduce(function (n, a) { return n + counts[a]; }, 0);
+      var grp = el('div', 'grp');
+      var dl = el('label', 'district'), dc = el('input');
+      dc.type = 'checkbox'; dc.dataset.district = d;
+      dl.appendChild(dc); dl.appendChild(document.createTextNode(d));
+      dl.appendChild(el('span', 'n', String(total)));
+      grp.appendChild(dl);
+      areas.forEach(function (a) {
+        var al = el('label', 'area'), ac = el('input');
+        ac.type = 'checkbox'; ac.dataset.area = a; ac.checked = !!LX.areas[a];
+        al.appendChild(ac); al.appendChild(document.createTextNode(a));
+        al.appendChild(el('span', 'n', String(counts[a])));
+        grp.appendChild(al);
+      });
+      menu.appendChild(grp);
+    });
+    var foot = el('div', 'multi-foot');
+    var clear = el('button', null, 'Clear'); clear.type = 'button'; clear.id = 'lxAreaClear';
+    var done = el('button', null, 'Done'); done.type = 'button'; done.id = 'lxAreaDone';
+    foot.appendChild(clear); foot.appendChild(done); menu.appendChild(foot);
+    syncAreaMenu();
+  }
+  function syncAreaMenu() {
+    Object.keys(LX.byDistrict || {}).forEach(function (d) {
+      var areas = LX.byDistrict[d], on = areas.filter(function (a) { return LX.areas[a]; }).length;
+      var box = $('lxAreaMenu').querySelector('input[data-district="' + d.replace(/"/g, '\\"') + '"]');
+      if (!box) return;
+      box.checked = on === areas.length && on > 0;
+      box.indeterminate = on > 0 && on < areas.length;
+    });
+    $('lxAreaSummary').textContent = areaLabel();
+  }
+
   function loadPrefs() {
     var p = {};
     try { p = JSON.parse(localStorage.getItem(LSTORE) || '{}') || {}; } catch (e) { p = {}; }
     ['lxType', 'lxBeds', 'lxSort'].forEach(function (id) { if (typeof p[id] === 'string') $(id).value = p[id]; if (!$(id).value) $(id).selectedIndex = 0; });
     LX.pref = p; LX.rangeTouched = typeof p.lxRange === 'string';
     LX.off = p.off && typeof p.off === 'object' ? p.off : {};
+    LX.areas = {};
+    if (Array.isArray(p.areas)) p.areas.forEach(function (a) { LX.areas[a] = true; });
   }
   function savePrefs() {
     try {
-      localStorage.setItem(LSTORE, JSON.stringify({ lxRange: LX.rangeTouched ? $('lxRange').value : undefined, lxType: $('lxType').value, lxArea: $('lxArea').value,
-        lxBeds: $('lxBeds').value, lxSort: $('lxSort').value, off: LX.off }));
+      localStorage.setItem(LSTORE, JSON.stringify({ lxRange: LX.rangeTouched ? $('lxRange').value : undefined, lxType: $('lxType').value,
+        areas: Object.keys(LX.areas), lxBeds: $('lxBeds').value, lxSort: $('lxSort').value, off: LX.off }));
     } catch (e) { /* ignore */ }
   }
   function fmtDate(iso) {
@@ -1137,10 +1249,10 @@ if (typeof document !== 'undefined') (function () {
       if (l.location) areas[l.location] = (areas[l.location] || 0) + 1;
       (l.sources || [l.source]).forEach(function (sname) { srcCount[sname] = (srcCount[sname] || 0) + 1; });
     });
-    var area = $('lxArea'), keep = area.value || (LX.pref && LX.pref.lxArea) || '';
-    area.textContent = ''; var o0 = el('option', null, 'Anywhere'); o0.value = ''; area.appendChild(o0);
-    Object.keys(areas).sort().forEach(function (a) { var o = el('option', null, a + ' (' + areas[a] + ')'); o.value = a; area.appendChild(o); });
-    area.value = areas[keep] ? keep : '';
+    // drop any saved area that no longer appears in the data — but not on the first
+    // pass before listings.json has loaded, when there are no areas to match against
+    if (Object.keys(areas).length) Object.keys(LX.areas).forEach(function (a) { if (!areas[a]) delete LX.areas[a]; });
+    buildAreaMenu(areas);
     var chips = $('lxSources'); chips.textContent = '';
     var names = (LX.data.sources || []).map(function (x) { return x.name; });
     Object.keys(srcCount).forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
@@ -1232,13 +1344,14 @@ if (typeof document !== 'undefined') (function () {
 
   function renderListings() {
     if (!LX.data) return;
-    var c = last, rg = rangeFor(c), t = $('lxType').value, area = $('lxArea').value, beds = +$('lxBeds').value, sort = $('lxSort').value;
+    var c = last, rg = rangeFor(c), t = $('lxType').value, beds = +$('lxBeds').value, sort = $('lxSort').value;
+    var areaKeys = Object.keys(LX.areas), anyArea = areaKeys.length > 0;
     var all = LX.data.listings;
     var items = all.filter(function (l) {
       if (!(l.price_kyd > 0)) return false;
       if (l.price_kyd < rg.lo || l.price_kyd > rg.hi) return false;
       if (!typeOk(l, t)) return false;
-      if (area && l.location !== area) return false;
+      if (anyArea && !LX.areas[l.location]) return false;
       if (beds && !(l.beds >= beds)) return false;
       var srcs = l.sources || [l.source];
       return srcs.some(function (n) { return !LX.off[n]; });
@@ -1280,7 +1393,11 @@ if (typeof document !== 'undefined') (function () {
       e2.appendChild(el('strong', null, 'Nothing matches these filters'));
       e2.appendChild(el('span', null, 'Try a wider price range, another area or fewer bedrooms.'));
       var rb = el('button', 'btn', 'Show every price and area'); rb.type = 'button';
-      rb.addEventListener('click', function () { LX.rangeTouched = true; $('lxRange').value = 'any'; $('lxArea').value = ''; $('lxBeds').value = '0'; savePrefs(); renderListings(); });
+      rb.addEventListener('click', function () {
+        LX.rangeTouched = true; $('lxRange').value = 'any'; $('lxBeds').value = '0'; LX.areas = {};
+        syncAreaMenu(); Array.prototype.forEach.call($('lxAreaMenu').querySelectorAll('input'), function (i) { i.checked = false; i.indeterminate = false; });
+        savePrefs(); renderListings();
+      });
       e2.appendChild(rb); grid.appendChild(e2); $('lxMore').hidden = true; return;
     }
     var frag = document.createDocumentFragment();
@@ -1362,9 +1479,32 @@ if (typeof document !== 'undefined') (function () {
     t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3800);
   }
   function bindListings() {
-    ['lxRange', 'lxType', 'lxArea', 'lxBeds', 'lxSort'].forEach(function (id) {
+    ['lxRange', 'lxType', 'lxBeds', 'lxSort'].forEach(function (id) {
       $(id).addEventListener('change', function () { if (id === 'lxRange') LX.rangeTouched = true; LX.shown = PAGE; savePrefs(); renderListings(); });
     });
+    var wrap = $('lxAreaWrap');
+    $('lxAreaMenu').addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.dataset.district) {
+        (LX.byDistrict[t.dataset.district] || []).forEach(function (a) {
+          if (t.checked) LX.areas[a] = true; else delete LX.areas[a];
+          var box = $('lxAreaMenu').querySelector('input[data-area="' + a.replace(/"/g, '\\"') + '"]');
+          if (box) box.checked = t.checked;
+        });
+      } else if (t.dataset.area) {
+        if (t.checked) LX.areas[t.dataset.area] = true; else delete LX.areas[t.dataset.area];
+      } else return;
+      syncAreaMenu(); LX.shown = PAGE; savePrefs(); renderListings();
+    });
+    $('lxAreaMenu').addEventListener('click', function (e) {
+      if (e.target.id === 'lxAreaClear') {
+        LX.areas = {};
+        Array.prototype.forEach.call($('lxAreaMenu').querySelectorAll('input'), function (i) { i.checked = false; i.indeterminate = false; });
+        syncAreaMenu(); LX.shown = PAGE; savePrefs(); renderListings();
+      } else if (e.target.id === 'lxAreaDone') { wrap.open = false; $('lxAreaSummary').focus(); }
+    });
+    document.addEventListener('click', function (e) { if (wrap.open && !wrap.contains(e.target)) wrap.open = false; });
+    wrap.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wrap.open) { wrap.open = false; $('lxAreaSummary').focus(); } });
     $('lxSources').addEventListener('change', function (e) {
       var n = e.target.dataset.src; if (!n) return;
       if (e.target.checked) delete LX.off[n]; else LX.off[n] = true;
