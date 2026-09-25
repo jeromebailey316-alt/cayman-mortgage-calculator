@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import home
 import page
 from scraper import run as scrape_run
 
@@ -77,7 +78,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split("?")[0]
         if path in ("/", "/index.html"):
-            self._send(200, page.render(current_data()).encode(), "text/html; charset=utf-8")
+            body = home.render(current_data(), page.HOME_FRAGMENT.read_text())
+            self._send(200, page.render_home(body).encode(), "text/html; charset=utf-8")
+        elif path in ("/calculator", "/calculator/", "/calculator/index.html"):
+            self._send(200, page.render_app(current_data()).encode(), "text/html; charset=utf-8")
+        elif path == "/assets/app.css":
+            self._send(200, page.CSS.read_bytes(), "text/css")
         elif (STATIC / path.lstrip("/")).is_file() and ".." not in path:
             f = STATIC / path.lstrip("/")
             types = {".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",

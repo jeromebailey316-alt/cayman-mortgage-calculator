@@ -1,7 +1,7 @@
-"""The HTML wrapper shared by the local server and the published website.
+"""Assembles the pages: shared head, shared header/nav, and the page's own body.
 
-web/index.html holds the page itself (styles, markup, script) with a
-__LISTINGS_JSON__ slot. This module wraps it in a document head.
+Fragments live in web/ (home.html, index.html). The stylesheet is web/app.css,
+linked on the website and inlined for the single-file build.
 """
 from __future__ import annotations
 
@@ -9,43 +9,140 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-TEMPLATE = ROOT / "web" / "index.html"
+WEB = ROOT / "web"
+APP_FRAGMENT = WEB / "index.html"
+HOME_FRAGMENT = WEB / "home.html"
+CSS = WEB / "app.css"
 
-TITLE = "Cayman Mortgage Calculator"
-DESCRIPTION = ("Work out your monthly payment and the real cash needed to buy in the Cayman Islands "
-               "— stamp duty, mortgage duty, Land Registry, legal and bank fees — then see the homes "
-               "and land for sale that fit your numbers.")
+SITE_NAME = "Cayman Mortgage Calculator"
+CSS_HREF = "/assets/app.css"
 
-def head(canonical: str = "") -> str:
+PAGES = {
+    "home": {
+        "path": "",
+        "title": f"{SITE_NAME} — stamp duty, closing costs and listings",
+        "description": ("What buying in the Cayman Islands really costs: stamp duty, mortgage duty, Land Registry, "
+                        "legal and bank fees, plus the homes and land for sale that fit your budget."),
+    },
+    "calculator": {
+        "path": "calculator/",
+        "title": f"Mortgage and stamp duty calculator — {SITE_NAME}",
+        "description": ("Work out your monthly payment and the real cash needed to close in the Cayman Islands, then "
+                        "see the listings that fit — priced through your own rate, term and deposit."),
+    },
+}
+
+# Applied before first paint on every page, and binds the light/dark button.
+THEME_JS = """
+(function () {
+  var KEY = 'caymanMortgage.theme';
+  var SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5a8.5 8.5 0 1 0 10.8 10.8z"/></svg>';
+  function saved() { try { var t = localStorage.getItem(KEY); return t === 'dark' || t === 'light' ? t : null; } catch (e) { return null; } }
+  function systemDark() { return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+  var t = saved();
+  if (t) document.documentElement.setAttribute('data-theme', t);   // before paint: no flash
+  function apply(choice) {
+    var root = document.documentElement;
+    if (choice) root.setAttribute('data-theme', choice); else root.removeAttribute('data-theme');
+    var dark = choice ? choice === 'dark' : systemDark(), btn = document.getElementById('themeBtn');
+    if (!btn) return;
+    btn.innerHTML = dark ? SUN : MOON;
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label); btn.title = label;
+  }
+  function start() {
+    apply(saved());
+    var btn = document.getElementById('themeBtn');
+    if (btn) btn.addEventListener('click', function () {
+      var next = (saved() ? saved() === 'dark' : systemDark()) ? 'light' : 'dark';
+      try { localStorage.setItem(KEY, next); } catch (e) { /* ignore */ }
+      apply(next);
+    });
+    if (window.matchMedia) {
+      var mq = matchMedia('(prefers-color-scheme: dark)');
+      var onChange = function () { if (!saved()) apply(null); };
+      if (mq.addEventListener) mq.addEventListener('change', onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+"""
+
+ICONS = ('<link rel="icon" href="/favicon.ico" sizes="48x48">'
+         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
+         '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
+         '<link rel="manifest" href="/site.webmanifest">')
+
+
+def nav(active: str, root: str = "/") -> str:
+    """The header every page shares: logo, links, light/dark button."""
+    def link(key, label, href=None):
+        here = ' aria-current="page"' if key == active else ""
+        return f'<a href="{href or root + PAGES[key]["path"]}"{here}>{label}</a>'
+    return (
+        '<header class="site">'
+        f'<a class="brand" href="{root}" aria-label="{SITE_NAME}, home">'
+        f'<img class="logo light-only" src="{root}assets/cmc-secondary-color.svg" width="594" height="128" alt="{SITE_NAME}">'
+        f'<img class="logo dark-only" src="{root}assets/cmc-secondary-reversed.svg" width="594" height="128" alt="" aria-hidden="true">'
+        '</a>'
+        '<nav class="site-nav" aria-label="Site">'
+        + link("home", "Home")
+        + link("calculator", "Calculator")
+        + f'<a href="{root}calculator/#listings">Listings</a>'
+        + '<a class="soon" aria-disabled="true">Rent vs buy</a>'
+        '</nav>'
+        '<div class="site-tools">'
+        '<button class="btn icon" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>'
+        '</div>'
+        '</header>'
+    )
+
+
+def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
+    meta = PAGES[page]
+    css = f"<style>{CSS.read_text()}</style>" if inline_css else f'<link rel="stylesheet" href="{CSS_HREF}">'
+    og_image = (f'<meta property="og:image" content="{canonical.rstrip("/")}/assets/og-image.png">'
+                '<meta name="twitter:card" content="summary_large_image">') if canonical else ""
     return (
         '<!doctype html><html lang="en"><head>'
         '<meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-        f"<title>{TITLE}</title>"
-        f'<meta name="description" content="{DESCRIPTION}">'
+        f'<title>{meta["title"]}</title>'
+        f'<meta name="description" content="{meta["description"]}">'
         '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#0E2A47">'
-        # Brand favicon set: .ico for older browsers, .svg where supported.
-        '<link rel="icon" href="favicon.ico" sizes="48x48">'
-        '<link rel="icon" href="favicon.svg" type="image/svg+xml">'
-        '<link rel="apple-touch-icon" href="apple-touch-icon.png">'
-        '<link rel="manifest" href="site.webmanifest">'
-        f'<meta property="og:title" content="{TITLE}">'
-        f'<meta property="og:description" content="{DESCRIPTION}">'
+        + ("" if inline_css else ICONS)
+        + f'<meta property="og:title" content="{meta["title"]}">'
+        f'<meta property="og:description" content="{meta["description"]}">'
         '<meta property="og:type" content="website">'
-        + (f'<meta property="og:image" content="{canonical.rstrip("/")}/assets/og-image.png">'
-           '<meta name="twitter:card" content="summary_large_image">' if canonical else "")
+        f'<meta property="og:site_name" content="{SITE_NAME}">'
+        + og_image
         + (f'<link rel="canonical" href="{canonical}">' if canonical else "")
+        + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">'
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
-          "</head><body>"
+        + css
+        + f"<script>{THEME_JS}</script>"
+        + "</head><body>"
     )
+
 
 TAIL = "</body></html>"
 
 
-def render(data: dict | None, canonical: str = "") -> str:
-    """Full HTML. `data` is embedded in the page; None means the page fetches
-    listings.json from beside itself instead (the published website)."""
+def render_app(data: dict | None, canonical: str = "", inline_css: bool = False, root: str = "/") -> str:
+    """The calculator page. `data` None means it fetches listings.json beside itself."""
     slot = "null" if data is None else json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    return head(canonical) + TEMPLATE.read_text().replace("__LISTINGS_JSON__", slot) + TAIL
+    body = APP_FRAGMENT.read_text().replace("__LISTINGS_JSON__", slot).replace("__NAV__", nav("calculator", root))
+    return head("calculator", canonical, inline_css) + body + TAIL
+
+
+def render_home(body: str, canonical: str = "") -> str:
+    return head("home", canonical) + body.replace("__NAV__", nav("home")) + TAIL
+
+
+# Kept so older calls (build.py) keep working.
+def render(data: dict | None, canonical: str = "") -> str:
+    return render_app(data, canonical)

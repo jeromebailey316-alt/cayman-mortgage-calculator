@@ -64,7 +64,7 @@ def build(data: dict) -> Path:
     for l, u in zip(ls, uris):
         l["image"] = u
         l.pop("scraped_at", None)
-    html = page.render(dict(data, local=False))
+    html = page.render_app(dict(data, local=False), inline_css=True, root="https://caymanmortgagecalculator.com/")
     # The single-file build can't fetch separate files, so the logos travel inline.
     for name in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         svg = (STATIC / "assets" / name).read_bytes()

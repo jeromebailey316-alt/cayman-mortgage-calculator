@@ -1,0 +1,110 @@
+<!-- Front page. Everything between __TOKENS__ is filled in by build_site.py from
+     data/listings.json, so the figures are as fresh as the last scrape. -->
+<div class="wrap">
+  __NAV__
+
+  <section class="hero-band">
+    <div>
+      <h1>What a Cayman home really costs</h1>
+      <p class="lede">There is no annual property tax in the Cayman Islands, so the money you need up front is what
+        decides whether a place is within reach: stamp duty on the transfer and on the mortgage, Land Registry, legal
+        and bank fees. This works all of it out, then shows the homes and land for sale that fit your numbers.</p>
+      <div class="hero-cta">
+        <a class="go" href="/calculator/">Work out my payment</a>
+        <a class="alt" href="/calculator/#listings">Browse __COUNT__ listings</a>
+      </div>
+    </div>
+
+    <div class="stat-grid">__STATS__</div>
+    <p class="stat-note">Asking prices from __SOURCES_OK__ Cayman property websites, last read __UPDATED__.
+      <a href="/calculator/#listings">See the listings</a></p>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Worth a look</h2>
+        <p>A few picked out of today's listings: the best value per square foot, the ones inside the first-time buyer
+          band, and whatever came on the market most recently.</p>
+      </div>
+      <a class="more" href="/calculator/#listings">All __COUNT__ listings →</a>
+    </div>
+    <div class="feat-grid">__FEATURED__</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>The market by district</h2>
+        <p>Median asking price of what is on the market right now. Land drags the median down where most of the
+          listings are lots rather than houses.</p>
+      </div>
+    </div>
+    <div class="scroll" style="max-height:none">
+      <table class="dist-table">
+        <thead><tr><th scope="col">District</th><th scope="col">Listings</th><th scope="col">Homes</th><th scope="col">Land</th><th scope="col">Median asking</th><th scope="col"></th></tr></thead>
+        <tbody>__DISTRICTS__</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>What this can tell you</h2></div></div>
+    <div class="cards3">
+      <div class="mini">
+        <h3>Your monthly payment and cash to close</h3>
+        <p>Stamp duty at 7.5%, or 10% from CI$2M since January 2026, plus the Caymanian first-time and second-property
+          concessions, mortgage duty, registry, legal and bank fees — with the thresholds that cost you if you cross them.</p>
+        <a href="/calculator/">Open the calculator →</a>
+      </div>
+      <div class="mini">
+        <h3>What you can afford</h3>
+        <p>Put in your income and what you have saved, and it works out the highest price your cash and a lender's
+          one-third-of-income guide will carry, then shows the listings inside it.</p>
+        <a href="/calculator/">Try it →</a>
+      </div>
+      <div class="mini quiet">
+        <h3>Rent versus buying</h3>
+        <p>Cayman rents are high enough that the comparison is worth doing properly: mortgage, strata, insurance and
+          upkeep against rent and rent rises, with the year buying pulls ahead.</p>
+        <span class="hint">Being built next.</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="notes">
+      <div>
+        <h3>Where the figures come from</h3>
+        <ul>
+          <li>Listings are read from __SOURCES_OK__ Cayman property websites every four hours, and duplicates of the
+            same property are merged on the MLS number.</li>
+          <li>Prices are what sellers are asking today, not what buyers paid. They are not a sold-price index.</li>
+          <li>Monthly payments shown here assume __DOWN_PCT__% down at __RATE__% over __TERM__ years. Your own figures
+            go in the calculator.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>The rules behind the numbers</h3>
+        <ul>
+          <li>Transfer stamp duty: 7.5% of the dutiable value, or 10% of the whole value once it reaches CI$2,000,000.</li>
+          <li>First-time Caymanian buyers pay nothing up to CI$550,000 on a home, then 3.75% on the next CI$100,000.</li>
+          <li>Mortgage stamp duty: 1% of the loan up to CI$300,000, 1.5% of the whole loan above that.</li>
+          <li>There is no annual property tax in the Cayman Islands.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://www.caymanlandinfo.ky/services/land-registry/registry-fees" target="_blank" rel="noopener">Lands &amp; Survey: registry fees</a></li>
+          <li><a href="https://gov.ky/w/legislation-passed-to-increase-stamp-duty-on-properties-worth-2m-and-over" target="_blank" rel="noopener">Cayman Islands Government: 10% duty at CI$2M and over</a></li>
+          <li><a href="https://www.cireba.com/stamp-duty" target="_blank" rel="noopener">CIREBA: stamp duty</a></li>
+          <li><a href="https://caymanresident.com/housing/real-estate/buying-real-estate/stamp-duty" target="_blank" rel="noopener">Cayman Resident: stamp duty</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disclaimer">An estimating tool, not financial or legal advice. Listing details belong to the agencies that
+      published them and may be out of date; always check the agent's own page. Government rates change and banks set
+      their own fees and lending criteria, so confirm figures with your attorney and lender before you commit.</p>
+  </footer>
+</div>

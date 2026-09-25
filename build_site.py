@@ -17,6 +17,7 @@ import json
 import shutil
 from pathlib import Path
 
+import home
 import page
 from scraper import run as scrape_run
 
@@ -31,8 +32,15 @@ def build(data: dict, canonical: str = "", domain: str = "") -> Path:
     if SITE.exists():
         shutil.rmtree(SITE)
     shutil.copytree(STATIC, SITE)
-    (SITE / "index.html").write_text(page.render(None, canonical))
+    base = canonical.rstrip("/") + "/" if canonical else ""
+    # front page
+    (SITE / "index.html").write_text(page.render_home(home.render(data, page.HOME_FRAGMENT.read_text()), base))
+    # calculator (fetches listings.json from beside itself)
+    calc = SITE / "calculator"; calc.mkdir()
+    (calc / "index.html").write_text(page.render_app(None, base + "calculator/" if base else ""))
+    (SITE / "assets" / "app.css").write_text(page.CSS.read_text())
     (SITE / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    (calc / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (SITE / "robots.txt").write_text(ROBOTS)
     (SITE / ".nojekyll").write_text("")      # GitHub Pages: serve the files as they are
     if domain:

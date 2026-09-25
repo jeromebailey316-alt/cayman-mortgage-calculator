@@ -116,9 +116,13 @@ images from other websites.
 ## Layout
 
 ```
-web/index.html        the app (calculator + listings); listing data goes in the __LISTINGS_JSON__ slot
-page.py               the HTML head shared by the server, the site and the single-file build
-build_site.py         builds site/ (index.html + listings.json) for GitHub Pages
+web/index.html        the calculator page body (calculator + listings); data goes in the __LISTINGS_JSON__ slot
+web/home.html         the front page body; __STATS__, __FEATURED__ and __DISTRICTS__ are filled at build time
+web/app.css           every page's styles
+page.py               shared head, header and nav; assembles a page from a body fragment
+home.py               renders the front page: statistics banner, featured listings, district table
+stats.py              the market figures, worked out from data/listings.json
+build_site.py         builds site/ (front page + /calculator/ + listings.json) for GitHub Pages
 server.py             local server: page, /api/listings, /api/status, POST /api/refresh
 build.py              single-file build with photos embedded, for publishing as one HTML file
 scraper/common.py     Listing record, polite rate-limited HTTP (1 request/sec per site), parsers
@@ -131,6 +135,19 @@ data/raw/<source>.json  each source's last good result, used when that site is d
 
 The page gets its listings either injected into the HTML (local server and single-file build)
 or fetched from `listings.json` beside it (the website).
+
+Pages, and the links between them:
+
+```
+/                     front page: statistics banner, featured listings, district table
+/calculator/          the calculator and the listings
+/calculator/?price=725000&ptype=home     opens with that price (featured cards use this)
+/calculator/?district=West%20Bay         opens filtered to a district (district table uses this)
+/calculator/#saved=m421014,m419006       a shared shortlist
+```
+
+Statistics and featured listings are worked out at build time, so they sit in the HTML
+rather than being assembled in the browser — they show immediately and search engines read them.
 
 To add a site, drop a module in `scraper/sources/` with `SOURCE` and `fetch()`, then add it to
 `SOURCES` in `scraper/run.py`.
