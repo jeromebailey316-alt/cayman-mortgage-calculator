@@ -21,6 +21,7 @@ import page
 from scraper import run as scrape_run
 
 ROOT = Path(__file__).resolve().parent
+STATIC = ROOT / "web" / "static"
 MAX_AGE_HOURS = 4      # the published site refreshes on the same schedule
 
 state = {"running": False, "last_error": "", "log": []}
@@ -77,6 +78,11 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path in ("/", "/index.html"):
             self._send(200, page.render(current_data()).encode(), "text/html; charset=utf-8")
+        elif (STATIC / path.lstrip("/")).is_file() and ".." not in path:
+            f = STATIC / path.lstrip("/")
+            types = {".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",
+                     ".webmanifest": "application/manifest+json", ".json": "application/json"}
+            self._send(200, f.read_bytes(), types.get(f.suffix, "application/octet-stream"))
         elif path == "/api/listings":
             self._json(current_data())
         elif path == "/api/status":

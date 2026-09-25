@@ -3,21 +3,21 @@
 /* Set the saved theme before the page paints, so there is no flash of the wrong one. */
 try { var t = localStorage.getItem('caymanMortgage.theme'); if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t); } catch (e) { /* ignore */ }
 </script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Instrument+Sans:wght@400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">
 <style>
 :root{
-  --bg:#f1f5f7; --surface:#ffffff; --surface-2:#e8eef2;
-  --ink:#0f2230; --ink-2:#465865; --ink-3:#6c7d89;
-  --line:#d5dde3; --line-strong:#b6c3cd;
-  --accent:#0d5c99; --accent-soft:#e0ecf6; --on-accent:#ffffff;
-  --hero-bg:#0b3a5e; --hero-ink:#ffffff; --hero-ink-2:#c4d9ea; --hero-line:rgba(255,255,255,.18);
+  --bg:#f5f3ee; --surface:#ffffff; --surface-2:#eceae4;
+  --ink:#0e2a47; --ink-2:#4a5868; --ink-3:#71808f;
+  --line:#ded9d0; --line-strong:#c2bcb1;
+  --accent:#0f7c7e; --accent-soft:#dfefee; --on-accent:#ffffff;
+  --hero-bg:#0e2a47; --hero-ink:#ffffff; --hero-ink-2:#a9c4d8; --hero-line:rgba(255,255,255,.18);
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
   --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
   --good-bg:#e5f5e5; --good-ink:#0b4a0b;
   --warn-bg:#fff4d9; --warn-ink:#5a4100;
   --crit-bg:#fbe7e7; --crit-ink:#7a1717;
   --shadow:0 1px 2px rgba(15,34,48,.05),0 10px 28px rgba(15,34,48,.06);
-  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --display:"Sora","Avenir Next","Segoe UI",system-ui,sans-serif;
   --body:"Instrument Sans","Segoe UI",system-ui,-apple-system,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -25,8 +25,8 @@ try { var t = localStorage.getItem('caymanMortgage.theme'); if (t === 'dark' || 
     --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
     --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
     --line:#293947; --line-strong:#3c5062;
-    --accent:#6bb1ee; --accent-soft:#17324a; --on-accent:#06223a;
-    --hero-bg:#103a5c; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
+    --accent:#5fd4cb; --accent-soft:#123b3d; --on-accent:#06223a;
+    --hero-bg:#0e2a47; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
     --s1:#3987e5; --s2:#d95926; --s3:#199e70;
     --good-bg:#12331a; --good-ink:#b9efc0;
     --warn-bg:#3a2f10; --warn-ink:#ffe3a0;
@@ -38,8 +38,8 @@ try { var t = localStorage.getItem('caymanMortgage.theme'); if (t === 'dark' || 
   --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
   --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
   --line:#293947; --line-strong:#3c5062;
-  --accent:#6bb1ee; --accent-soft:#17324a; --on-accent:#06223a;
-  --hero-bg:#103a5c; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
+  --accent:#5fd4cb; --accent-soft:#123b3d; --on-accent:#06223a;
+  --hero-bg:#0e2a47; --hero-ink:#ffffff; --hero-ink-2:#bcd3e6; --hero-line:rgba(255,255,255,.16);
   --s1:#3987e5; --s2:#d95926; --s3:#199e70;
   --good-bg:#12331a; --good-ink:#b9efc0;
   --warn-bg:#3a2f10; --warn-ink:#ffe3a0;
@@ -58,8 +58,17 @@ a{color:var(--accent)}
 
 /* ---------- header ---------- */
 .top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
-.top-text{max-width:66ch;display:flex;flex-direction:column;gap:6px}
+.top-text{max-width:66ch;display:flex;flex-direction:column;gap:12px}
 .top h1{font-size:clamp(28px,4.2vw,40px);font-weight:700;line-height:1.05}
+.brand{line-height:0}
+.logo{height:clamp(58px,9.2vw,104px);width:auto;max-width:100%;display:block}
+.dark-only{display:none}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .light-only{display:none}
+  :root:not([data-theme="light"]) .dark-only{display:block}
+}
+:root[data-theme="dark"] .light-only{display:none}
+:root[data-theme="dark"] .dark-only{display:block}
 .top p{color:var(--ink-2);font-size:15.5px}
 .top-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .btn{font:inherit;font-weight:500;font-size:14px;color:var(--ink-2);background:transparent;border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer}
@@ -294,7 +303,10 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 <div class="wrap">
   <header class="top">
     <div class="top-text">
-      <h1>Cayman Mortgage Calculator</h1>
+      <h1 class="brand">
+        <img class="logo light-only" src="assets/cmc-secondary-color.svg" width="594" height="128" alt="Cayman Mortgage Calculator">
+        <img class="logo dark-only" src="assets/cmc-secondary-reversed.svg" width="594" height="128" alt="" aria-hidden="true">
+      </h1>
       <p>Your monthly payment, plus what it really costs to close in the Cayman Islands: stamp duty on the transfer and on the mortgage, Land Registry, legal and bank fees. There is no annual property tax here, so the one-off costs are the ones to plan for. Then see which homes for sale right now fit those numbers.</p>
     </div>
     <div class="top-tools">

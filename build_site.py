@@ -22,6 +22,7 @@ from scraper import run as scrape_run
 
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT / "site"
+STATIC = ROOT / "web" / "static"     # favicons, manifest, logos — copied to the site root
 
 ROBOTS = "User-agent: *\nAllow: /\n"
 
@@ -29,7 +30,7 @@ ROBOTS = "User-agent: *\nAllow: /\n"
 def build(data: dict, canonical: str = "", domain: str = "") -> Path:
     if SITE.exists():
         shutil.rmtree(SITE)
-    SITE.mkdir(parents=True)
+    shutil.copytree(STATIC, SITE)
     (SITE / "index.html").write_text(page.render(None, canonical))
     (SITE / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (SITE / "robots.txt").write_text(ROBOTS)

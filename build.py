@@ -24,6 +24,7 @@ from scraper import run as scrape_run
 from scraper.common import UA
 
 ROOT = Path(__file__).resolve().parent
+STATIC = ROOT / "web" / "static"
 OUT = ROOT / "dist" / "cayman-mortgage.html"
 THUMBS = ROOT / "data" / "thumbs"
 THUMB_W, THUMB_H, QUALITY = 270, 180, 38
@@ -63,8 +64,14 @@ def build(data: dict) -> Path:
     for l, u in zip(ls, uris):
         l["image"] = u
         l.pop("scraped_at", None)
+    html = page.render(dict(data, local=False))
+    # The single-file build can't fetch separate files, so the logos travel inline.
+    for name in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
+        svg = (STATIC / "assets" / name).read_bytes()
+        uri = "data:image/svg+xml;base64," + base64.b64encode(svg).decode()
+        html = html.replace(f"assets/{name}", uri)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(page.render(dict(data, local=False)))
+    OUT.write_text(html)
     return OUT
 
 

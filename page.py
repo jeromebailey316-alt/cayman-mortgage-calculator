@@ -16,12 +16,6 @@ DESCRIPTION = ("Work out your monthly payment and the real cash needed to buy in
                "— stamp duty, mortgage duty, Land Registry, legal and bank fees — then see the homes "
                "and land for sale that fit your numbers.")
 
-# A house outline, drawn in the page's accent blue.
-ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
-        "%3Cpath d='M4 15 16 5l12 10v13H4z' fill='%230d5c99'/%3E"
-        "%3Cpath d='M13 28v-8h6v8' fill='%23fff'/%3E%3C/svg%3E")
-
-
 def head(canonical: str = "") -> str:
     return (
         '<!doctype html><html lang="en"><head>'
@@ -30,12 +24,17 @@ def head(canonical: str = "") -> str:
         f"<title>{TITLE}</title>"
         f'<meta name="description" content="{DESCRIPTION}">'
         '<meta name="color-scheme" content="light dark">'
-        '<meta name="theme-color" content="#0b3a5e" media="(prefers-color-scheme: dark)">'
-        '<meta name="theme-color" content="#f1f5f7" media="(prefers-color-scheme: light)">'
-        f'<link rel="icon" href="{ICON}">'
+        '<meta name="theme-color" content="#0E2A47">'
+        # Brand favicon set: .ico for older browsers, .svg where supported.
+        '<link rel="icon" href="favicon.ico" sizes="48x48">'
+        '<link rel="icon" href="favicon.svg" type="image/svg+xml">'
+        '<link rel="apple-touch-icon" href="apple-touch-icon.png">'
+        '<link rel="manifest" href="site.webmanifest">'
         f'<meta property="og:title" content="{TITLE}">'
         f'<meta property="og:description" content="{DESCRIPTION}">'
         '<meta property="og:type" content="website">'
+        + (f'<meta property="og:image" content="{canonical.rstrip("/")}/assets/og-image.png">'
+           '<meta name="twitter:card" content="summary_large_image">' if canonical else "")
         + (f'<link rel="canonical" href="{canonical}">' if canonical else "")
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
