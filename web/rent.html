@@ -1,0 +1,628 @@
+<div class="wrap">
+  __NAV__
+
+  <header class="top">
+    <div class="top-row">
+      <h1 class="page-h1">Rent or buy in Cayman</h1>
+      <div class="top-tools">
+        <a class="btn" href="/calculator/">Full calculator</a>
+        <button class="btn" id="rvReset" type="button">Reset</button>
+      </div>
+    </div>
+    <p class="top-intro">Renting costs you the rent. Buying costs you the mortgage, strata, insurance, upkeep and the
+      duty and fees on the way in — but you keep the equity, and the deposit you did not invest elsewhere is money the
+      renter still has. This works both sides through to the year buying pulls ahead.</p>
+  </header>
+
+  <div class="app">
+    <form class="panel inputs" id="rvForm" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>Buying</legend>
+        <div class="field">
+          <label for="rvPrice">Purchase price</label>
+          <div class="control"><span class="affix">CI$</span><input id="rvPrice" type="text" inputmode="decimal" data-money></div>
+        </div>
+        <div class="field">
+          <span class="lab" id="rvType-lab">Property type</span>
+          <div class="seg" role="radiogroup" aria-labelledby="rvType-lab">
+            <input type="radio" name="rvType" id="rvType-home" value="home" checked><label for="rvType-home">House or condo</label>
+            <input type="radio" name="rvType" id="rvType-land" value="land" disabled><label for="rvType-land" style="opacity:.45">Raw land</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rvStatus">Stamp duty status</label>
+          <div class="control">
+            <select id="rvStatus">
+              <option value="standard">Standard rate (no concession)</option>
+              <option value="first">Caymanian, first property</option>
+              <option value="second">Caymanian, second property</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lab">Down payment</span>
+          <div class="row">
+            <div class="control"><span class="affix">CI$</span><input id="rvDownAmt" type="text" inputmode="decimal" data-money aria-label="Down payment amount"></div>
+            <div class="control"><input id="rvDownPct" type="text" inputmode="decimal" aria-label="Down payment percent"><span class="affix">%</span></div>
+          </div>
+        </div>
+        <div class="row even">
+          <div class="field">
+            <label for="rvRate">Interest rate</label>
+            <div class="control"><input id="rvRate" type="text" inputmode="decimal"><span class="affix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="rvTerm">Term</label>
+            <div class="control"><input id="rvTerm" type="text" inputmode="numeric"><span class="affix">yrs</span></div>
+          </div>
+        </div>
+        <div class="row even">
+          <div class="field">
+            <label for="rvStrata">Strata fees</label>
+            <div class="control"><span class="affix">CI$</span><input id="rvStrata" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="rvIns">Insurance</label>
+            <div class="control"><input id="rvIns" type="text" inputmode="decimal"><span class="affix">%/yr</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rvUpkeep">Upkeep and repairs</label>
+          <div class="control"><input id="rvUpkeep" type="text" inputmode="decimal"><span class="affix">% of price a year</span></div>
+          <p class="hint">Roof, appliances, hurricane shutters, the things a landlord would have paid for. Around
+            0.5% a year for a condo where strata covers the outside, 1% for a house.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Renting</legend>
+        <div class="field">
+          <label for="rvRent">Rent for the same sort of place</label>
+          <div class="control"><span class="affix">CI$</span><input id="rvRent" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          <p class="hint" id="rvRentHint"></p>
+        </div>
+        <div class="field">
+          <label for="rvRentRise">Rent rises by</label>
+          <div class="control"><input id="rvRentRise" type="text" inputmode="decimal"><span class="affix">% a year</span></div>
+        </div>
+      </fieldset>
+
+      <details id="rvAssumptions">
+        <summary>What happens to the money</summary>
+        <div class="body">
+          <div class="field">
+            <label for="rvGrowth">Property values rise by</label>
+            <div class="control"><input id="rvGrowth" type="text" inputmode="decimal"><span class="affix">% a year</span></div>
+          </div>
+          <div class="field">
+            <label for="rvReturn">Savings and investments earn</label>
+            <div class="control"><input id="rvReturn" type="text" inputmode="decimal"><span class="affix">% a year</span></div>
+            <p class="hint">What the renter's deposit earns instead of sitting in a house. This is the assumption that
+              moves the answer most, so try it both low and high.</p>
+          </div>
+          <div class="field">
+            <label for="rvSell">Costs of selling</label>
+            <div class="control"><input id="rvSell" type="text" inputmode="decimal"><span class="affix">% of the price</span></div>
+            <p class="hint">Agent's commission and legal fees when you come to sell.</p>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <div class="results">
+      <section class="hero" aria-label="The answer">
+        <div>
+          <p class="hero-label">Buying pulls ahead</p>
+          <p class="hero-figure" id="rvHeadline"></p>
+          <p class="hero-sub" id="rvHeadSub"></p>
+        </div>
+        <dl class="hero-break" id="rvBreak"></dl>
+      </section>
+
+      <section class="kpis" aria-label="Key figures">
+        <div class="kpi"><span class="k">Monthly to buy</span><span class="v" id="rvBuyMo"></span><span class="s" id="rvBuyMoS"></span></div>
+        <div class="kpi"><span class="k">Monthly to rent</span><span class="v" id="rvRentMo"></span><span class="s" id="rvRentMoS"></span></div>
+        <div class="kpi"><span class="k">Cash to buy</span><span class="v" id="rvCash"></span><span class="s" id="rvCashS"></span></div>
+        <div class="kpi"><span class="k">Where you stand at 10 years</span><span class="v" id="rvTen"></span><span class="s" id="rvTenS"></span></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="rvChartH">
+        <div class="card-head">
+          <h2 id="rvChartH">What each path is worth over time</h2>
+          <span class="aside" id="rvChartAside"></span>
+        </div>
+        <div class="legend">
+          <span class="item"><i class="lk k1"></i>Buying</span>
+          <span class="item"><i class="lk k2"></i>Renting and investing the difference</span>
+        </div>
+        <div class="chart" id="rvChart" tabindex="0" role="img" aria-label="Two lines showing what buying and renting leave you with over thirty years. Use the left and right arrow keys to read values year by year.">
+          <div class="tip" id="rvTip" hidden></div>
+        </div>
+        <p class="hint">Buying counts the property's value less what you still owe and what it costs to sell, plus
+          anything you invested when the rent was higher than the mortgage. Renting counts the deposit and fees you
+          did not spend, invested, plus whatever you saved each month buying would have cost you.</p>
+      </section>
+
+      <section class="panel card" aria-labelledby="rvExplainH">
+        <div class="card-head"><h2 id="rvExplainH">How it works out</h2></div>
+        <div class="explain" id="rvExplain"></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="rvYearsH">
+        <div class="card-head"><h2 id="rvYearsH">Year by year</h2><span class="aside">The first ten years</span></div>
+        <div class="scroll">
+          <table class="amort"><thead id="rvYearsHead"></thead><tbody id="rvYearsBody"></tbody></table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <div class="notes">
+      <div>
+        <h3>What this counts</h3>
+        <ul>
+          <li>Buying: the deposit, stamp duty on the transfer and the mortgage, registry, legal and bank fees, the
+            first year's insurance, then the mortgage, strata, insurance and upkeep every month.</li>
+          <li>Renting: the rent, rising each year, and nothing else. No duty, no strata, no roof.</li>
+          <li>Both paths invest whatever the other one is spending, so the comparison is like for like.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What it cannot know</h3>
+        <ul>
+          <li>Whether Cayman property keeps rising at the rate you typed. The last few years are not a promise.</li>
+          <li>Whether you would really invest the difference every month, which is what makes renting competitive.</li>
+          <li>Hurricane damage, a special strata assessment, a rent increase larger than you planned for, or having
+            to move for work.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>There is no annual property tax in the Cayman Islands, which is why the one-off costs dominate.</li>
+          <li>Stamp duty is the largest single cost of buying, and the concessions for Caymanian buyers change the
+            answer considerably — set your status on the left.</li>
+          <li>Selling costs matter: they are why buying rarely pays off over two or three years.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="disclaimer">An estimating tool, not financial or legal advice. It compares two paths on assumptions you
+      choose; change them and the answer changes. Confirm figures with your attorney and lender before you commit.</p>
+  </footer>
+</div>
+
+<script>
+if (typeof document !== 'undefined') (function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = 'caymanMortgage.rent.v1', CALC_STORE = 'caymanMortgage.v1', YEARS = 30;
+
+  var DEFAULTS = {
+    price: 900000, status: 'standard', downPct: 20, rate: 7.25, term: 25,
+    strata: 550, ins: 0.35, upkeep: 0.5, rent: 0, rentRise: 3,
+    growth: 3, ret: 5, sell: 6
+  };
+  var MONEY = ['price', 'downAmt', 'strata', 'rent'];
+  var PLAIN = ['downPct', 'rate', 'term', 'ins', 'upkeep', 'rentRise', 'growth', 'ret', 'sell'];
+  var S = {}, last = null, hoverIdx = null, G = null, downMaster = 'pct';
+
+  /* ---------- helpers ---------- */
+  function parseNum(str) {
+    var s = String(str == null ? '' : str).replace(/[, $]|CI|US|KYD|USD/gi, '').trim();
+    var m = /^(-?[\d.]+)\s*([kKmM])?$/.exec(s);
+    if (!m) return 0;
+    var v = parseFloat(m[1]); if (!isFinite(v)) return 0;
+    if (m[2]) v *= /k/i.test(m[2]) ? 1e3 : 1e6;
+    return v;
+  }
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function group(v, dp) { return v.toLocaleString('en-US', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 }); }
+  function trimNum(v, dp) { return String(+v.toFixed(dp)); }
+  function money(v, dp) { return (v < 0 ? '−CI$' : 'CI$') + group(Math.abs(v), dp || 0); }
+  function compact(v) {
+    var a = Math.abs(v), s = v < 0 ? '−CI$' : 'CI$';
+    if (a >= 1e6) return s + trimNum(a / 1e6, 2) + 'M';
+    if (a >= 1e3) return s + trimNum(a / 1e3, 0) + 'K';
+    return s + Math.round(a);
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function radio(name) { var r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : null; }
+  function ordinal(n) {
+    var s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  /* ---------- state ---------- */
+  function startingValues() {
+    var st = {};
+    Object.keys(DEFAULTS).forEach(function (k) { st[k] = DEFAULTS[k]; });
+    // pick up whatever they last used in the calculator, so the two pages agree
+    try {
+      var c = JSON.parse(localStorage.getItem(CALC_STORE) || 'null');
+      if (c && typeof c === 'object') {
+        ['price', 'rate', 'term', 'downPct', 'strata', 'status'].forEach(function (k) {
+          if (typeof c[k] === typeof st[k] && (typeof c[k] !== 'number' || c[k] > 0)) st[k] = c[k];
+        });
+        if (typeof c.insPct === 'number' && c.insPct > 0) st.ins = c.insPct;
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      var own = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (own && typeof own === 'object') Object.keys(DEFAULTS).forEach(function (k) {
+        if (typeof own[k] === typeof DEFAULTS[k]) st[k] = own[k];
+      });
+    } catch (e) { /* ignore */ }
+    // a starting guess for rent: Cayman asking rents run near 0.42% of value a month
+    if (!st.rent) st.rent = Math.round(st.price * 0.0042 / 50) * 50;
+    return st;
+  }
+  function writeForm(st) {
+    $('rvPrice').value = group(st.price);
+    $('rvStatus').value = st.status;
+    $('rvDownPct').value = trimNum(st.downPct, 2);
+    $('rvDownAmt').value = group(Math.round(st.price * st.downPct / 100));
+    $('rvRate').value = trimNum(st.rate, 3);
+    $('rvTerm').value = String(st.term);
+    $('rvStrata').value = group(st.strata);
+    $('rvIns').value = trimNum(st.ins, 2);
+    $('rvUpkeep').value = trimNum(st.upkeep, 2);
+    $('rvRent').value = group(st.rent);
+    $('rvRentRise').value = trimNum(st.rentRise, 2);
+    $('rvGrowth').value = trimNum(st.growth, 2);
+    $('rvReturn').value = trimNum(st.ret, 2);
+    $('rvSell').value = trimNum(st.sell, 2);
+    downMaster = 'pct';
+  }
+  function readForm() {
+    S.price = Math.max(0, parseNum($('rvPrice').value));
+    S.status = $('rvStatus').value;
+    S.downPct = clamp(parseNum($('rvDownPct').value), 0, 100);
+    S.rate = clamp(parseNum($('rvRate').value), 0, 30);
+    S.term = clamp(Math.round(parseNum($('rvTerm').value)) || 1, 1, 40);
+    S.strata = Math.max(0, parseNum($('rvStrata').value));
+    S.ins = clamp(parseNum($('rvIns').value), 0, 10);
+    S.upkeep = clamp(parseNum($('rvUpkeep').value), 0, 10);
+    S.rent = Math.max(0, parseNum($('rvRent').value));
+    S.rentRise = clamp(parseNum($('rvRentRise').value), -10, 20);
+    S.growth = clamp(parseNum($('rvGrowth').value), -10, 20);
+    S.ret = clamp(parseNum($('rvReturn').value), 0, 20);
+    S.sell = clamp(parseNum($('rvSell').value), 0, 20);
+  }
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* ignore */ }
+  }
+  function syncDown(source) {
+    var price = Math.max(0, parseNum($('rvPrice').value));
+    if (source) downMaster = source;
+    if (downMaster === 'pct') {
+      var p = clamp(parseNum($('rvDownPct').value), 0, 100);
+      if (document.activeElement !== $('rvDownAmt')) $('rvDownAmt').value = group(Math.round(price * p / 100));
+    } else {
+      var a = Math.min(price, Math.max(0, parseNum($('rvDownAmt').value)));
+      if (document.activeElement !== $('rvDownPct')) $('rvDownPct').value = price > 0 ? trimNum(a / price * 100, 2) : '0';
+    }
+  }
+
+  /* ---------- the comparison ----------
+     Both paths start with the same money. The buyer spends it on the deposit and the
+     fees; the renter invests it. Each month, whichever path costs less puts the
+     difference into investments, so neither side gets a free ride. */
+  function model() {
+    var price = S.price, down = Math.min(price, price * S.downPct / 100), loan = Math.max(0, price - down);
+    var close = Core.closingCosts(price, loan, { status: S.status, insPct: S.ins });
+    var upfront = down + close.total;
+    var n = S.term * 12, pmt = Core.payment(loan, S.rate / 100, n);
+    var mRate = S.rate / 100 / 12;
+    var mRet = Math.pow(1 + S.ret / 100, 1 / 12) - 1;
+    var mGrow = Math.pow(1 + S.growth / 100, 1 / 12) - 1;
+
+    var balance = loan, value = price, rent = S.rent;
+    var buyerPot = 0, renterPot = upfront;      // the renter invests what the buyer spent
+    var buyPaid = upfront, rentPaid = 0;
+    var months = YEARS * 12, buyNet = [], rentNet = [], rows = [];
+    var firstBuyCost = 0, breakeven = null;
+
+    for (var m = 1; m <= months; m++) {
+      var interest = balance * mRate, principal = 0;
+      if (balance > 0) {
+        principal = Math.min(balance, pmt - interest);
+        balance = Math.max(0, balance - principal);
+      }
+      var mortgage = balance > 0 || principal > 0 ? pmt : 0;
+      var running = S.strata + value * (S.ins / 100) / 12 + value * (S.upkeep / 100) / 12;
+      var buyCost = mortgage + running;
+      if (m === 1) firstBuyCost = buyCost;
+
+      var diff = buyCost - rent;
+      if (diff > 0) renterPot += diff; else buyerPot += -diff;
+      buyerPot *= (1 + mRet); renterPot *= (1 + mRet);
+      value *= (1 + mGrow);
+      buyPaid += buyCost; rentPaid += rent;
+      if (m % 12 === 0) rent *= (1 + S.rentRise / 100);
+
+      var bn = value * (1 - S.sell / 100) - balance + buyerPot;
+      var rn = renterPot;
+      buyNet.push(bn); rentNet.push(rn);
+      if (breakeven === null && bn >= rn) breakeven = m;
+      if (m % 12 === 0) {
+        rows.push({ year: m / 12, buyCost: buyCost, rent: rent / (1 + S.rentRise / 100), value: value,
+                    balance: balance, buyNet: bn, rentNet: rn });
+      }
+    }
+    return { price: price, down: down, loan: loan, close: close, upfront: upfront, pmt: pmt,
+             firstBuyCost: firstBuyCost, buyNet: buyNet, rentNet: rentNet, rows: rows,
+             breakeven: breakeven, months: months, buyPaid: buyPaid, rentPaid: rentPaid };
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    readForm();
+    var r = last = model();
+    var be = r.breakeven;
+
+    $('rvHeadline').textContent = be === null ? 'Not within ' + YEARS + ' years'
+      : be <= 12 ? 'In the first year' : 'Year ' + Math.ceil(be / 12);
+    $('rvHeadSub').textContent = be === null
+      ? 'On these assumptions renting and investing the difference stays ahead for the whole ' + YEARS + ' years.'
+      : 'From the ' + ordinal(Math.ceil(be / 12)) + ' year on, owning leaves you better off than renting and investing the difference.';
+    document.querySelector('.hero-label').textContent = be === null ? 'Renting stays ahead' : 'Buying pulls ahead';
+
+    var hb = $('rvBreak'); hb.textContent = '';
+    [['Mortgage payment', r.pmt], ['Strata fees', S.strata],
+     ['Insurance', r.price * (S.ins / 100) / 12], ['Upkeep', r.price * (S.upkeep / 100) / 12]]
+      .forEach(function (row) { if (row[1] > 0) hb.appendChild(dlRow(row[0], money(row[1]))); });
+    hb.appendChild(dlRow('Monthly to own', money(r.firstBuyCost), 'total'));
+
+    $('rvBuyMo').textContent = money(r.firstBuyCost);
+    $('rvBuyMoS').textContent = 'Mortgage, strata, insurance and upkeep';
+    $('rvRentMo').textContent = money(S.rent);
+    var gap = r.firstBuyCost - S.rent;
+    $('rvRentMoS').textContent = Math.abs(gap) < 1 ? 'The same as owning'
+      : gap > 0 ? money(gap) + ' a month less than owning' : money(-gap) + ' a month more than owning';
+    $('rvCash').textContent = money(r.upfront);
+    $('rvCashS').textContent = money(r.down) + ' deposit plus ' + money(r.close.total) + ' of duty and fees';
+    var ten = Math.min(r.buyNet.length, 120) - 1;
+    var tenGap = r.buyNet[ten] - r.rentNet[ten];
+    // the label carries the direction, so the figure itself stays unsigned
+    $('rvTen').textContent = money(Math.abs(tenGap));
+    $('rvTenS').textContent = tenGap >= 0 ? 'better off having bought' : 'better off having rented';
+
+    $('rvRentHint').textContent = 'A rough guide: asking rents in Cayman run near 0.42% of a property’s value a month, '
+      + 'about ' + money(Math.round(r.price * 0.0042 / 50) * 50) + ' for this price. Use a real listing if you have one.';
+    $('rvChartAside').textContent = be === null ? 'Renting stays ahead through year ' + YEARS
+      : 'They cross in year ' + Math.ceil(be / 12);
+
+    renderExplain(r); renderYears(r); drawChart(); save();
+  }
+  function dlRow(k, v, cls) {
+    var d = el('div', cls); d.appendChild(el('dt', null, k)); d.appendChild(el('dd', null, v)); return d;
+  }
+  function callout(kind, text) {
+    var d = el('div', 'callout ' + kind);
+    d.appendChild(el('span', 'ico', kind === 'good' ? '✓' : '!'));
+    d.appendChild(el('span', null, text)); return d;
+  }
+
+  function renderExplain(r) {
+    var box = $('rvExplain'); box.textContent = '';
+    var be = r.breakeven, beYear = be === null ? null : Math.ceil(be / 12);
+
+    var p1 = el('p');
+    p1.appendChild(el('strong', null, 'Buying costs ' + money(r.upfront) + ' before you move in. '));
+    p1.appendChild(document.createTextNode(
+      'That is ' + money(r.down) + ' of deposit and ' + money(r.close.total) + ' of duty and fees, of which '
+      + money(r.close.transferDuty + r.close.mortgageDuty) + ' is stamp duty. A renter keeps that money, and this '
+      + 'comparison has them invest it at ' + trimNum(S.ret, 2) + '% a year.'));
+    box.appendChild(p1);
+
+    var p2 = el('p');
+    p2.appendChild(el('strong', null, 'Owning runs at ' + money(r.firstBuyCost) + ' a month to start. '));
+    var gap = r.firstBuyCost - S.rent;
+    p2.appendChild(document.createTextNode(
+      gap > 0 ? 'Renting is ' + money(gap) + ' a month cheaper today, but rent rises ' + trimNum(S.rentRise, 2)
+        + '% a year while the mortgage does not, so the gap closes.'
+        : 'Renting already costs ' + money(-gap) + ' a month more than owning, before any rent rises.'));
+    box.appendChild(p2);
+
+    if (beYear === null) {
+      box.appendChild(callout('warn', 'On these assumptions buying does not catch up within ' + YEARS + ' years. '
+        + 'The two things that change that most: a lower investment return than ' + trimNum(S.ret, 2)
+        + '%, or property rising faster than ' + trimNum(S.growth, 2) + '% a year.'));
+    } else if (beYear <= 5) {
+      box.appendChild(callout('good', 'Buying pays off quickly here — by year ' + beYear
+        + '. Selling sooner than that is where the duty and the agent’s commission bite.'));
+    } else {
+      box.appendChild(callout('good', 'Buying wins from year ' + beYear
+        + '. If there is a chance you move before then, renting is the safer arithmetic.'));
+    }
+
+    if (S.status !== 'standard') {
+      box.appendChild(el('p', 'hint', 'This includes the Caymanian concession you chose, which is why the duty is '
+        + 'lower than the standard 7.5%. Concessions need an approved application to Lands & Survey.'));
+    } else if (r.close.transferDuty > 0) {
+      box.appendChild(el('p', 'hint', 'At the standard rate, stamp duty alone is '
+        + money(r.close.transferDuty) + '. A Caymanian first-time buyer may pay nothing on a home up to CI$550,000 — '
+        + 'change the status on the left to see it.'));
+    }
+    var p3 = el('p', 'hint');
+    p3.textContent = 'Over ' + YEARS + ' years: owning costs ' + money(r.buyPaid) + ' in payments and running costs, '
+      + 'renting costs ' + money(r.rentPaid) + ' in rent. Those totals ignore what you own at the end, which is the '
+      + 'whole point of the chart above.';
+    box.appendChild(p3);
+  }
+
+  function renderYears(r) {
+    var head = $('rvYearsHead'), body = $('rvYearsBody');
+    head.textContent = ''; body.textContent = '';
+    var hr = el('tr');
+    ['Year', 'To own, a month', 'Rent, a month', 'If you sold', 'If you rented', 'Buying ahead by'].forEach(function (h) {
+      var th = el('th', null, h); th.scope = 'col'; hr.appendChild(th);
+    });
+    head.appendChild(hr);
+    var frag = document.createDocumentFragment();
+    r.rows.slice(0, 10).forEach(function (row) {
+      var tr = el('tr');
+      tr.appendChild(el('td', null, String(row.year)));
+      tr.appendChild(el('td', null, money(row.buyCost)));
+      tr.appendChild(el('td', null, money(row.rent)));
+      tr.appendChild(el('td', null, money(row.buyNet)));
+      tr.appendChild(el('td', null, money(row.rentNet)));
+      var d = row.buyNet - row.rentNet, td = el('td', null, (d >= 0 ? '+' : '−') + money(Math.abs(d)).replace('−', ''));
+      td.style.color = d >= 0 ? 'var(--good-ink)' : 'var(--ink-2)';
+      td.style.fontWeight = '600';
+      tr.appendChild(td);
+      frag.appendChild(tr);
+    });
+    body.appendChild(frag);
+  }
+
+  /* ---------- chart ---------- */
+  function niceTicks(min, max, count) {
+    var span = max - min;
+    if (!(span > 0)) return [min, min + 1];
+    var raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+    var step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag;
+    var out = [], start = Math.floor(min / step) * step;
+    for (var t = start; t < max + step * 0.999; t += step) out.push(t);
+    return out;
+  }
+  function drawChart() {
+    var wrap = $('rvChart'), r = last; if (!r) return;
+    var old = wrap.querySelector('svg'); if (old) old.remove();
+    $('rvTip').hidden = true; G = null;
+
+    var W = Math.max(280, Math.round(wrap.clientWidth)), H = W < 520 ? 240 : 310;
+    var M = { l: 62, r: 16, t: 26, b: 32 }, pw = W - M.l - M.r, ph = H - M.t - M.b;
+    var all = r.buyNet.concat(r.rentNet);
+    var lo = Math.min(0, Math.min.apply(null, all)), hi = Math.max.apply(null, all);
+    var ticks = niceTicks(lo, hi, 4), top = ticks[ticks.length - 1], bottom = ticks[0];
+    var X = function (m) { return M.l + pw * m / r.months; };
+    var Y = function (v) { return M.t + ph * (1 - (v - bottom) / (top - bottom)); };
+
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true">';
+    ticks.forEach(function (t) {
+      var y = Y(t);
+      s += '<line class="grid" x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + y + '" y2="' + y + '"/>';
+      s += '<text class="axis-text" text-anchor="end" x="' + (M.l - 8) + '" y="' + (y + 4) + '">' + compact(t) + '</text>';
+    });
+    var ystep = W < 520 ? 10 : 5;
+    for (var yr = 0; yr <= YEARS; yr += ystep) {
+      s += '<text class="axis-text" text-anchor="middle" x="' + X(yr * 12) + '" y="' + (H - 8) + '">'
+        + (yr === 0 ? 'Now' : 'Yr ' + yr) + '</text>';
+    }
+    var p1 = '', p2 = '';
+    for (var i = 0; i < r.buyNet.length; i++) {
+      p1 += (i ? 'L' : 'M') + X(i + 1).toFixed(1) + ' ' + Y(r.buyNet[i]).toFixed(1);
+      p2 += (i ? 'L' : 'M') + X(i + 1).toFixed(1) + ' ' + Y(r.rentNet[i]).toFixed(1);
+    }
+    if (r.breakeven) {
+      var bx = X(r.breakeven);
+      s += '<line class="cross" x1="' + bx + '" x2="' + bx + '" y1="' + M.t + '" y2="' + (M.t + ph) + '" stroke-dasharray="4 4"/>';
+      s += '<text class="dlabel" text-anchor="' + (r.breakeven > r.months * 0.75 ? 'end' : 'start') + '" x="'
+        + (r.breakeven > r.months * 0.75 ? bx - 8 : bx + 8) + '" y="' + (M.t + 12) + '">they cross</text>';
+    }
+    s += '<path class="ln ln1" d="' + p1 + '"/><path class="ln ln2" d="' + p2 + '"/>';
+    s += '<g id="rvHov" visibility="hidden"><line class="cross" id="rvHx" y1="' + M.t + '" y2="' + (M.t + ph) + '"/>'
+      + '<circle class="dot1" id="rvH1" r="4.5"/><circle class="dot2" id="rvH2" r="4.5"/></g>';
+    s += '</svg>';
+    wrap.insertAdjacentHTML('afterbegin', s);
+    G = { X: X, Y: Y, M: M, W: W, pw: pw, r: r };
+    if (hoverIdx != null && document.activeElement === wrap) showAt(hoverIdx);
+  }
+  function showAt(m) {
+    if (!G) return;
+    var r = G.r, end = r.buyNet.length;
+    m = clamp(Math.round(m), 1, end); hoverIdx = m;
+    var x = G.X(m), tip = $('rvTip'), wrap = $('rvChart');
+    var bn = r.buyNet[m - 1], rn = r.rentNet[m - 1];
+    document.getElementById('rvHov').setAttribute('visibility', 'visible');
+    var hx = document.getElementById('rvHx'); hx.setAttribute('x1', x); hx.setAttribute('x2', x);
+    var h1 = document.getElementById('rvH1'), h2 = document.getElementById('rvH2');
+    h1.setAttribute('cx', x); h1.setAttribute('cy', G.Y(bn));
+    h2.setAttribute('cx', x); h2.setAttribute('cy', G.Y(rn));
+    tip.textContent = '';
+    var years = Math.floor(m / 12), mo = m % 12;
+    tip.appendChild(el('div', 'th', years ? years + (years === 1 ? ' year' : ' years') + (mo ? ' ' + mo + ' mo' : '') : m + ' months'));
+    [['k1', bn, 'having bought'], ['k2', rn, 'having rented']].forEach(function (row) {
+      var d = el('div', 'tr');
+      d.appendChild(el('i', 'lk ' + row[0]));
+      d.appendChild(el('b', null, money(row[1])));
+      d.appendChild(el('span', 'n', row[2]));
+      tip.appendChild(d);
+    });
+    var gap = bn - rn, g = el('div', 'tr');
+    g.appendChild(el('b', null, (gap >= 0 ? '+' : '−') + money(Math.abs(gap)).replace('−', '')));
+    g.appendChild(el('span', 'n', gap >= 0 ? 'ahead by buying' : 'ahead by renting'));
+    tip.appendChild(g);
+    tip.hidden = false;
+    var scale = wrap.clientWidth / G.W, px = x * scale, tw = tip.offsetWidth, left = px + 14;
+    if (left + tw > wrap.clientWidth) left = px - tw - 14;
+    tip.style.transform = 'translate(' + Math.max(0, left) + 'px,' + (G.M.t + 4) + 'px)';
+  }
+  function hideHover() {
+    $('rvTip').hidden = true;
+    var h = document.getElementById('rvHov'); if (h) h.setAttribute('visibility', 'hidden');
+  }
+
+  /* ---------- events ---------- */
+  function bind() {
+    var form = $('rvForm');
+    form.addEventListener('input', function (e) {
+      var id = e.target.id;
+      if (id === 'rvDownPct') syncDown('pct');
+      else if (id === 'rvDownAmt') syncDown('amt');
+      else if (id === 'rvPrice') syncDown();
+      render();
+    });
+    form.addEventListener('change', render);
+    form.addEventListener('focusout', function (e) {
+      var t = e.target;
+      if (t && t.matches && t.matches('[data-money]')) {
+        var v = parseNum(t.value); t.value = v ? group(Math.round(v)) : '0';
+      }
+    });
+    $('rvReset').addEventListener('click', function () {
+      try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+      writeForm(startingValues()); render();
+    });
+    var wrap = $('rvChart');
+    wrap.addEventListener('pointermove', function (e) {
+      if (!G) return;
+      var rect = wrap.getBoundingClientRect(), x = (e.clientX - rect.left) * (G.W / rect.width);
+      showAt((x - G.M.l) / G.pw * G.r.months);
+    });
+    wrap.addEventListener('pointerleave', function () { if (document.activeElement !== wrap) hideHover(); });
+    wrap.addEventListener('focus', function () { if (G) showAt(hoverIdx == null ? 120 : hoverIdx); });
+    wrap.addEventListener('blur', hideHover);
+    wrap.addEventListener('keydown', function (e) {
+      if (!G) return;
+      var cur = hoverIdx == null ? 120 : hoverIdx;
+      if (e.key === 'ArrowRight') showAt(cur + 12);
+      else if (e.key === 'ArrowLeft') showAt(cur - 12);
+      else if (e.key === 'Home') showAt(1);
+      else if (e.key === 'End') showAt(G.r.buyNet.length);
+      else return;
+      e.preventDefault();
+    });
+    if (window.ResizeObserver) {
+      var lastW = 0;
+      new ResizeObserver(function () {
+        var w = Math.round(wrap.clientWidth);
+        if (w !== lastW) { lastW = w; drawChart(); }
+      }).observe(wrap);
+    } else window.addEventListener('resize', drawChart);
+  }
+
+  writeForm(startingValues());
+  syncDown();
+  bind();
+  render();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
+})();
+</script>

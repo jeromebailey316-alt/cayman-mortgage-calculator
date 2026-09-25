@@ -82,8 +82,14 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, page.render_home(body).encode(), "text/html; charset=utf-8")
         elif path in ("/calculator", "/calculator/", "/calculator/index.html"):
             self._send(200, page.render_app(current_data()).encode(), "text/html; charset=utf-8")
+        elif path in ("/rent-vs-buy", "/rent-vs-buy/", "/rent-vs-buy/index.html"):
+            self._send(200, page.render_rent().encode(), "text/html; charset=utf-8")
+        elif path in ("/equity", "/equity/", "/equity/index.html"):
+            self._send(200, page.render_equity().encode(), "text/html; charset=utf-8")
         elif path == "/assets/app.css":
             self._send(200, page.CSS.read_bytes(), "text/css")
+        elif path == "/assets/core.js":
+            self._send(200, page.CORE.read_bytes(), "application/javascript")
         elif (STATIC / path.lstrip("/")).is_file() and ".." not in path:
             f = STATIC / path.lstrip("/")
             types = {".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",

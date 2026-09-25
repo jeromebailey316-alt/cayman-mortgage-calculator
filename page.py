@@ -12,10 +12,14 @@ ROOT = Path(__file__).resolve().parent
 WEB = ROOT / "web"
 APP_FRAGMENT = WEB / "index.html"
 HOME_FRAGMENT = WEB / "home.html"
+RENT_FRAGMENT = WEB / "rent.html"
+EQUITY_FRAGMENT = WEB / "equity.html"
 CSS = WEB / "app.css"
+CORE = WEB / "core.js"
 
 SITE_NAME = "Cayman Mortgage Calculator"
 CSS_HREF = "/assets/app.css"
+CORE_HREF = "/assets/core.js"
 
 PAGES = {
     "home": {
@@ -23,6 +27,19 @@ PAGES = {
         "title": f"{SITE_NAME} — stamp duty, closing costs and listings",
         "description": ("What buying in the Cayman Islands really costs: stamp duty, mortgage duty, Land Registry, "
                         "legal and bank fees, plus the homes and land for sale that fit your budget."),
+    },
+    "rent": {
+        "path": "rent-vs-buy/",
+        "title": f"Rent or buy in Cayman — {SITE_NAME}",
+        "description": ("Should you rent or buy in the Cayman Islands? Mortgage, strata, insurance, upkeep and stamp "
+                        "duty against rent and rent rises, with the year buying pulls ahead."),
+    },
+    "equity": {
+        "path": "equity/",
+        "title": f"Equity calculator — {SITE_NAME}",
+        "description": ("How much equity is in your Cayman property, and how much of it a bank would lend against — "
+                        "with the loan-to-value ratios Cayman lenders publish for Caymanians, residents and "
+                        "non-residents."),
     },
     "calculator": {
         "path": "calculator/",
@@ -91,8 +108,9 @@ def nav(active: str, root: str = "/") -> str:
         + link("home", "Home")
         + link("calculator", "Calculator")
         + f'<a href="{root}calculator/#listings">Listings</a>'
-        + '<a class="soon" aria-disabled="true">Rent vs buy</a>'
-        '</nav>'
+        + link("rent", "Rent vs buy")
+        + link("equity", "Equity")
+        + '</nav>'
         '<div class="site-tools">'
         '<button class="btn icon" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>'
         '</div>'
@@ -124,6 +142,7 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
         + css
+        + (f"<script>{CORE.read_text()}</script>" if inline_css else f'<script src="{CORE_HREF}"></script>')
         + f"<script>{THEME_JS}</script>"
         + "</head><body>"
     )
@@ -141,6 +160,14 @@ def render_app(data: dict | None, canonical: str = "", inline_css: bool = False,
 
 def render_home(body: str, canonical: str = "") -> str:
     return head("home", canonical) + body.replace("__NAV__", nav("home")) + TAIL
+
+
+def render_rent(canonical: str = "") -> str:
+    return head("rent", canonical) + RENT_FRAGMENT.read_text().replace("__NAV__", nav("rent")) + TAIL
+
+
+def render_equity(canonical: str = "") -> str:
+    return head("equity", canonical) + EQUITY_FRAGMENT.read_text().replace("__NAV__", nav("equity")) + TAIL
 
 
 # Kept so older calls (build.py) keep working.

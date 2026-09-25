@@ -118,6 +118,8 @@ images from other websites.
 ```
 web/index.html        the calculator page body (calculator + listings); data goes in the __LISTINGS_JSON__ slot
 web/home.html         the front page body; __STATS__, __FEATURED__ and __DISTRICTS__ are filled at build time
+web/rent.html         the rent-vs-buy page: its own model and chart
+web/core.js           duty rules, payment, amortisation and closing costs — shared by both calculators
 web/app.css           every page's styles
 page.py               shared head, header and nav; assembles a page from a body fragment
 home.py               renders the front page: statistics banner, featured listings, district table
@@ -141,6 +143,7 @@ Pages, and the links between them:
 ```
 /                     front page: statistics banner, featured listings, district table
 /calculator/          the calculator and the listings
+/rent-vs-buy/         renting against buying, with the break-even year
 /calculator/?price=725000&ptype=home     opens with that price (featured cards use this)
 /calculator/?district=West%20Bay         opens filtered to a district (district table uses this)
 /calculator/#saved=m421014,m419006       a shared shortlist

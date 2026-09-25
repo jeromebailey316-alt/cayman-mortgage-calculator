@@ -1,0 +1,488 @@
+<div class="wrap">
+  __NAV__
+
+  <header class="top">
+    <div class="top-row">
+      <h1 class="page-h1">Equity in your home</h1>
+      <div class="top-tools">
+        <a class="btn" href="/calculator/">Full calculator</a>
+        <button class="btn" id="eqReset" type="button">Reset</button>
+      </div>
+    </div>
+    <p class="top-intro">What your property is worth, less what you still owe, is your equity. How much of it a bank
+      will lend against depends on the loan-to-value ratio it will go to — and in Cayman that turns largely on
+      whether you are Caymanian, resident, or buying from overseas.</p>
+  </header>
+
+  <div class="app">
+    <form class="panel inputs" id="eqForm" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>Your property</legend>
+        <div class="field">
+          <label for="eqValue">What it is worth today</label>
+          <div class="control"><span class="affix">CI$</span><input id="eqValue" type="text" inputmode="decimal" data-money></div>
+          <p class="hint">A bank will lend against its own valuation, not an asking price or an estimate.</p>
+        </div>
+        <div class="field">
+          <label for="eqOwed">Still owed on the mortgage</label>
+          <div class="control"><span class="affix">CI$</span><input id="eqOwed" type="text" inputmode="decimal" data-money></div>
+          <p class="hint">Leave at zero if the property is owned outright.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>How much a bank may lend</legend>
+        <div class="field">
+          <label for="eqStatus">Your status</label>
+          <div class="control">
+            <select id="eqStatus">
+              <option value="caymanian">Caymanian or long-term resident</option>
+              <option value="resident">Resident (work permit or other)</option>
+              <option value="nonresident">Non-resident</option>
+            </select>
+          </div>
+          <p class="hint" id="eqStatusHint"></p>
+        </div>
+        <div class="field">
+          <label for="eqLtv">Loan-to-value the bank will go to</label>
+          <div class="control"><input id="eqLtv" type="text" inputmode="decimal"><span class="affix">%</span></div>
+          <div class="seg small" role="group" aria-label="Suggested loan-to-value ratios" style="margin-top:8px">
+            <button class="btn" type="button" data-ltv="90">90%</button>
+            <button class="btn" type="button" data-ltv="80">80%</button>
+            <button class="btn" type="button" data-ltv="70">70%</button>
+          </div>
+          <p class="hint">Edit it to match what your own bank has told you. The suggestions below the page explain
+            where these come from — and they are the ceiling, not an entitlement.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>If you borrow against it</legend>
+        <div class="row even">
+          <div class="field">
+            <label for="eqRate">Interest rate</label>
+            <div class="control"><input id="eqRate" type="text" inputmode="decimal"><span class="affix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="eqTerm">Term</label>
+            <div class="control"><input id="eqTerm" type="text" inputmode="numeric"><span class="affix">yrs</span></div>
+          </div>
+        </div>
+        <p class="hint">Releasing equity means a larger loan: a new charge, stamp duty on it, and a payment to make.</p>
+      </fieldset>
+
+      <details id="eqCosts">
+        <summary>Costs of releasing</summary>
+        <div class="body">
+          <div class="row even">
+            <div class="field">
+              <label for="eqBankPct">Bank fee</label>
+              <div class="control"><input id="eqBankPct" type="text" inputmode="decimal"><span class="affix">% of the new money</span></div>
+            </div>
+            <div class="field">
+              <label for="eqLegal">Legal fees</label>
+              <div class="control"><span class="affix">CI$</span><input id="eqLegal" type="text" inputmode="decimal" data-money></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="eqValuation">Valuation</label>
+            <div class="control"><span class="affix">CI$</span><input id="eqValuation" type="text" inputmode="decimal" data-money></div>
+          </div>
+          <p class="hint">Mortgage stamp duty is set by law: 1% of the sum secured up to CI$300,000, and 1.5% of the
+            whole sum above that. It is worked out on the new charge.</p>
+        </div>
+      </details>
+    </form>
+
+    <div class="results">
+      <section class="hero" aria-label="Your equity">
+        <div>
+          <p class="hero-label">Equity in the property</p>
+          <p class="hero-figure" id="eqEquity"></p>
+          <p class="hero-sub" id="eqEquitySub"></p>
+        </div>
+        <dl class="hero-break" id="eqBreak"></dl>
+      </section>
+
+      <section class="kpis" aria-label="Key figures">
+        <div class="kpi"><span class="k">Could be released</span><span class="v" id="eqRelease"></span><span class="s" id="eqReleaseS"></span></div>
+        <div class="kpi"><span class="k">Loan-to-value now</span><span class="v" id="eqLtvNow"></span><span class="s" id="eqLtvNowS"></span></div>
+        <div class="kpi"><span class="k">Payment on the new money</span><span class="v" id="eqPay"></span><span class="s" id="eqPayS"></span></div>
+        <div class="kpi"><span class="k">Costs to release</span><span class="v" id="eqCost"></span><span class="s" id="eqCostS"></span></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="eqSplitH">
+        <div class="card-head">
+          <h2 id="eqSplitH">How the value splits</h2>
+          <span class="aside" id="eqSplitAside"></span>
+        </div>
+        <div class="stack" id="eqStack" role="img" aria-label="The property's value split between the mortgage, equity you could borrow against, and equity above the lending limit"></div>
+        <div class="legend" id="eqLegend"></div>
+        <table class="costs">
+          <tbody id="eqRows"></tbody>
+          <tfoot><tr><th scope="row">What it is worth</th><td class="amt" id="eqTotal"></td></tr></tfoot>
+        </table>
+      </section>
+
+      <section class="panel card" aria-labelledby="eqExplainH">
+        <div class="card-head"><h2 id="eqExplainH">What this means</h2></div>
+        <div class="explain" id="eqExplain"></div>
+      </section>
+
+      <section class="panel card" aria-labelledby="eqCompareH">
+        <div class="card-head">
+          <h2 id="eqCompareH">What each status allows</h2>
+          <span class="aside">On this property, at these ratios</span>
+        </div>
+        <div class="scroll" style="max-height:none">
+          <table class="amort" id="eqCompare">
+            <thead><tr><th scope="col">Status</th><th scope="col">Suggested LTV</th><th scope="col">Could borrow</th><th scope="col">Could release</th></tr></thead>
+            <tbody id="eqCompareBody"></tbody>
+          </table>
+        </div>
+        <p class="hint">Banks set their own rules and will not always go to these ratios. A higher ratio also means a
+          larger loan, and the payment still has to pass the bank's affordability test.</p>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <div class="notes">
+      <div>
+        <h3>Where the suggested ratios come from</h3>
+        <ul>
+          <li><strong>Caymanians and long-term residents, up to 90%.</strong> Property Cayman's mortgage guide puts
+            primary-residence financing at 85–90%, with 10–15% down. Cayman National advertises a 95% home loan, and
+            Butterfield's own page states up to 85% on a residential mortgage — so 90% sits in the middle of what
+            local lenders publish, and a first-time Caymanian buyer may do better.</li>
+          <li><strong>Residents, up to 80%.</strong> Butterfield told Property Cayman its "lending policy is the same
+            for Caymanians, PR Status holders, RERC and work permit holders", so a resident may well be offered more
+            than 80% at some banks. It is set lower here because not every lender treats the two groups alike.</li>
+          <li><strong>Non-residents, up to 70%.</strong> ERA Cayman's non-resident guide says financing is available
+            "up to about 70 percent of the property value, for terms up to 20 years". Crighton Properties puts
+            non-resident deposits at 20–30%. Some banks are stricter still, at 65% or less.</li>
+          <li><strong>Other property types are lower.</strong> Butterfield publishes up to 70% on raw land and up to
+            65% on investment property, over shorter terms.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>Releasing equity is new borrowing. It carries mortgage stamp duty on the new charge, and the payment
+            must pass the bank's affordability test — roughly a third of gross income is the usual guide.</li>
+          <li>The bank lends against its own valuation. An estimate from a listing site or a neighbour's sale price
+            is not what the decision rests on.</li>
+          <li>Equity is not cash until you borrow against it or sell, and selling costs an agent's commission and
+            legal fees.</li>
+          <li>Rates here are usually the Cayman prime rate plus a margin, so a payment worked out today can rise.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://www.butterfieldgroup.com/en-ky/banking/personal-banking/borrowing/mortgages" target="_blank" rel="noopener">Butterfield Bank (Cayman): mortgages — up to 85% residential, 70% raw land, 65% investment</a></li>
+          <li><a href="https://www.propertycayman.com/blog/mortgages-in-cayman/" target="_blank" rel="noopener">Property Cayman: mortgages in Cayman — 85–90% on a primary residence, 10–15% down</a></li>
+          <li><a href="https://www.propertycayman.com/blog/bank-financing-faqs/" target="_blank" rel="noopener">Property Cayman: bank financing FAQs — same policy for Caymanians, PR, RERC and work permit holders; higher deposit for non-residents</a></li>
+          <li><a href="https://www.caymannational.com/personal/lending/mortgages" target="_blank" rel="noopener">Cayman National: mortgages — 95% home loan, terms up to 40 years</a></li>
+          <li><a href="https://www.eracayman.com/2025/10/29/buy-property-non-resident/" target="_blank" rel="noopener">ERA Cayman: buying as a non-resident — about 70% of value, terms up to 20 years</a></li>
+          <li><a href="https://www.crightonproperties.com/blog/buying-cayman-property-guide" target="_blank" rel="noopener">Crighton Properties: buying in Cayman — 20–30% down for non-resident buyers</a></li>
+          <li><a href="https://www.caymanlandinfo.ky/services/land-registry/registry-fees" target="_blank" rel="noopener">Lands &amp; Survey: registry fees</a></li>
+        </ul>
+        <p class="hint" id="eqChecked"></p>
+      </div>
+    </div>
+    <p class="disclaimer">An estimating tool, not financial or legal advice. The ratios above are what lenders
+      publish or have told the property press; your own bank decides what it will lend you, on its own valuation and
+      affordability rules. Confirm everything with your lender and attorney before you commit.</p>
+  </footer>
+</div>
+
+<script>
+if (typeof document !== 'undefined') (function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = 'caymanMortgage.equity.v1', CALC_STORE = 'caymanMortgage.v1';
+
+  // The suggested ceilings, and what backs each one. Sources are listed on the page.
+  var STATUS = {
+    caymanian: { ltv: 90, label: 'Caymanian or long-term resident',
+      hint: 'Local lenders publish 85–90% on a primary residence, and Cayman National advertises a 95% loan. First-time Caymanian buyers often do best.' },
+    resident: { ltv: 80, label: 'Resident (work permit or other)',
+      hint: 'Some banks apply the same policy as for Caymanians; others ask for a larger deposit. 80% is the cautious middle.' },
+    nonresident: { ltv: 70, label: 'Non-resident',
+      hint: 'Financing is generally available up to about 70% of value over shorter terms, and some banks stop at 65%.' }
+  };
+  var DEFAULTS = {
+    value: 900000, owed: 520000, status: 'caymanian', ltv: 90,
+    rate: 7.25, term: 20, bankPct: 1, legal: 1200, valuation: 700
+  };
+  var S = {}, last = null;
+
+  /* ---------- helpers ---------- */
+  function parseNum(str) {
+    var s = String(str == null ? '' : str).replace(/[, $]|CI|US|KYD|USD/gi, '').trim();
+    var m = /^(-?[\d.]+)\s*([kKmM])?$/.exec(s);
+    if (!m) return 0;
+    var v = parseFloat(m[1]); if (!isFinite(v)) return 0;
+    if (m[2]) v *= /k/i.test(m[2]) ? 1e3 : 1e6;
+    return v;
+  }
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function group(v, dp) { return v.toLocaleString('en-US', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 }); }
+  function trimNum(v, dp) { return String(+v.toFixed(dp)); }
+  function money(v, dp) { return (v < 0 ? '\u2212CI$' : 'CI$') + group(Math.abs(v), dp || 0); }
+  function pct(x, dp) { return trimNum(x * 100, dp == null ? 1 : dp) + '%'; }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- state ---------- */
+  function startingValues() {
+    var st = {};
+    Object.keys(DEFAULTS).forEach(function (k) { st[k] = DEFAULTS[k]; });
+    try {   // borrow what they last used in the calculator as a starting point
+      var c = JSON.parse(localStorage.getItem(CALC_STORE) || 'null');
+      if (c && typeof c === 'object') {
+        if (typeof c.price === 'number' && c.price > 0) {
+          st.value = c.price;
+          st.owed = Math.round(c.price * (100 - (c.downPct || 15)) / 100);
+        }
+        if (typeof c.rate === 'number' && c.rate > 0) st.rate = c.rate;
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      var own = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (own && typeof own === 'object') Object.keys(DEFAULTS).forEach(function (k) {
+        if (typeof own[k] === typeof DEFAULTS[k]) st[k] = own[k];
+      });
+    } catch (e) { /* ignore */ }
+    return st;
+  }
+  function writeForm(st) {
+    $('eqValue').value = group(st.value);
+    $('eqOwed').value = group(st.owed);
+    $('eqStatus').value = st.status;
+    $('eqLtv').value = trimNum(st.ltv, 2);
+    $('eqRate').value = trimNum(st.rate, 3);
+    $('eqTerm').value = String(st.term);
+    $('eqBankPct').value = trimNum(st.bankPct, 2);
+    $('eqLegal').value = group(st.legal);
+    $('eqValuation').value = group(st.valuation);
+  }
+  function readForm() {
+    S.value = Math.max(0, parseNum($('eqValue').value));
+    S.owed = Math.max(0, parseNum($('eqOwed').value));
+    S.status = $('eqStatus').value;
+    S.ltv = clamp(parseNum($('eqLtv').value), 0, 100);
+    S.rate = clamp(parseNum($('eqRate').value), 0, 30);
+    S.term = clamp(Math.round(parseNum($('eqTerm').value)) || 1, 1, 40);
+    S.bankPct = clamp(parseNum($('eqBankPct').value), 0, 10);
+    S.legal = Math.max(0, parseNum($('eqLegal').value));
+    S.valuation = Math.max(0, parseNum($('eqValuation').value));
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* ignore */ } }
+
+  /* ---------- the sums ---------- */
+  function model() {
+    var value = S.value, owed = Math.min(S.owed, value * 10);
+    var equity = value - owed;
+    var ltvNow = value > 0 ? owed / value : 0;
+    var maxLoan = value * S.ltv / 100;
+    var release = Math.max(0, maxLoan - owed);
+    var lockedAboveCap = Math.max(0, value - Math.max(owed, maxLoan));
+    var duty = Core.mortgageDuty(release).amount;
+    var bank = release * S.bankPct / 100;
+    var costs = release > 0 ? duty + bank + S.legal + S.valuation : 0;
+    var pmt = Core.payment(release, S.rate / 100, S.term * 12);
+    // how far values could fall before the loan hits the cap
+    var floorValue = S.ltv > 0 ? owed / (S.ltv / 100) : 0;
+    return { value: value, owed: owed, equity: equity, ltvNow: ltvNow, maxLoan: maxLoan,
+             release: release, locked: lockedAboveCap, duty: duty, bank: bank, costs: costs,
+             pmt: pmt, floorValue: floorValue, netCash: Math.max(0, release - costs) };
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    readForm();
+    var r = last = model();
+    var st = STATUS[S.status];
+
+    $('eqStatusHint').textContent = st.hint;
+    var suggested = st.ltv;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ltv]'), function (b) {
+      b.setAttribute('aria-pressed', +b.dataset.ltv === S.ltv ? 'true' : 'false');
+      b.classList.toggle('primary', +b.dataset.ltv === S.ltv);
+    });
+
+    $('eqEquity').textContent = money(r.equity);
+    $('eqEquitySub').textContent = r.value > 0
+      ? pct(r.equity / r.value) + ' of what it is worth' + (r.equity < 0 ? ' — the loan is larger than the value' : '')
+      : 'Enter what the property is worth';
+
+    var hb = $('eqBreak'); hb.textContent = '';
+    hb.appendChild(dlRow('What it is worth', money(r.value)));
+    hb.appendChild(dlRow('Still owed', money(r.owed)));
+    hb.appendChild(dlRow('Bank would lend up to', money(r.maxLoan)));
+    hb.appendChild(dlRow('Equity', money(r.equity), 'total'));
+
+    $('eqRelease').textContent = money(r.release);
+    $('eqReleaseS').textContent = r.release > 0
+      ? 'at ' + trimNum(S.ltv, 2) + '% loan-to-value' + (S.ltv !== suggested ? ' (you changed this from ' + suggested + '%)' : '')
+      : 'Already at or above ' + trimNum(S.ltv, 2) + '% loan-to-value';
+    $('eqLtvNow').textContent = pct(r.ltvNow);
+    $('eqLtvNowS').textContent = r.ltvNow > 0
+      ? money(r.owed) + ' owed against ' + money(r.value)
+      : 'Owned outright';
+    $('eqPay').textContent = r.release > 0 ? money(r.pmt) : '—';
+    $('eqPayS').textContent = r.release > 0
+      ? 'a month on ' + money(r.release) + ' over ' + S.term + ' yrs at ' + trimNum(S.rate, 3) + '%'
+      : 'Nothing to release';
+    $('eqCost').textContent = r.costs > 0 ? money(r.costs) : '—';
+    $('eqCostS').textContent = r.costs > 0
+      ? money(r.duty) + ' mortgage duty, ' + money(r.bank + r.legal + r.valuation) + ' fees'
+      : 'No new borrowing';
+
+    renderSplit(r); renderExplain(r); renderCompare(r);
+    save();
+  }
+  function dlRow(k, v, cls) {
+    var d = el('div', cls); d.appendChild(el('dt', null, k)); d.appendChild(el('dd', null, v)); return d;
+  }
+  function callout(kind, text) {
+    var d = el('div', 'callout ' + kind);
+    d.appendChild(el('span', 'ico', kind === 'good' ? '✓' : '!'));
+    d.appendChild(el('span', null, text)); return d;
+  }
+
+  var PARTS = [
+    { key: 'owed', cls: 'c1', label: 'Still owed on the mortgage', note: 'The bank’s share of the value' },
+    { key: 'release', cls: 'c3', label: 'Equity you could borrow against', note: 'Up to the loan-to-value limit' },
+    { key: 'locked', cls: 'c2', label: 'Equity above the lending limit', note: 'Yours, but not lendable at this ratio' }
+  ];
+  function renderSplit(r) {
+    var stack = $('eqStack'), legend = $('eqLegend'), rows = $('eqRows');
+    stack.textContent = ''; legend.textContent = ''; rows.textContent = '';
+    var total = Math.max(r.value, 1);
+    PARTS.forEach(function (p) {
+      var v = Math.max(0, r[p.key]);
+      if (v > 0) {
+        var seg = el('div', 'segm ' + p.cls);
+        seg.style.flex = (v / total) + ' 1 0';
+        seg.setAttribute('aria-label', p.label + ' ' + money(v));
+        stack.appendChild(seg);
+      }
+      var item = el('span', 'item');
+      item.appendChild(el('i', 'sw ' + p.cls));
+      item.appendChild(document.createTextNode(p.label + ' '));
+      item.appendChild(el('b', null, money(Math.max(0, v))));
+      legend.appendChild(item);
+
+      var tr = el('tr'), td1 = el('td'), lbl = el('div', 'lbl'), txt = el('div');
+      lbl.appendChild(el('i', 'sw ' + p.cls));
+      txt.appendChild(el('strong', null, p.label));
+      txt.appendChild(el('span', 'note', p.note));
+      lbl.appendChild(txt); td1.appendChild(lbl); tr.appendChild(td1);
+      tr.appendChild(el('td', 'amt', money(Math.max(0, v))));
+      rows.appendChild(tr);
+    });
+    $('eqTotal').textContent = money(r.value);
+    $('eqSplitAside').textContent = r.value > 0
+      ? pct(r.equity / r.value) + ' equity, ' + pct(r.ltvNow) + ' still owed' : '';
+  }
+
+  function renderExplain(r) {
+    var box = $('eqExplain'); box.textContent = '';
+    var st = STATUS[S.status];
+
+    var p1 = el('p');
+    p1.appendChild(el('strong', null, 'You hold ' + money(r.equity) + ' of equity. '));
+    p1.appendChild(document.createTextNode(
+      'The property is worth ' + money(r.value) + ' and ' + money(r.owed) + ' is still owed, which puts you at '
+      + pct(r.ltvNow) + ' loan-to-value. At ' + trimNum(S.ltv, 2) + '%, a bank would lend up to '
+      + money(r.maxLoan) + ' against it.'));
+    box.appendChild(p1);
+
+    if (r.release > 0) {
+      var p2 = el('p');
+      p2.appendChild(el('strong', null, money(r.release) + ' of that could be released. '));
+      p2.appendChild(document.createTextNode(
+        'Doing so costs about ' + money(r.costs) + ' — ' + money(r.duty) + ' of mortgage stamp duty on the new charge, '
+        + 'plus bank, legal and valuation fees — leaving roughly ' + money(r.netCash) + ' in hand, and adding '
+        + money(r.pmt) + ' a month for ' + S.term + ' years.'));
+      box.appendChild(p2);
+    } else {
+      box.appendChild(el('p', null, 'At ' + trimNum(S.ltv, 2) + '% loan-to-value there is nothing to release: the '
+        + 'mortgage is already at or above what a bank would lend against this value.'));
+    }
+
+    if (r.equity < 0) {
+      box.appendChild(callout('crit', 'The mortgage is larger than the property is worth. Selling would not clear the '
+        + 'loan, and no lender will release equity that is not there.'));
+    } else if (r.ltvNow > 0 && r.floorValue > 0 && r.floorValue < r.value) {
+      box.appendChild(callout('warn', 'Values would have to fall to ' + money(r.floorValue) + ' — '
+        + pct((r.value - r.floorValue) / r.value, 0) + ' below today — before the loan reached '
+        + trimNum(S.ltv, 2) + '% of value.'));
+    }
+    if (r.release > 0) {
+      box.appendChild(callout('good', 'Mortgage duty is charged on the new charge: 1% up to CI$300,000, 1.5% on the '
+        + 'whole sum above it. Releasing ' + money(r.release) + ' means ' + money(r.duty) + '.'));
+    }
+    box.appendChild(el('p', 'hint', st.label + ': ' + st.hint + ' The bank still has to be satisfied you can afford '
+      + 'the larger payment, whatever the ratio allows.'));
+  }
+
+  function renderCompare(r) {
+    var body = $('eqCompareBody'); body.textContent = '';
+    Object.keys(STATUS).forEach(function (key) {
+      var s = STATUS[key], maxLoan = r.value * s.ltv / 100, release = Math.max(0, maxLoan - r.owed);
+      var tr = el('tr');
+      var th = el('th', null, s.label); th.scope = 'row'; th.style.textAlign = 'left'; th.style.fontWeight = '600';
+      tr.appendChild(th);
+      tr.appendChild(el('td', null, s.ltv + '%'));
+      tr.appendChild(el('td', null, money(maxLoan)));
+      tr.appendChild(el('td', null, money(release)));
+      if (key === S.status) {
+        tr.style.background = 'var(--accent-soft)';
+        tr.title = 'Your status';
+      }
+      body.appendChild(tr);
+    });
+  }
+
+  /* ---------- events ---------- */
+  function bind() {
+    var form = $('eqForm');
+    form.addEventListener('input', render);
+    form.addEventListener('change', function (e) {
+      if (e.target.id === 'eqStatus') {
+        $('eqLtv').value = trimNum(STATUS[$('eqStatus').value].ltv, 2);   // suggestion follows the status
+      }
+      render();
+    });
+    form.addEventListener('focusout', function (e) {
+      var t = e.target;
+      if (t && t.matches && t.matches('[data-money]')) {
+        var v = parseNum(t.value); t.value = v ? group(Math.round(v)) : '0';
+      }
+    });
+    form.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-ltv]');
+      if (!b) return;
+      $('eqLtv').value = b.dataset.ltv;
+      render();
+    });
+    $('eqReset').addEventListener('click', function () {
+      try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+      writeForm(startingValues()); render();
+    });
+  }
+
+  $('eqChecked').textContent = 'Lender figures checked September 2026. Banks change their criteria; ask yours.';
+  writeForm(startingValues());
+  bind();
+  render();
+})();
+</script>
