@@ -173,15 +173,20 @@ def json_ld(page: str) -> str:
     text — Google requires the two to match."""
     site = {"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": SITE_URL + "/"}
     blocks = [site]
-    if page == "calculator":
+    APP_NAMES = {
+        "calculator": "Cayman mortgage and stamp duty calculator",
+        "equity": "Cayman home equity calculator",
+        "rent": "Cayman rent versus buy calculator",
+    }
+    if page in APP_NAMES:
         blocks.append({
             "@context": "https://schema.org", "@type": "WebApplication",
-            "name": "Cayman mortgage and stamp duty calculator",
-            "url": f"{SITE_URL}/calculator/",
+            "name": APP_NAMES[page],
+            "url": f"{SITE_URL}/{PAGES[page]['path']}",
             "applicationCategory": "FinanceApplication",
             "operatingSystem": "Any",
             "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KYD"},
-            "description": PAGES["calculator"]["description"],
+            "description": PAGES[page]["description"],
         })
     if page == "home":
         blocks.append({
