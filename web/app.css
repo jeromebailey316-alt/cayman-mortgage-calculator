@@ -1,4 +1,8 @@
 :root{
+  /* Native widgets — the open list of a <select>, scrollbars, date pickers — are drawn
+     by the browser from color-scheme, not from our tokens. Set it with every theme so
+     a dropdown matches the site rather than the operating system. */
+  color-scheme:light;
   --bg:#f5f3ee; --surface:#ffffff; --surface-2:#eceae4;
   --ink:#0e2a47; --ink-2:#4a5868; --ink-3:#71808f;
   --line:#ded9d0; --line-strong:#c2bcb1;
@@ -15,6 +19,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
+    color-scheme:dark;
     --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
     --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
     --line:#293947; --line-strong:#3c5062;
@@ -27,7 +32,9 @@
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.25);
   }
 }
+:root[data-theme="light"]{color-scheme:light}
 :root[data-theme="dark"]{
+  color-scheme:dark;
   --bg:#0b141b; --surface:#15212b; --surface-2:#1d2c38;
   --ink:#eef3f6; --ink-2:#b4c1cb; --ink-3:#8797a3;
   --line:#293947; --line-strong:#3c5062;
@@ -476,3 +483,6 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .faq-item[open] summary::after{content:"\2212"}
 .faq-item summary:hover{background:var(--surface-2)}
 .faq-item p{padding:0 18px 16px;color:var(--ink-2);font-size:14.5px;line-height:1.55;max-width:75ch}
+
+/* Firefox and Chromium honour these on the option list; Safari uses color-scheme only */
+.control select option,.lx-bar select option{background:var(--surface);color:var(--ink)}
