@@ -28,6 +28,16 @@
           <div class="control"><span class="affix">CI$</span><input id="eqOwed" type="text" inputmode="decimal" data-money></div>
           <p class="hint">Leave at zero if the property is owned outright.</p>
         </div>
+        <div class="row even" id="eqExistingRow">
+          <div class="field">
+            <label for="eqOldRate">Rate you pay now</label>
+            <div class="control"><input id="eqOldRate" type="text" inputmode="decimal"><span class="affix">%</span></div>
+          </div>
+          <div class="field">
+            <label for="eqOldYears">Years left on it</label>
+            <div class="control"><input id="eqOldYears" type="text" inputmode="numeric"><span class="affix">yrs</span></div>
+          </div>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -57,7 +67,24 @@
       </fieldset>
 
       <fieldset>
-        <legend>If you borrow against it</legend>
+        <legend>How you would borrow</legend>
+        <div class="field">
+          <span class="lab" id="eqMode-lab">Route</span>
+          <div class="seg" role="radiogroup" aria-labelledby="eqMode-lab">
+            <input type="radio" name="eqMode" id="eqMode-add" value="add" checked><label for="eqMode-add">Borrow more alongside</label>
+            <input type="radio" name="eqMode" id="eqMode-refi" value="refi"><label for="eqMode-refi">Refinance it all</label>
+          </div>
+          <p class="hint" id="eqModeHint"></p>
+        </div>
+        <div class="field">
+          <label for="eqWant">How much you want to release</label>
+          <div class="control"><span class="affix">CI$</span><input id="eqWant" type="text" inputmode="decimal" data-money placeholder="As much as possible"></div>
+          <p class="hint">Leave empty to take the most the loan-to-value allows.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>The new borrowing</legend>
         <div class="row even">
           <div class="field">
             <label for="eqRate">Interest rate</label>
@@ -214,7 +241,16 @@ if (typeof document !== 'undefined') (function () {
   };
   var DEFAULTS = {
     value: 900000, owed: 520000, status: 'caymanian', ltv: 90,
-    rate: 7.75, term: 20, bankPct: 1, legal: 1200, valuation: 700
+    rate: 7.75, term: 20, bankPct: 1, legal: 1200, valuation: 700,
+    oldRate: 7.25, oldYears: 18, mode: 'add', want: 0
+  };
+  var MODE_HINT = {
+    add: 'A second charge alongside the mortgage you already have. The existing loan and its rate are left '
+       + 'alone, and duty is worked out on the new total secured — crossing CI$300,000 lifts the whole amount '
+       + 'to 1.5%, so the original charge is upstamped.',
+    refi: 'One new mortgage replacing the old one, for the balance plus the cash you take out. The whole sum '
+        + 'is stamped afresh, and the rate on your existing balance changes to the new rate — which can cost '
+        + 'or save you a great deal depending on the rate you hold now.'
   };
   var S = {}, last = null;
 
@@ -271,6 +307,11 @@ if (typeof document !== 'undefined') (function () {
     $('eqBankPct').value = trimNum(st.bankPct, 2);
     $('eqLegal').value = group(st.legal);
     $('eqValuation').value = group(st.valuation);
+    $('eqOldRate').value = trimNum(st.oldRate, 3);
+    $('eqOldYears').value = String(st.oldYears);
+    $('eqWant').value = st.want ? group(st.want) : '';
+    var m = document.querySelector('input[name="eqMode"][value="' + (st.mode || 'add') + '"]');
+    if (m) m.checked = true;
   }
   function readForm() {
     S.value = Math.max(0, parseNum($('eqValue').value));
@@ -282,6 +323,12 @@ if (typeof document !== 'undefined') (function () {
     S.bankPct = clamp(parseNum($('eqBankPct').value), 0, 10);
     S.legal = Math.max(0, parseNum($('eqLegal').value));
     S.valuation = Math.max(0, parseNum($('eqValuation').value));
+    S.oldRate = clamp(parseNum($('eqOldRate').value), 0, 30);
+    S.oldYears = clamp(Math.round(parseNum($('eqOldYears').value)) || 1, 1, 40);
+    S.want = Math.max(0, parseNum($('eqWant').value));
+    var m = document.querySelector('input[name="eqMode"]:checked');
+    S.mode = m ? m.value : 'add';
+    $('eqExistingRow').hidden = !(S.owed > 0);
   }
   function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* ignore */ } }
 
@@ -291,19 +338,34 @@ if (typeof document !== 'undefined') (function () {
     var equity = value - owed;
     var ltvNow = value > 0 ? owed / value : 0;
     var maxLoan = value * S.ltv / 100;
-    var release = Math.max(0, maxLoan - owed);
+    var capacity = Math.max(0, maxLoan - owed);
+    // take what they asked for, or everything the ratio allows
+    var release = S.want > 0 ? Math.min(S.want, capacity) : capacity;
     var lockedAboveCap = Math.max(0, value - Math.max(owed, maxLoan));
-    var duty = Core.mortgageDuty(release).amount;
-    var bank = release * S.bankPct / 100;
+
+    var refi = S.mode === 'refi';
+    var newCharge = refi ? owed + release : release;      // what the new charge secures
+    // Borrowing alongside: the rate follows the total secured and the old charge is
+    // upstamped. Refinancing: one new charge, stamped on the whole sum.
+    var dutyCalc = refi ? Core.mortgageDuty(newCharge) : Core.furtherChargeDuty(owed, release);
+    var duty = dutyCalc.amount;
+    var bank = (refi ? newCharge : release) * S.bankPct / 100;
     var costs = release > 0 ? duty + bank + S.legal + S.valuation : 0;
-    var pmt = Core.payment(release, S.rate / 100, S.term * 12);
-    // how far values could fall before the loan hits the cap
+
+    var oldPmt = owed > 0 ? Core.payment(owed, S.oldRate / 100, S.oldYears * 12) : 0;
+    var newPmt = refi
+      ? Core.payment(newCharge, S.rate / 100, S.term * 12)
+      : Core.payment(release, S.rate / 100, S.term * 12);
+    var totalPmt = refi ? newPmt : oldPmt + newPmt;
     var floorValue = S.ltv > 0 ? owed / (S.ltv / 100) : 0;
     return { value: value, owed: owed, equity: equity, ltvNow: ltvNow, maxLoan: maxLoan,
-             release: release, locked: lockedAboveCap, duty: duty, bank: bank,
+             capacity: capacity, release: release, locked: lockedAboveCap,
+             refi: refi, newCharge: newCharge, dutyCalc: dutyCalc, duty: duty, bank: bank,
              legal: release > 0 ? S.legal : 0, valuation: release > 0 ? S.valuation : 0,
              fees: release > 0 ? bank + S.legal + S.valuation : 0,
-             costs: costs, pmt: pmt, floorValue: floorValue, netCash: Math.max(0, release - costs) };
+             costs: costs, oldPmt: oldPmt, newPmt: newPmt, totalPmt: totalPmt,
+             pmtChange: totalPmt - oldPmt, pmt: newPmt,
+             floorValue: floorValue, netCash: Math.max(0, release - costs) };
   }
 
   /* ---------- render ---------- */
@@ -338,14 +400,19 @@ if (typeof document !== 'undefined') (function () {
     $('eqLtvNowS').textContent = r.ltvNow > 0
       ? money(r.owed) + ' owed against ' + money(r.value)
       : 'Owned outright';
-    $('eqPay').textContent = r.release > 0 ? money(r.pmt) : '—';
-    $('eqPayS').textContent = r.release > 0
-      ? 'a month on ' + money(r.release) + ' over ' + S.term + ' yrs at ' + trimNum(S.rate, 3) + '%'
-      : 'Nothing to release';
+    $('eqPay').textContent = r.release > 0 ? money(r.totalPmt) : money(r.oldPmt);
+    $('eqPayS').textContent = r.release <= 0 ? 'What you pay now'
+      : (r.refi
+          ? 'one mortgage of ' + money(r.newCharge) + ' at ' + trimNum(S.rate, 3) + '% over ' + S.term + ' yrs'
+          : money(r.oldPmt) + ' as now, plus ' + money(r.newPmt) + ' on the new borrowing')
+        + ' — ' + (r.pmtChange >= 0 ? money(r.pmtChange) + ' a month more than today'
+                                    : money(-r.pmtChange) + ' a month less than today');
     $('eqCost').textContent = r.costs > 0 ? money(r.costs) : '—';
     $('eqCostS').textContent = r.costs > 0
       ? money(r.duty) + ' mortgage duty, ' + money(r.fees) + ' fees'
+        + (r.dutyCalc.upstamped ? ' (the existing charge is upstamped)' : '')
       : 'No new borrowing';
+    $('eqModeHint').textContent = MODE_HINT[S.mode];
 
     renderSplit(r); renderExplain(r); renderCompare(r);
     save();
@@ -409,12 +476,26 @@ if (typeof document !== 'undefined') (function () {
 
     if (r.release > 0) {
       var p2 = el('p');
-      p2.appendChild(el('strong', null, money(r.release) + ' of that could be released. '));
+      p2.appendChild(el('strong', null, money(r.release) + ' released'
+        + (S.want > 0 && r.capacity > r.release ? ' of ' + money(r.capacity) + ' available' : '') + '. '));
       p2.appendChild(document.createTextNode(
-        'Doing so costs about ' + money(r.costs) + ' — ' + money(r.duty) + ' of mortgage stamp duty on the new charge, '
-        + 'plus ' + money(r.fees) + ' of bank, legal and valuation fees — leaving roughly ' + money(r.netCash) + ' in hand, and adding '
-        + money(r.pmt) + ' a month for ' + S.term + ' years.'));
+        'It costs about ' + money(r.costs) + ' — ' + money(r.duty) + ' of mortgage duty and ' + money(r.fees)
+        + ' of bank, legal and valuation fees — leaving roughly ' + money(r.netCash) + ' in hand. '
+        + (r.refi
+            ? 'Refinancing replaces your ' + money(r.oldPmt) + ' payment with ' + money(r.newPmt) + ' a month.'
+            : 'The new borrowing adds ' + money(r.newPmt) + ' a month on top of the ' + money(r.oldPmt)
+              + ' you already pay.')));
       box.appendChild(p2);
+      if (r.refi && r.owed > 0 && S.rate > S.oldRate) {
+        box.appendChild(callout('warn', 'Refinancing moves your existing ' + money(r.owed) + ' from '
+          + trimNum(S.oldRate, 3) + '% to ' + trimNum(S.rate, 3) + '%. Borrowing alongside would leave that '
+          + 'balance on the rate you hold now.'));
+      }
+      if (!r.refi && r.dutyCalc.upstamped) {
+        box.appendChild(callout('warn', 'The total secured passes CI$300,000, so the whole amount moves to 1.5% '
+          + 'and your existing charge is upstamped. The ' + money(r.duty) + ' shown is the duty on the new total '
+          + 'less the ' + money(r.dutyCalc.alreadyPaid) + ' already paid on the original charge.'));
+      }
     } else {
       box.appendChild(el('p', null, 'At ' + trimNum(S.ltv, 2) + '% loan-to-value there is nothing to release: the '
         + 'mortgage is already at or above what a bank would lend against this value.'));

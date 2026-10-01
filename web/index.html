@@ -10,10 +10,14 @@
           <input type="radio" name="cur" id="cur-usd" value="USD"><label for="cur-usd">US$</label>
         </div>
         <a class="btn" href="#listings" id="jumpBtn">Listings that fit <span class="count" id="jumpCount">0</span></a>
+        <button class="btn" id="saveBtn" type="button">Save this</button>
+        <button class="btn" id="shareBtn" type="button">Copy link</button>
+        <button class="btn" id="printBtn" type="button">Print summary</button>
         <button class="btn" id="resetBtn" type="button">Reset to example</button>
       </div>
     </div>
     <p class="hint example-note" id="exampleNote" hidden></p>
+    <div class="saved-strip" id="savedStrip" hidden></div>
     <p class="top-intro">Your monthly payment, plus what it really costs to close in the Cayman Islands: stamp duty on the transfer and on the mortgage, Land Registry, legal and bank fees. There is no annual property tax here, so the one-off costs are the ones to plan for. Then see which homes for sale right now fit those numbers.</p>
   </header>
 
@@ -26,6 +30,12 @@
           <label for="price">Purchase price</label>
           <div class="control"><span class="affix cur">CI$</span><input id="price" type="text" inputmode="decimal" data-money></div>
           <p class="hint">Duty is charged on the price or Lands &amp; Survey's market valuation, whichever is higher.</p>
+        </div>
+        <div class="field">
+          <label for="marketValue">Government valuation <span style="font-weight:400">(if higher than the price)</span></label>
+          <div class="control"><span class="affix cur">CI$</span><input id="marketValue" type="text" inputmode="decimal" data-money placeholder="Leave empty to use the price"></div>
+          <p class="hint">Lands &amp; Survey values the property themselves. If their figure is higher than what you
+            are paying, duty is charged on theirs.</p>
         </div>
         <div class="field">
           <label for="island">Where the property is</label>
@@ -259,8 +269,14 @@
       </section>
 
       <section class="panel card" aria-labelledby="dutyH">
-        <div class="card-head"><h2 id="dutyH">How the stamp duty was worked out</h2></div>
+        <div class="card-head">
+          <h2 id="dutyH">How the stamp duty was worked out</h2>
+          <span class="aside" id="dutyRule"></span>
+        </div>
+        <dl class="duty-facts" id="dutyFacts"></dl>
         <div class="explain" id="dutyExplain"></div>
+        <div id="dutyNeeds"></div>
+        <p class="hint" id="dutySource"></p>
       </section>
 
       <section class="panel card" id="scenCard" aria-labelledby="scenH">
@@ -382,6 +398,8 @@
     <div class="lx-more"><button class="btn" id="lxMore" type="button" hidden>Show more listings</button></div>
   </section>
 
+  <section class="print-only" id="printSummary" aria-hidden="true"></section>
+
   <div class="cmpbar" id="cmpBar" hidden>
     <div class="picks" id="cmpPicks"></div>
     <div class="acts">
@@ -454,7 +472,7 @@ if (typeof document !== 'undefined') (function () {
   'use strict';
   var R = Core.R, STORE = 'caymanMortgage.v1';
   var DEFAULTS = {
-    cur: 'KYD', price: 600000, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
+    cur: 'KYD', price: 600000, marketValue: 0, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
     downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.75, term: 25, extra: 0,
     strata: 0, life: 0, insPct: 1, insAmt: 0, insMode: 'pct', strataInsured: false, upkeepPct: 1,
     takeHome: 0, debts: 0, commitments: 0, living: 0, saveTarget: 0, reserve: 0,
@@ -495,7 +513,7 @@ if (typeof document !== 'undefined') (function () {
     st.downAmt = Math.round(st.price * st.downPct / 100);
     return st;
   }
-  var MONEY = ['price', 'downAmt', 'extra', 'income', 'savings', 'strata', 'life', 'valuation', 'inspection',
+  var MONEY = ['price', 'marketValue', 'downAmt', 'extra', 'income', 'savings', 'strata', 'life', 'valuation', 'inspection',
                'chattels', 'insAmt', 'takeHome', 'debts', 'commitments', 'living', 'saveTarget', 'reserve'];
   var PLAIN = ['downPct', 'rate', 'term', 'insPct', 'upkeepPct', 'legalPct', 'bankPct', 'fx'];
   var $ = function (id) { return document.getElementById(id); };
@@ -638,8 +656,11 @@ if (typeof document !== 'undefined') (function () {
     ov = ov || {};
     var alt = ov.price != null, ptype = ov.ptype || S.ptype;
     var price = alt ? ov.price : toKyd(S.price), chattels = alt ? 0 : Math.min(price, toKyd(S.chattels));
+    // duty follows the government's valuation when it is the higher of the two
+    var dutyBasis = alt || !hasEntered('marketValue') ? price : Math.max(price, toKyd(S.marketValue));
+    var basisIsValuation = dutyBasis > price + 0.5;
     var down = Math.min(price, S.downMaster === 'pct' ? price * S.downPct / 100 : toKyd(S.downAmt));
-    var loan = Math.max(0, price - down), dutiable = Math.max(0, price - chattels);
+    var loan = Math.max(0, price - down), dutiable = Math.max(0, dutyBasis - chattels);
     var joint = S.joint === 'joint' && S.status !== 'standard';
     var td = Core.transferDuty(dutiable, ptype, S.status, joint, S.island);
     var md = Core.mortgageDuty(loan);
@@ -679,6 +700,7 @@ if (typeof document !== 'undefined') (function () {
     });
     var cashNeeded = down + costs;
     return { price: price, down: down, loan: loan, dutiable: dutiable, chattels: chattels, td: td, md: md, am: am,
+             dutyBasis: dutyBasis, basisIsValuation: basisIsValuation,
              own: own, upkeepMonth: upkeepYear / 12, insKnown: insKnown,
              cashLeft: hasEntered('savings') ? toKyd(S.savings) - cashNeeded : null,
              items: items, groups: groups, costs: costs, cash: cashNeeded,
@@ -814,9 +836,55 @@ if (typeof document !== 'undefined') (function () {
     d.appendChild(el('span', 'ico', kind === 'good' ? '✓' : '!'));
     d.appendChild(el('span', null, text)); return d;
   }
+  var RULE_NAMES = {
+    'standard': 'Standard rate, 7.5%',
+    'luxury': 'High-value rate, 10% of the whole value',
+    'first-free': 'Caymanian first property, exempt',
+    'first-taper': 'Caymanian first property, 3.75% on the excess',
+    'first-over': 'Over the first-property ceiling, standard rate',
+    'second-reduced': 'Caymanian second property, 3.75% of the whole value',
+    'second-over': 'Over the second-property cap, standard rate',
+    'brac-developed': 'Cayman Brac concession, 3%',
+    'brac-land': 'Cayman Brac concession, nil on undeveloped land'
+  };
   function renderDuty(c) {
     var box = $('dutyExplain'), td = c.td, v = c.dutiable, kind = S.ptype === 'home' ? 'home' : 'parcel of land';
     box.textContent = '';
+
+    // what was applied, and on what
+    $('dutyRule').textContent = RULE_NAMES[td.rule] || '';
+    var facts = $('dutyFacts'); facts.textContent = '';
+    function fact(k, val) {
+      var d = el('div');
+      d.appendChild(el('dt', null, k));
+      d.appendChild(el('dd', null, val));
+      facts.appendChild(d);
+    }
+    fact('Rule applied', RULE_NAMES[td.rule] || 'Standard rate');
+    fact('Dutiable value', money(v) + (c.basisIsValuation ? ' (the government valuation, above your price)'
+      : c.chattels > 0 ? ' (price less itemised chattels)' : ' (the purchase price)'));
+    fact('Rate', td.rate === 0 ? 'nil' : pct(td.rate, 2));
+    fact('Transfer duty', money(td.amount));
+    fact('Mortgage duty', money(c.md.amount) + (c.loan > 0 ? ' on a charge of ' + money(c.loan) : ''));
+    fact('Registry fees', money(R.regTransfer + (c.loan > 0 ? R.regCharge : 0)));
+
+    // anything still needed before this is reliable
+    var needs = $('dutyNeeds'); needs.textContent = '';
+    var missing = [];
+    if (!hasEntered('marketValue')) missing.push('the government valuation, if it is higher than your price');
+    if (S.status !== 'standard') missing.push('an approved concession application to Lands & Survey');
+    if (S.island === 'brac' && (td.rule === 'brac-land' || td.rule === 'brac-developed')) {
+      missing.push('approval of the Cayman Brac concession, which is granted on application');
+    }
+    if (missing.length) {
+      needs.appendChild(callout('warn', 'Still needed before you can rely on this: ' + missing.join('; ') + '.'));
+    }
+    $('dutySource').innerHTML = 'Rates from the Stamp Duty (Rates of Duty) (No. 2) Regulations 2025, in force '
+      + '1 January 2026, and the Lands &amp; Survey schedules. '
+      + '<a href="https://www.caymanlandinfo.ky/services/valuation/stamp-duty" target="_blank" rel="noopener">Lands &amp; Survey</a> · '
+      + '<a href="https://legislation.gov.ky/cms/images/LEGISLATION/SUBORDINATE/2025/2025-0063/2025-0063_SL%2063%20of%202025.pdf" target="_blank" rel="noopener">the regulations</a>. '
+      + 'Checked 1 October 2026. Duty is payable within 45 days of signing, after which interest runs at 10% for the '
+      + 'first month and 20% a year thereafter.';
     var rateLbl = v >= R.luxFrom ? '10%' : '7.5%';
     var p = el('p'), lead = el('strong', null, 'Transfer duty: ' + money(td.amount) + '. '); p.appendChild(lead);
     var text = '';
@@ -1006,6 +1074,222 @@ if (typeof document !== 'undefined') (function () {
     }
     note.appendChild(el('p', 'hint', 'These are estimates on the assumptions shown, not an offer of finance. '
       + 'A lender will apply its own rules, its own valuation and its own view of your credit.'));
+  }
+
+  /* ---------- input validation, explained beside the field ----------
+     Values are still clamped so the page cannot show nonsense, but the reader is
+     told what happened rather than watching their number silently change. */
+  var LIMITS = {
+    price: [0, 1e9, 'a purchase price'], marketValue: [0, 1e9, 'a valuation'],
+    downPct: [0, 100, 'a deposit between 0 and 100%'],
+    rate: [0, 30, 'a rate between 0 and 30%'],
+    term: [1, 40, 'a term between 1 and 40 years'],
+    insPct: [0, 10, 'insurance between 0 and 10% of the price'],
+    upkeepPct: [0, 10, 'upkeep between 0 and 10% of the price'],
+    legalPct: [0, 10, 'legal fees between 0 and 10%'],
+    bankPct: [0, 10, 'a bank fee between 0 and 10%'],
+    fx: [0.5, 1.5, 'an exchange rate between 0.5 and 1.5']
+  };
+  function validateField(field) {
+    var lim = LIMITS[field.id];
+    if (!lim) return;
+    var raw = String(field.value || '').trim();
+    var errId = field.id + '-err';
+    var box = document.getElementById(errId);
+    function clearErr() {
+      if (box && box.parentNode) box.parentNode.removeChild(box);
+      field.removeAttribute('aria-invalid');
+      field.removeAttribute('aria-describedby');
+    }
+    if (raw === '') { clearErr(); return; }
+    var v = parseNum(raw), msg = null;
+    var cleaned = raw.replace(/^(CI|US)?\$/, '');
+    if (!/^[\d.,\s]*[kKmM]?$/.test(cleaned)) msg = 'Numbers only, please.';
+    else if (v < lim[0] || v > lim[1]) {
+      msg = 'Enter ' + lim[2] + '. Using ' + trimNum(clamp(v, lim[0], lim[1]), 3) + ' for now.';
+    }
+    if (!msg) { clearErr(); return; }
+    if (!box) {
+      box = document.createElement('span');
+      box.className = 'field-err';
+      box.id = errId;
+      box.setAttribute('role', 'status');
+      (field.closest('.field') || field.parentNode).appendChild(box);
+    }
+    box.textContent = msg;
+    field.setAttribute('aria-invalid', 'true');
+    field.setAttribute('aria-describedby', errId);
+  }
+
+  /* ---------- the summary you can print or save as a PDF ---------- */
+  function buildSummary() {
+    var c = last, box = $('printSummary');
+    box.textContent = '';
+    box.appendChild(el('h2', null, 'Buyer summary'));
+    var now = new Date();
+    box.appendChild(el('p', 'hint', 'Prepared ' + now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      + ' with caymanmortgagecalculator.com. Estimates on the assumptions below, not an offer of finance.'));
+
+    function table(title, rows) {
+      box.appendChild(el('h3', null, title));
+      var t = el('table', 'costs'), tb = el('tbody');
+      rows.forEach(function (r) {
+        if (r[1] === null || r[1] === undefined) return;
+        var tr = el('tr');
+        tr.appendChild(el('td', null, r[0]));
+        tr.appendChild(el('td', 'amt', r[1]));
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb); box.appendChild(t);
+    }
+
+    table('The property and the loan', [
+      ['Purchase price', money(c.price)],
+      ['Government valuation used', c.basisIsValuation ? money(c.dutyBasis) : null],
+      ['Where', { grand: 'Grand Cayman', brac: 'Cayman Brac', little: 'Little Cayman' }[S.island]],
+      ['Type', S.ptype === 'land' ? 'Raw land' : 'House or condo'],
+      ['Deposit', money(c.down) + ' (' + pct(c.price > 0 ? c.down / c.price : 0, 1) + ')'],
+      ['Loan', money(c.loan)],
+      ['Rate and term', trimNum(S.rate, 3) + '% over ' + S.term + ' years'],
+      ['Stamp duty status', $('status').options[$('status').selectedIndex].text]
+    ]);
+
+    var ownRows = c.own.parts.map(function (part) {
+      return [part.label, part.amount === null ? 'not entered' : money(part.amount)];
+    });
+    ownRows.push([c.own.complete ? 'Monthly cost to own' : 'Known monthly costs so far', money(c.own.total)]);
+    table('What it costs each month', ownRows);
+
+    table('What you need on the day', c.items.map(function (it) {
+      return [it.label, money(it.v)];
+    }).concat([['Total cash to close', money(c.cash)],
+               ['Cash left afterwards', c.cashLeft === null ? null : money(c.cashLeft)]]));
+
+    if (B) {
+      table('What you can afford', B.assessed.map(function (k) {
+        return [BUDGET_LABELS[k][0], money(B[k])];
+      }).concat([['Limited by', BUDGET_LABELS[B.limitedBy][0]]]));
+    }
+
+    // stress: what a rate rise would do
+    var stressRows = [1, 2].map(function (up) {
+      var r = planResult(planFromNow('+' + up, { rate: +(S.rate + up).toFixed(3) }));
+      return ['Rate ' + trimNum(S.rate + up, 3) + '%', money(r.monthly) + ' a month ('
+        + money(r.monthly - (c.own.total + c.extra)) + ' more)'];
+    });
+    table('If rates rise', stressRows);
+
+    var gaps = [];
+    if (!c.own.complete) gaps.push(c.own.unknown.join(', ') + ' not entered');
+    if (!hasEntered('marketValue')) gaps.push('government valuation not known');
+    if (S.insMode !== 'amt') gaps.push('insurance is an estimate, not a quote');
+    if (gaps.length) {
+      box.appendChild(el('h3', null, 'Still to confirm'));
+      var ul = el('ul');
+      gaps.forEach(function (g) { ul.appendChild(el('li', null, g)); });
+      box.appendChild(ul);
+    }
+
+    box.appendChild(el('h3', null, 'Questions worth asking'));
+    var qs = el('ul');
+    ['Your lender: what rate and term would you actually offer, what deposit do you need, and what is the '
+      + 'commitment fee?',
+     'Your lender: is the rate fixed or variable, and what would the payment be if prime rose two points?',
+     'Your attorney: what will conveyancing cost, and is the stamp duty figure above right for this purchase?',
+     S.status !== 'standard' ? 'Your attorney: am I eligible for the concession, and how long does Lands & Survey take?' : null,
+     S.island === 'brac' ? 'Your attorney: how is the Cayman Brac concession applied for, and what are the build conditions?' : null,
+     'The agent or strata: what are the strata fees, what do they include, and is building insurance inside them?',
+     'An insurer: what is the building premium on the rebuild cost, and what is the hurricane deductible?'
+    ].filter(Boolean).forEach(function (q) { qs.appendChild(el('li', null, q)); });
+    box.appendChild(qs);
+
+    box.appendChild(el('p', 'hint', 'Rates and rules checked 1 October 2026. Stamp duty from the Stamp Duty (Rates of '
+      + 'Duty) (No. 2) Regulations 2025, in force 1 January 2026. KYD prime 7.00% from 18 September 2026. '
+      + 'Confirm everything with your lender and attorney before you commit.'));
+  }
+
+  /* ---------- saved scenarios ----------
+     Kept in this browser only, and the share link deliberately leaves out anything
+     about the household: a link you send your agent should not carry your income. */
+  var SAVE_STORE = 'caymanMortgage.scenarios.v1';
+  var PRIVATE_KEYS = ['income', 'savings', 'takeHome', 'debts', 'commitments', 'living', 'saveTarget', 'reserve'];
+  var SHARE_KEYS = ['price', 'marketValue', 'ptype', 'status', 'joint', 'island', 'downPct', 'downMaster',
+                    'downAmt', 'rate', 'term', 'extra', 'strata', 'life', 'insPct', 'insMode', 'insAmt',
+                    'strataInsured', 'upkeepPct', 'legalPct', 'bankPct', 'chattels', 'cur'];
+  var scenarios = [], currentScenario = null;
+
+  function loadScenarios() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(SAVE_STORE) || '[]');
+      if (Array.isArray(raw)) scenarios = raw;
+    } catch (e) { scenarios = []; }
+  }
+  function persistScenarios() {
+    try { localStorage.setItem(SAVE_STORE, JSON.stringify(scenarios)); } catch (e) { toast('This browser would not save it.'); }
+  }
+  function snapshot() {
+    var o = {}; Object.keys(DEFAULTS).forEach(function (k) { o[k] = S[k]; });
+    o.entered = entered;
+    return o;
+  }
+  function applySnapshot(state) {
+    entered = state.entered || {};
+    writeForm(state); syncDown(); showingExample = false; render();
+  }
+  function renderSaved() {
+    var strip = $('savedStrip');
+    strip.textContent = '';
+    strip.hidden = scenarios.length === 0;
+    if (!scenarios.length) return;
+    strip.appendChild(el('span', null, 'Saved:'));
+    scenarios.forEach(function (sc, i) {
+      var chip = el('span', 'saved-chip' + (currentScenario === sc.id ? ' on' : ''));
+      var nm = el('button', 'nm', sc.name); nm.type = 'button';
+      nm.title = 'Open ' + sc.name;
+      nm.addEventListener('click', function () { currentScenario = sc.id; applySnapshot(sc.state); renderSaved(); });
+      chip.appendChild(nm);
+      [['✎', 'Rename', function () {
+        var name = prompt('Name this scenario', sc.name);
+        if (name) { sc.name = name.slice(0, 40); persistScenarios(); renderSaved(); }
+      }], ['⧉', 'Duplicate', function () {
+        scenarios.push({ id: String(Date.now()), name: sc.name + ' copy', state: sc.state, saved: new Date().toISOString() });
+        persistScenarios(); renderSaved();
+      }], ['×', 'Delete', function () {
+        if (!confirm('Delete "' + sc.name + '"?')) return;
+        scenarios.splice(i, 1); persistScenarios(); renderSaved();
+      }]].forEach(function (b) {
+        var btn = el('button', null, b[0]); btn.type = 'button'; btn.title = b[1];
+        btn.setAttribute('aria-label', b[1] + ' ' + sc.name);
+        btn.addEventListener('click', b[2]);
+        chip.appendChild(btn);
+      });
+      strip.appendChild(chip);
+    });
+    strip.appendChild(el('span', 'hint', 'Saved in this browser only.'));
+  }
+  function saveScenario() {
+    var name = prompt('Name this scenario', 'Scenario ' + (scenarios.length + 1));
+    if (!name) return;
+    var sc = { id: String(Date.now()), name: name.slice(0, 40), state: snapshot(), saved: new Date().toISOString() };
+    scenarios.push(sc); currentScenario = sc.id;
+    persistScenarios(); renderSaved();
+    toast('Saved as "' + sc.name + '" in this browser.');
+  }
+  function shareLink() {
+    var parts = [];
+    SHARE_KEYS.forEach(function (k) {
+      var v = S[k];
+      if (v === undefined || v === null || v === '' || v === false) return;
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(typeof v === 'boolean' ? 1 : v));
+    });
+    var url = location.origin + location.pathname + '?' + parts.join('&');
+    function done(okCopy) {
+      toast(okCopy ? 'Link copied. It carries the property and loan figures only — not your income, savings or debts.'
+                   : url);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { done(true); }).catch(function () { done(false); });
+    } else done(false);
   }
 
   /* ---------- comparing plans ----------
@@ -2042,6 +2326,7 @@ if (typeof document !== 'undefined') (function () {
       if (showingExample) { showingExample = false; showExampleNote(false); }
       var id = e.target.id;
       if (id) entered[id] = true;
+      validateField(e.target);
       if (id === 'downPct') syncDown('pct'); else if (id === 'downAmt') syncDown('amt'); else if (id === 'price') syncDown();
       render();
     });
@@ -2056,6 +2341,9 @@ if (typeof document !== 'undefined') (function () {
     });
     $('showTable').addEventListener('change', render);
     Array.prototype.forEach.call(document.querySelectorAll('input[name="tmode"]'), function (r) { r.addEventListener('change', render); });
+    $('saveBtn').addEventListener('click', saveScenario);
+    $('shareBtn').addEventListener('click', shareLink);
+    $('printBtn').addEventListener('click', function () { buildSummary(); window.print(); });
     $('resetBtn').addEventListener('click', function () {
       try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
       entered = {};
@@ -2069,7 +2357,7 @@ if (typeof document !== 'undefined') (function () {
     writeForm(load());
     if (readQuery()) save();      // a price from the link wins over the saved one
     syncDown(); bind(); bindChart(); bindStackTip();
-    loadPlans(); bindScenarios();
+    loadPlans(); bindScenarios(); loadScenarios(); renderSaved();
     loadListingData(function () { setupListingControls(); render(); renderListings(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
   }

@@ -508,3 +508,46 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .dist-table .n::before{content:"n="}
 .dist-table .none{color:var(--ink-3);font-size:13px}
 .dist-table .thin{color:var(--warn-ink);font-size:11px}
+.duty-facts{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.duty-facts>div{background:var(--surface);padding:10px 13px;display:flex;flex-direction:column;gap:2px}
+.duty-facts dt{font-size:12px;font-weight:600;color:var(--ink-2)}
+.duty-facts dd{font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------- saved scenarios ---------- */
+.saved-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-2)}
+.saved-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:999px;
+  padding:5px 6px 5px 12px;background:var(--surface)}
+.saved-chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.saved-chip button{background:none;border:0;cursor:pointer;color:inherit;font-size:13px;padding:2px 4px;border-radius:5px;opacity:.75}
+.saved-chip button:hover{opacity:1;background:rgba(0,0,0,.06)}
+.saved-chip .nm{cursor:pointer}
+
+/* ---------- printed summary ---------- */
+@media print {
+  .site, .top-tools, .saved-strip, .lx, .dock, .cmpbar, .cmp-panel, .chart, #scenCard .scen-tools,
+  .inputs details summary::after, #lxMore, .example-note { display: none !important; }
+  .wrap { padding: 0; max-width: none; }
+  .app { display: block; }
+  .panel, .hero, .kpis { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; margin-bottom: 12px; }
+  .hero { background: #fff !important; color: #000 !important; }
+  .hero-label, .hero-sub, .hero-break div, .hero-break dd { color: #000 !important; }
+  .inputs { border: 1px solid #ccc; }
+  .inputs details { display: block; }
+  .inputs details > .body { display: flex !important; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9px; color: #555; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }
+
+/* ---------- validation and touch targets ---------- */
+.field-err{display:block;margin-top:5px;font-size:12.5px;font-weight:600;color:var(--crit-ink);
+  background:var(--crit-bg);padding:6px 9px;border-radius:7px}
+.control:has(input[aria-invalid="true"]){border-color:var(--crit)}
+.saved-chip button{min-width:30px;min-height:30px}
+@media (pointer:coarse){
+  .lx-actions .btn,.scen-tools .btn,.site-tools .btn{min-height:40px}
+  .faq-item summary{min-height:48px}
+  .multi-menu label{min-height:40px}
+}
