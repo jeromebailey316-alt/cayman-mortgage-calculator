@@ -28,6 +28,17 @@
           <p class="hint">Duty is charged on the price or Lands &amp; Survey's market valuation, whichever is higher.</p>
         </div>
         <div class="field">
+          <label for="island">Where the property is</label>
+          <div class="control">
+            <select id="island">
+              <option value="grand">Grand Cayman</option>
+              <option value="brac">Cayman Brac</option>
+              <option value="little">Little Cayman</option>
+            </select>
+          </div>
+          <p class="hint" id="islandHint"></p>
+        </div>
+        <div class="field">
           <span class="lab" id="ptype-lab">Property type</span>
           <div class="seg" role="radiogroup" aria-labelledby="ptype-lab">
             <input type="radio" name="ptype" id="ptype-home" value="home" checked><label for="ptype-home">House or condo</label>
@@ -78,7 +89,10 @@
             <div class="control"><input id="term" type="text" inputmode="numeric"><span class="affix">yrs</span></div>
           </div>
         </div>
-        <p class="hint">KYD prime was 6.75% at last check (December 2025) and home loans are usually priced at prime plus a margin. Use your bank's quote.</p>
+        <p class="hint">KYD prime is <strong>7.00%</strong>, raised from 6.75% on 18 September 2026
+          (<a href="https://www.caymannational.com/about/news/28-notices" target="_blank" rel="noopener">Cayman National notice</a>,
+          checked 1 October 2026). A primary residence usually prices at prime plus 0.5&ndash;1%, so 7.75% is a
+          planning figure, not a quote. Put your bank's rate in when you have it.</p>
         <div class="field">
           <label for="extra">Extra monthly payment <span style="font-weight:400">(optional)</span></label>
           <div class="control"><span class="affix cur">CI$</span><input id="extra" type="text" inputmode="decimal" data-money></div>
@@ -126,7 +140,9 @@
               <div class="control"><input id="bankPct" type="text" inputmode="decimal"><span class="affix">% of loan</span></div>
             </div>
           </div>
-          <p class="hint">Attorneys typically quote 0.25&ndash;1% of the price; banks charge 0.5&ndash;1% of the loan.</p>
+          <p class="hint">Attorneys usually charge about 1% of the price, with 0.5% achievable by negotiation
+            (<a href="https://caymanresident.com/housing/real-estate/buying-real-estate/legal-conveyancing" target="_blank" rel="noopener">Cayman&nbsp;Resident</a>,
+            July 2026; CIREBA quotes 0.55&ndash;1%). Banks charge up to 1% of the loan.</p>
           <div class="row even">
             <div class="field">
               <label for="valuation">Valuation report</label>
@@ -360,9 +376,9 @@ if (typeof document !== 'undefined') (function () {
   'use strict';
   var R = Core.R, STORE = 'caymanMortgage.v1';
   var DEFAULTS = {
-    cur: 'KYD', price: 600000, ptype: 'home', status: 'standard', joint: 'single',
-    downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.25, term: 25, extra: 0, income: 0, savings: 0,
-    strata: 0, life: 0, insPct: 1, legalPct: 0.5, bankPct: 1, valuation: 700, inspection: 750,
+    cur: 'KYD', price: 600000, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
+    downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.75, term: 25, extra: 0,
+    strata: 0, life: 0, insPct: 1, legalPct: 1, bankPct: 1, valuation: 700, inspection: 750,
     chattels: 0, insAtClose: true, fx: 0.82, showTable: false, tmode: 'year'
   };
   // A different starting point each day, so the page doesn't always open on the same
@@ -370,21 +386,21 @@ if (typeof document !== 'undefined') (function () {
   // ceiling, the CI$2M line, the second-property rate, land, strata on a condo.
   var EXAMPLES = [
     { label: 'a first-time Caymanian buyer at the CI$550,000 exemption ceiling',
-      price: 550000, status: 'first', downPct: 10, term: 30, income: 7500, savings: 75000 },
+      price: 550000, status: 'first', downPct: 10, term: 30 },
     { label: 'a condo at the median asking price, with strata fees',
-      price: 900000, downPct: 20, strata: 550, insPct: 0.35, income: 14000 },
+      price: 900000, downPct: 20, strata: 550, insPct: 0.35 },
     { label: 'two Caymanians buying their first home together',
-      price: 700000, status: 'first', joint: 'joint', downPct: 10, term: 30, income: 11000, savings: 90000 },
+      price: 700000, status: 'first', joint: 'joint', downPct: 10, term: 30 },
     { label: 'a purchase right on the CI$2M line, where duty becomes 10%',
-      price: 2000000, downPct: 35, income: 32000 },
+      price: 2000000, downPct: 35 },
     { label: 'a Caymanian buying a second property at the reduced 3.75% rate',
-      price: 600000, status: 'second', downPct: 20, income: 13000 },
+      price: 600000, status: 'second', downPct: 20 },
     { label: 'a parcel of raw land, which banks lend less on and over a shorter term',
-      price: 220000, ptype: 'land', downPct: 50, term: 15, income: 8000, savings: 140000 },
+      price: 220000, ptype: 'land', downPct: 50, term: 15 },
     { label: 'a family house at the median asking price',
-      price: 1630000, downPct: 20, income: 26000 },
+      price: 1630000, downPct: 20 },
     { label: 'a starter condo in the Sister Islands',
-      price: 399000, downPct: 15, strata: 300, insPct: 0.35, income: 7000, savings: 85000 }
+      price: 399000, downPct: 15, strata: 300, insPct: 0.35 }
   ];
   function todayExample() {
     // same example for everyone on a given day, a new one at midnight
@@ -403,6 +419,11 @@ if (typeof document !== 'undefined') (function () {
   var PLAIN = ['downPct', 'rate', 'term', 'insPct', 'legalPct', 'bankPct', 'fx'];
   var $ = function (id) { return document.getElementById(id); };
   var S = {}, curNow = 'KYD', last = null, hoverIdx = null, showingExample = false;
+  // Which fields the visitor has actually filled in. An example's figures are
+  // illustration; only entered figures may drive an affordability claim.
+  var entered = {};
+  function hasEntered(id) { return !!entered[id] && pos(S[id]) > 0; }
+  function pos(v) { return typeof v === 'number' && isFinite(v) && v > 0 ? v : 0; }
 
   /* ---------- helpers ---------- */
   function parseNum(str) {
@@ -446,6 +467,7 @@ if (typeof document !== 'undefined') (function () {
     setRadio('cur', st.cur); curNow = st.cur;
     setRadio('ptype', st.ptype); setRadio('joint', st.joint); setRadio('tmode', st.tmode);
     $('status').value = st.status;
+    $('island').value = st.island || 'grand';
     MONEY.forEach(function (k) { $(k).value = st[k] ? group(st[k], 0) : (k === 'price' || k === 'downAmt' ? '0' : ''); });
     PLAIN.forEach(function (k) { $(k).value = trimNum(st[k], k === 'fx' ? 4 : 3); });
     $('insAtClose').checked = !!st.insAtClose;
@@ -464,11 +486,13 @@ if (typeof document !== 'undefined') (function () {
     S.legalPct = clamp(parseNum($('legalPct').value), 0, 10);
     S.bankPct = clamp(parseNum($('bankPct').value), 0, 10);
     S.ptype = radio('ptype'); S.joint = radio('joint'); S.status = $('status').value;
+    S.island = $('island').value;
     S.insAtClose = $('insAtClose').checked; S.showTable = $('showTable').checked; S.tmode = radio('tmode');
   }
   function save() {
     try {
       var o = {}; Object.keys(DEFAULTS).forEach(function (k) { o[k] = S[k]; });
+      o.entered = entered;
       localStorage.setItem(STORE, JSON.stringify(o));
     } catch (e) { /* storage unavailable: carry on */ }
   }
@@ -478,6 +502,7 @@ if (typeof document !== 'undefined') (function () {
       var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
       if (raw && typeof raw === 'object') {
         own = true;
+        if (raw.entered && typeof raw.entered === 'object') entered = raw.entered;
         Object.keys(DEFAULTS).forEach(function (k) {
           if (typeof raw[k] === typeof DEFAULTS[k]) st[k] = raw[k];
         });
@@ -490,7 +515,14 @@ if (typeof document !== 'undefined') (function () {
     var note = $('exampleNote');
     if (!note) return;
     note.hidden = !on;
-    if (on) note.textContent = 'Today’s example: ' + todayExample().label + '. Change anything to make it yours.';
+    if (on) {
+      // say which assumptions the example carries, so its figures are never mistaken
+      // for the visitor's own
+      var ex = todayExample(), st = exampleDefaults();
+      note.textContent = 'Today’s example: ' + ex.label + ' — ' + trimNum(st.downPct, 2) + '% down at '
+        + trimNum(st.rate, 3) + '% over ' + st.term + ' years. These are illustrative figures, not yours. '
+        + 'Change anything to make it your own.';
+    }
   }
   function syncCurrencyLabels() {
     var s = sym();
@@ -520,10 +552,10 @@ if (typeof document !== 'undefined') (function () {
     var down = Math.min(price, S.downMaster === 'pct' ? price * S.downPct / 100 : toKyd(S.downAmt));
     var loan = Math.max(0, price - down), dutiable = Math.max(0, price - chattels);
     var joint = S.joint === 'joint' && S.status !== 'standard';
-    var td = Core.transferDuty(dutiable, ptype, S.status, joint);
+    var td = Core.transferDuty(dutiable, ptype, S.status, joint, S.island);
     var md = Core.mortgageDuty(loan);
     var am = ov.light ? { pmt: Core.payment(loan, S.rate / 100, Math.max(1, Math.round(S.term * 12))) }
-                      : Core.amortise(loan, S.rate / 100, S.term, toKyd(S.extra));
+                      : Core.amortise({ loan: loan, rate: S.rate / 100, years: S.term, extra: toKyd(S.extra) });
     var isHome = ptype === 'home';
     var insYear = isHome ? price * S.insPct / 100 : 0;
     var items = [
@@ -542,10 +574,14 @@ if (typeof document !== 'undefined') (function () {
     var costs = groups[2] + groups[3];
     return { price: price, down: down, loan: loan, dutiable: dutiable, chattels: chattels, td: td, md: md, am: am,
              items: items, groups: groups, costs: costs, cash: down + costs,
-             insMonth: insYear / 12, strata: toKyd(S.strata), life: toKyd(S.life), extra: toKyd(S.extra), income: toKyd(S.income), savings: toKyd(S.savings) };
+             insMonth: insYear / 12, strata: toKyd(S.strata), life: toKyd(S.life), extra: toKyd(S.extra),
+             income: hasEntered('income') ? toKyd(S.income) : 0,
+             savings: hasEntered('savings') ? toKyd(S.savings) : 0 };
   }
   function dutyShort(td, v) {
     switch (td.rule) {
+      case 'brac-developed': return '3% under the Cayman Brac concession';
+      case 'brac-land': return 'Nothing under the Cayman Brac concession, if you build within two years';
       case 'luxury': return '10% of the full value (CI$2M and over)';
       case 'first-free': return 'Exempt: first-time Caymanian buyer';
       case 'first-taper': return '3.75% on the ' + money(v - td.free) + ' above ' + money(td.free);
@@ -562,6 +598,18 @@ if (typeof document !== 'undefined') (function () {
 
     // contextual form hints
     $('jointField').hidden = S.status === 'standard';
+    var ih = $('islandHint');
+    if (S.island === 'brac') {
+      ih.className = 'hint';
+      ih.textContent = 'Cayman Brac has its own rates until 31 December 2030: 3% on a developed property '
+        + 'under CI$2M, and nothing on undeveloped land if you build on it within two years. It is approved '
+        + 'on application, and the land waiver is clawed back with a 10% penalty if you do not build.';
+    } else if (S.island === 'little') {
+      ih.className = 'hint';
+      ih.textContent = 'Little Cayman is on the standard rates — the island concession covers Cayman Brac only.';
+    } else {
+      ih.textContent = '';
+    }
     $('statusHint').textContent = S.status === 'standard'
       ? 'Applies to non-Caymanian buyers and to any purchase outside the concession limits.'
       : 'Needs an approved concession application. A five-year restriction is placed on the register.';
@@ -644,7 +692,14 @@ if (typeof document !== 'undefined') (function () {
     var rateLbl = v >= R.luxFrom ? '10%' : '7.5%';
     var p = el('p'), lead = el('strong', null, 'Transfer duty: ' + money(td.amount) + '. '); p.appendChild(lead);
     var text = '';
-    if (td.rule === 'standard') text = '7.5% of the dutiable value of ' + money(v) + '.';
+    if (td.rule === 'brac-developed') {
+      text = '3% of ' + money(v) + ' under the Cayman Brac concession, instead of the '
+        + money(td.alternativeAmount) + ' the standard rate would charge. The concession runs to '
+        + '31 December 2030 and is granted on application.';
+    } else if (td.rule === 'brac-land') {
+      text = 'No duty on undeveloped land in Cayman Brac under the island concession, against '
+        + money(td.alternativeAmount) + ' at the standard rate — provided you build within two years.';
+    } else if (td.rule === 'standard') text = '7.5% of the dutiable value of ' + money(v) + '.';
     else if (td.rule === 'luxury') text = '10% of the full ' + money(v) + '. Since 1 January 2026 the higher rate applies to the whole value once it reaches ' + money(R.luxFrom) + ', not just the part above it.';
     else if (td.rule === 'first-free') text = 'A first-time Caymanian buyer pays nothing on a ' + kind + ' valued up to ' + money(td.free) + '.';
     else if (td.rule === 'first-taper') text = 'The first ' + money(td.free) + ' is exempt and 3.75% is charged on the ' + money(v - td.free) + ' above it.';
@@ -654,7 +709,16 @@ if (typeof document !== 'undefined') (function () {
     if (c.chattels > 0) text += ' Dutiable value is the price less ' + money(c.chattels) + ' of itemised chattels.';
     p.appendChild(document.createTextNode(text)); box.appendChild(p);
 
-    if (td.amount < td.std - 0.5) box.appendChild(callout('good', 'The concession saves ' + money(td.std - td.amount) + ' against the standard ' + money(td.std) + '.'));
+    if (td.rule === 'brac-land') {
+      box.appendChild(callout('warn', 'The Cayman Brac land waiver has conditions: build within two years '
+        + '(extendable once by the Minister), a restriction goes on the register, and if you do not build the '
+        + 'full duty becomes payable with a 10% penalty.'));
+    } else if (td.rule === 'brac-developed') {
+      box.appendChild(callout('good', 'The Cayman Brac concession saves ' + money(td.alternativeAmount - td.amount)
+        + ' against the standard rate. It is approved on application and runs to 31 December 2030.'));
+    } else if (td.amount < td.std - 0.5) {
+      box.appendChild(callout('good', 'The concession saves ' + money(td.std - td.amount) + ' against the standard ' + money(td.std) + '.'));
+    }
     if (td.rule === 'first-taper') box.appendChild(callout('warn', 'Mind the ceiling. One dollar over ' + money(td.upper) + ' and the concession is lost entirely: duty would jump from ' + money((td.upper - td.free) * R.reduced) + ' to about ' + money(td.upper * R.std) + '.'));
     if (td.rule === 'first-over' || td.rule === 'second-over') {
       var lim = td.rule === 'first-over' ? td.upper : td.cap;
@@ -682,6 +746,7 @@ if (typeof document !== 'undefined') (function () {
 
   function renderAfford(c, allIn) {
     var card = $('affordCard');
+    // Only with the visitor's own income: an example cannot be checked for affordability.
     if (!(c.income > 0) || !(c.loan > 0)) { card.hidden = true; return; }
     card.hidden = false;
     var grid = $('affordGrid'), note = $('affordNote'); grid.textContent = ''; note.textContent = '';
@@ -732,8 +797,14 @@ if (typeof document !== 'undefined') (function () {
     for (var i = 0; i < 50 && hi - lo > 500; i++) { var mid = (lo + hi) / 2; if (ok(mid)) lo = mid; else hi = mid; }
     return Math.floor(lo / 1000) * 1000;
   }
+  function household() {
+    return {
+      grossMonthly: hasEntered('income') ? toKyd(S.income) : null,
+      cashAvailable: hasEntered('savings') ? toKyd(S.savings) : null
+    };
+  }
   function budget() {
-    var inc = toKyd(S.income), sav = toKyd(S.savings);
+    var h = household(), inc = h.grossMonthly || 0, sav = h.cashAvailable || 0;
     if (!(inc > 0) && !(sav > 0)) return null;
     var out = { byIncome: null, bySavings: null };
     if (inc > 0) out.byIncome = solveMax(function (p) { return compute({ price: p, light: true }).am.pmt <= inc * 0.33; });
@@ -1067,16 +1138,36 @@ if (typeof document !== 'undefined') (function () {
     if (t === 'match') return S.ptype === 'land' ? l.ptype === 'land' : l.ptype !== 'land';
     return l.ptype === t;
   }
+  /* What we can honestly say about a listing depends on what the visitor has told
+     us. Income alone says nothing about the cash they have; cash alone says nothing
+     about the monthly payment. Each is reported only when it was checked. */
   function fitFor(l, c) {
-    if (B) {
-      if (l.price_kyd <= B.max) return ['good', 'Within budget'];
-      if (l.price_kyd <= B.max * 1.1) return ['warn', 'A stretch'];
-      return ['crit', 'Over budget'];
+    var h = household();
+    var income = h.grossMonthly, cash = h.cashAvailable;
+    if (income == null && cash == null) {
+      if (!(c.price > 0)) return null;
+      var d = (l.price_kyd - c.price) / c.price;
+      if (Math.abs(d) < 0.005) return ['neutral', 'At your price'];
+      return ['neutral', (d > 0 ? '+' : '−') + pct(Math.abs(d), 0) + ' vs your price'];
     }
-    if (!(c.price > 0)) return null;
-    var d = (l.price_kyd - c.price) / c.price;
-    if (Math.abs(d) < 0.005) return ['neutral', 'At your price'];
-    return ['neutral', (d > 0 ? '+' : '−') + pct(Math.abs(d), 0) + ' vs your price'];
+    var alt = { price: l.price_kyd, ptype: l.ptype === 'land' ? 'land' : 'home', light: true };
+    var lc = compute(alt);
+    var monthlyOk = null, cashOk = null, shortfall = 0;
+    if (income != null) monthlyOk = lc.am.pmt <= income * 0.33;
+    if (cash != null) {
+      shortfall = Math.max(0, lc.cash - cash);
+      cashOk = shortfall === 0;
+    }
+    if (monthlyOk !== null && cashOk !== null) {
+      if (monthlyOk && cashOk) return ['good', 'Meets both your limits'];
+      if (!cashOk && monthlyOk) return ['warn', money(shortfall) + ' more cash needed'];
+      if (cashOk && !monthlyOk) return ['warn', 'Over your income estimate'];
+      return ['crit', 'Over both your limits'];
+    }
+    if (monthlyOk !== null) {
+      return monthlyOk ? ['good', 'Within your income estimate'] : ['crit', 'Over your income estimate'];
+    }
+    return cashOk ? ['good', 'Within your cash'] : ['warn', money(shortfall) + ' more cash needed'];
   }
   function renderTools() {
     var box = $('lxTools'), saved = Object.keys(LX.fav).length;
@@ -1568,6 +1659,7 @@ if (typeof document !== 'undefined') (function () {
     form.addEventListener('input', function (e) {
       if (showingExample) { showingExample = false; showExampleNote(false); }
       var id = e.target.id;
+      if (id) entered[id] = true;
       if (id === 'downPct') syncDown('pct'); else if (id === 'downAmt') syncDown('amt'); else if (id === 'price') syncDown();
       render();
     });
@@ -1584,6 +1676,7 @@ if (typeof document !== 'undefined') (function () {
     Array.prototype.forEach.call(document.querySelectorAll('input[name="tmode"]'), function (r) { r.addEventListener('change', render); });
     $('resetBtn').addEventListener('click', function () {
       try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+      entered = {};
       writeForm(exampleDefaults()); syncDown(); showingExample = true; render();
       toast('Back to today’s example: ' + todayExample().label + '.');
     });

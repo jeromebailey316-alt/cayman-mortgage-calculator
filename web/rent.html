@@ -199,7 +199,7 @@ if (typeof document !== 'undefined') (function () {
   var STORE = 'caymanMortgage.rent.v1', CALC_STORE = 'caymanMortgage.v1', YEARS = 30;
 
   var DEFAULTS = {
-    price: 900000, status: 'standard', downPct: 20, rate: 7.25, term: 25,
+    price: 900000, status: 'standard', downPct: 20, rate: 7.75, term: 25,
     strata: 550, ins: 0.35, upkeep: 0.5, rent: 0, rentRise: 3,
     growth: 3, ret: 5, sell: 6
   };
@@ -315,7 +315,11 @@ if (typeof document !== 'undefined') (function () {
      difference into investments, so neither side gets a free ride. */
   function model() {
     var price = S.price, down = Math.min(price, price * S.downPct / 100), loan = Math.max(0, price - down);
-    var close = Core.closingCosts(price, loan, { status: S.status, insPct: S.ins });
+    var insAnnual = price * S.ins / 100;
+    // The first year's premium is paid at closing, so the monthly accrual starts in
+    // month 13. Charging both would bill year one twice.
+    var close = Core.closingCosts({ price: price, loan: loan, ptype: 'home', status: S.status,
+                                    insuranceFirstYear: insAnnual, payInsuranceAtClose: true });
     var upfront = down + close.total;
     var n = S.term * 12, pmt = Core.payment(loan, S.rate / 100, n);
     var mRate = S.rate / 100 / 12;
@@ -335,7 +339,8 @@ if (typeof document !== 'undefined') (function () {
         balance = Math.max(0, balance - principal);
       }
       var mortgage = balance > 0 || principal > 0 ? pmt : 0;
-      var running = S.strata + value * (S.ins / 100) / 12 + value * (S.upkeep / 100) / 12;
+      var insuranceThisMonth = m <= 12 ? 0 : value * (S.ins / 100) / 12;   // year one was paid at closing
+      var running = S.strata + insuranceThisMonth + value * (S.upkeep / 100) / 12;
       var buyCost = mortgage + running;
       if (m === 1) firstBuyCost = buyCost;
 
@@ -375,8 +380,9 @@ if (typeof document !== 'undefined') (function () {
 
     var hb = $('rvBreak'); hb.textContent = '';
     [['Mortgage payment', r.pmt], ['Strata fees', S.strata],
-     ['Insurance', r.price * (S.ins / 100) / 12], ['Upkeep', r.price * (S.upkeep / 100) / 12]]
+     ['Insurance', 0], ['Upkeep', r.price * (S.upkeep / 100) / 12]]
       .forEach(function (row) { if (row[1] > 0) hb.appendChild(dlRow(row[0], money(row[1]))); });
+    hb.appendChild(dlRow('Insurance', 'paid at closing for year one'));
     hb.appendChild(dlRow('Monthly to own', money(r.firstBuyCost), 'total'));
 
     $('rvBuyMo').textContent = money(r.firstBuyCost);

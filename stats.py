@@ -12,7 +12,9 @@ from datetime import datetime, timezone
 
 # The planning defaults the calculator itself opens with, used for the "payment on
 # the median home" figure so the banner and the calculator agree.
-DOWN_PCT, RATE, TERM_YEARS = 15, 7.25, 25
+# Kept in step with the calculator's own planning default. KYD prime was raised to
+# 7.00% on 18 September 2026 and a primary residence prices at roughly prime + 0.5-1%.
+DOWN_PCT, RATE, TERM_YEARS = 15, 7.75, 25
 
 HOME_TYPES = ("house", "condo")
 

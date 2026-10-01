@@ -214,7 +214,7 @@ if (typeof document !== 'undefined') (function () {
   };
   var DEFAULTS = {
     value: 900000, owed: 520000, status: 'caymanian', ltv: 90,
-    rate: 7.25, term: 20, bankPct: 1, legal: 1200, valuation: 700
+    rate: 7.75, term: 20, bankPct: 1, legal: 1200, valuation: 700
   };
   var S = {}, last = null;
 
@@ -300,8 +300,10 @@ if (typeof document !== 'undefined') (function () {
     // how far values could fall before the loan hits the cap
     var floorValue = S.ltv > 0 ? owed / (S.ltv / 100) : 0;
     return { value: value, owed: owed, equity: equity, ltvNow: ltvNow, maxLoan: maxLoan,
-             release: release, locked: lockedAboveCap, duty: duty, bank: bank, costs: costs,
-             pmt: pmt, floorValue: floorValue, netCash: Math.max(0, release - costs) };
+             release: release, locked: lockedAboveCap, duty: duty, bank: bank,
+             legal: release > 0 ? S.legal : 0, valuation: release > 0 ? S.valuation : 0,
+             fees: release > 0 ? bank + S.legal + S.valuation : 0,
+             costs: costs, pmt: pmt, floorValue: floorValue, netCash: Math.max(0, release - costs) };
   }
 
   /* ---------- render ---------- */
@@ -342,7 +344,7 @@ if (typeof document !== 'undefined') (function () {
       : 'Nothing to release';
     $('eqCost').textContent = r.costs > 0 ? money(r.costs) : '—';
     $('eqCostS').textContent = r.costs > 0
-      ? money(r.duty) + ' mortgage duty, ' + money(r.bank + r.legal + r.valuation) + ' fees'
+      ? money(r.duty) + ' mortgage duty, ' + money(r.fees) + ' fees'
       : 'No new borrowing';
 
     renderSplit(r); renderExplain(r); renderCompare(r);
@@ -410,7 +412,7 @@ if (typeof document !== 'undefined') (function () {
       p2.appendChild(el('strong', null, money(r.release) + ' of that could be released. '));
       p2.appendChild(document.createTextNode(
         'Doing so costs about ' + money(r.costs) + ' — ' + money(r.duty) + ' of mortgage stamp duty on the new charge, '
-        + 'plus bank, legal and valuation fees — leaving roughly ' + money(r.netCash) + ' in hand, and adding '
+        + 'plus ' + money(r.fees) + ' of bank, legal and valuation fees — leaving roughly ' + money(r.netCash) + ' in hand, and adding '
         + money(r.pmt) + ' a month for ' + S.term + ' years.'));
       box.appendChild(p2);
     } else {

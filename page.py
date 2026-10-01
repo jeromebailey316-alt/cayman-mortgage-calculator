@@ -5,6 +5,7 @@ linked on the website and inlined for the single-file build.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -19,6 +20,12 @@ CORE = WEB / "core.js"
 
 SITE_NAME = "Cayman Mortgage Calculator"
 SITE_URL = "https://caymanmortgagecalculator.com"
+def _stamp(path: Path) -> str:
+    """Short content hash. A changed stylesheet or engine must not be served from a
+    browser cache holding the previous deploy — that mixes old code with new pages."""
+    return hashlib.sha1(path.read_bytes()).hexdigest()[:8]
+
+
 CSS_HREF = "/assets/app.css"
 
 # Cloudflare Web Analytics: cookieless, so no consent banner is needed. Paste the
@@ -199,7 +206,8 @@ def json_ld(page: str) -> str:
 
 def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
     meta = PAGES[page]
-    css = f"<style>{CSS.read_text()}</style>" if inline_css else f'<link rel="stylesheet" href="{CSS_HREF}">'
+    css = (f"<style>{CSS.read_text()}</style>" if inline_css
+           else f'<link rel="stylesheet" href="{CSS_HREF}?v={_stamp(CSS)}">')
     og_image = (f'<meta property="og:image" content="{canonical.rstrip("/")}/assets/og-image.png">'
                 '<meta name="twitter:card" content="summary_large_image">') if canonical else ""
     return (
@@ -227,7 +235,8 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
            f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
            if CF_ANALYTICS_TOKEN and not inline_css else "")
         + css
-        + (f"<script>{CORE.read_text()}</script>" if inline_css else f'<script src="{CORE_HREF}"></script>')
+        + (f"<script>{CORE.read_text()}</script>" if inline_css
+           else f'<script src="{CORE_HREF}?v={_stamp(CORE)}"></script>')
         + f"<script>{THEME_JS}</script>"
         + "</head><body>"
     )
