@@ -17,6 +17,25 @@
   <div class="app">
     <form class="panel inputs" id="rvForm" autocomplete="off" onsubmit="return false">
       <fieldset>
+        <legend>Your plans</legend>
+        <div class="field">
+          <label for="rvYears">How long you expect to stay</label>
+          <div class="control"><input id="rvYears" type="text" inputmode="numeric"><span class="affix">years</span></div>
+          <p class="hint">The single thing that decides this. Buying carries duty and fees on the way in and an
+            agent's commission on the way out; a short stay rarely recovers them.</p>
+        </div>
+        <div class="field">
+          <span class="lab" id="rvBand-lab">Assumptions</span>
+          <div class="seg" role="radiogroup" aria-labelledby="rvBand-lab">
+            <input type="radio" name="rvBand" id="rvBand-cons" value="cons"><label for="rvBand-cons">Cautious</label>
+            <input type="radio" name="rvBand" id="rvBand-base" value="base" checked><label for="rvBand-base">Middle</label>
+            <input type="radio" name="rvBand" id="rvBand-opt" value="opt"><label for="rvBand-opt">Favourable</label>
+          </div>
+          <p class="hint" id="rvBandHint"></p>
+        </div>
+      </fieldset>
+
+      <fieldset>
         <legend>Buying</legend>
         <div class="field">
           <label for="rvPrice">Purchase price</label>
@@ -85,6 +104,10 @@
           <label for="rvRentRise">Rent rises by</label>
           <div class="control"><input id="rvRentRise" type="text" inputmode="decimal"><span class="affix">% a year</span></div>
         </div>
+        <label class="check" for="rvInvest"><input type="checkbox" id="rvInvest" checked><span>The renter invests the
+          difference every month</span></label>
+        <p class="hint">This is the assumption that makes renting competitive. Untick it and the renter's spare cash
+          is simply spent, which for many households is the honest version.</p>
       </fieldset>
 
       <details id="rvAssumptions">
@@ -112,11 +135,18 @@
     <div class="results">
       <section class="hero" aria-label="The answer">
         <div>
-          <p class="hero-label">Buying pulls ahead</p>
+          <p class="hero-label" id="rvHorizonLabel">After the years you plan to stay</p>
           <p class="hero-figure" id="rvHeadline"></p>
           <p class="hero-sub" id="rvHeadSub"></p>
         </div>
         <dl class="hero-break" id="rvBreak"></dl>
+      </section>
+
+      <section class="kpis" aria-label="At your time horizon">
+        <div class="kpi"><span class="k">Break-even</span><span class="v" id="rvBreakEven"></span><span class="s" id="rvBreakEvenS"></span></div>
+        <div class="kpi"><span class="k">Monthly difference</span><span class="v" id="rvGap"></span><span class="s" id="rvGapS"></span></div>
+        <div class="kpi"><span class="k">If you buy</span><span class="v" id="rvBuyNet"></span><span class="s">Net position when you sell</span></div>
+        <div class="kpi"><span class="k">If you rent</span><span class="v" id="rvRentNet"></span><span class="s">Savings and investments</span></div>
       </section>
 
       <section class="kpis" aria-label="Key figures">
@@ -141,6 +171,18 @@
         <p class="hint">Buying counts the property's value less what you still owe and what it costs to sell, plus
           anything you invested when the rent was higher than the mortgage. Renting counts the deposit and fees you
           did not spend, invested, plus whatever you saved each month buying would have cost you.</p>
+      </section>
+
+      <section class="panel card" aria-labelledby="rvSensH">
+        <div class="card-head">
+          <h2 id="rvSensH">How much the assumptions matter</h2>
+          <span class="aside">Net position at your horizon, buying less renting</span>
+        </div>
+        <div class="scroll" style="max-height:none">
+          <table class="amort" id="rvSens"><thead id="rvSensHead"></thead><tbody id="rvSensBody"></tbody></table>
+        </div>
+        <p class="hint">Each row changes one assumption and leaves the rest alone. A green figure means buying is
+          ahead at your horizon. If small changes flip the sign, treat the headline with caution.</p>
       </section>
 
       <section class="panel card" aria-labelledby="rvExplainH">
@@ -201,10 +243,20 @@ if (typeof document !== 'undefined') (function () {
   var DEFAULTS = {
     price: 900000, status: 'standard', downPct: 20, rate: 7.75, term: 25,
     strata: 550, ins: 0.35, upkeep: 0.5, rent: 0, rentRise: 3,
-    growth: 3, ret: 5, sell: 6
+    growth: 3, ret: 5, sell: 6, years: 7, band: 'base', invest: true
+  };
+  /* Three sets of assumptions, so the result is a range rather than a forecast.
+     None of these is a prediction; they bracket what is plausible. */
+  var BANDS = {
+    cons: { growth: 1, ret: 6, rentRise: 2, sell: 7,
+            text: 'Property rises slowly, investments do well, rent rises slowly — the arithmetic least kind to buying.' },
+    base: { growth: 3, ret: 5, rentRise: 3, sell: 6,
+            text: 'Property and rent both rise around 3%, investments return 5%, selling costs 6%.' },
+    opt:  { growth: 5, ret: 4, rentRise: 4, sell: 5,
+            text: 'Property rises faster than investments return and rent climbs — the arithmetic kindest to buying.' }
   };
   var MONEY = ['price', 'downAmt', 'strata', 'rent'];
-  var PLAIN = ['downPct', 'rate', 'term', 'ins', 'upkeep', 'rentRise', 'growth', 'ret', 'sell'];
+  var PLAIN = ['downPct', 'rate', 'term', 'ins', 'upkeep', 'rentRise', 'growth', 'ret', 'sell', 'years'];
   var S = {}, last = null, hoverIdx = null, G = null, downMaster = 'pct';
 
   /* ---------- helpers ---------- */
@@ -277,6 +329,10 @@ if (typeof document !== 'undefined') (function () {
     $('rvGrowth').value = trimNum(st.growth, 2);
     $('rvReturn').value = trimNum(st.ret, 2);
     $('rvSell').value = trimNum(st.sell, 2);
+    $('rvYears').value = String(st.years || 7);
+    $('rvInvest').checked = st.invest !== false;
+    var bandRadio = document.querySelector('input[name="rvBand"][value="' + (st.band || 'base') + '"]');
+    if (bandRadio) bandRadio.checked = true;
     downMaster = 'pct';
   }
   function readForm() {
@@ -293,6 +349,18 @@ if (typeof document !== 'undefined') (function () {
     S.growth = clamp(parseNum($('rvGrowth').value), -10, 20);
     S.ret = clamp(parseNum($('rvReturn').value), 0, 20);
     S.sell = clamp(parseNum($('rvSell').value), 0, 20);
+    S.years = clamp(Math.round(parseNum($('rvYears').value)) || 1, 1, YEARS);
+    S.invest = $('rvInvest').checked;
+    var b = document.querySelector('input[name="rvBand"]:checked');
+    S.band = b ? b.value : 'custom';
+  }
+  // choosing a band writes its assumptions into the fields, which stay editable
+  function applyBand(name) {
+    var b = BANDS[name]; if (!b) return;
+    $('rvGrowth').value = trimNum(b.growth, 2);
+    $('rvReturn').value = trimNum(b.ret, 2);
+    $('rvRentRise').value = trimNum(b.rentRise, 2);
+    $('rvSell').value = trimNum(b.sell, 2);
   }
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* ignore */ }
@@ -345,7 +413,8 @@ if (typeof document !== 'undefined') (function () {
       if (m === 1) firstBuyCost = buyCost;
 
       var diff = buyCost - rent;
-      if (diff > 0) renterPot += diff; else buyerPot += -diff;
+      // only an investing renter banks the difference; otherwise it is simply spent
+      if (diff > 0) { if (S.invest) renterPot += diff; } else buyerPot += -diff;
       buyerPot *= (1 + mRet); renterPot *= (1 + mRet);
       value *= (1 + mGrow);
       buyPaid += buyCost; rentPaid += rent;
@@ -371,12 +440,22 @@ if (typeof document !== 'undefined') (function () {
     var r = last = model();
     var be = r.breakeven;
 
-    $('rvHeadline').textContent = be === null ? 'Not within ' + YEARS + ' years'
-      : be <= 12 ? 'In the first year' : 'Year ' + Math.ceil(be / 12);
-    $('rvHeadSub').textContent = be === null
-      ? 'On these assumptions renting and investing the difference stays ahead for the whole ' + YEARS + ' years.'
-      : 'From the ' + ordinal(Math.ceil(be / 12)) + ' year on, owning leaves you better off than renting and investing the difference.';
-    document.querySelector('.hero-label').textContent = be === null ? 'Renting stays ahead' : 'Buying pulls ahead';
+    var at = Math.min(r.buyNet.length, S.years * 12) - 1;
+    var buyNetAt = r.buyNet[at], rentNetAt = r.rentNet[at], gapAt = buyNetAt - rentNetAt;
+    $('rvHorizonLabel').textContent = 'After ' + S.years + (S.years === 1 ? ' year' : ' years') + ', buying leaves you';
+    $('rvHeadline').textContent = (gapAt >= 0 ? '+' : '−') + money(Math.abs(gapAt)).replace('−', '');
+    $('rvHeadSub').textContent = gapAt >= 0
+      ? 'better off than renting over the same period, on these assumptions.'
+      : 'worse off than renting over the same period — the costs of buying and selling are not recovered by then.';
+    $('rvBreakEven').textContent = be === null ? 'Not in ' + YEARS + ' yrs' : 'Year ' + Math.ceil(be / 12);
+    $('rvBreakEvenS').textContent = be === null
+      ? 'Renting stays ahead throughout'
+      : (Math.ceil(be / 12) <= S.years ? 'Inside your ' + S.years + '-year horizon' : 'Beyond the ' + S.years + ' years you plan to stay');
+    $('rvBuyNet').textContent = money(buyNetAt);
+    $('rvRentNet').textContent = money(rentNetAt);
+    var monthGap = r.firstBuyCost - S.rent;
+    $('rvGap').textContent = money(Math.abs(monthGap));
+    $('rvGapS').textContent = monthGap > 0 ? 'more a month to own, at the start' : 'less a month to own, at the start';
 
     var hb = $('rvBreak'); hb.textContent = '';
     [['Mortgage payment', r.pmt], ['Strata fees', S.strata],
@@ -404,7 +483,9 @@ if (typeof document !== 'undefined') (function () {
     $('rvChartAside').textContent = be === null ? 'Renting stays ahead through year ' + YEARS
       : 'They cross in year ' + Math.ceil(be / 12);
 
-    renderExplain(r); renderYears(r); drawChart(); save();
+    $('rvBandHint').textContent = BANDS[S.band] ? BANDS[S.band].text
+      : 'Your own assumptions. Pick a set above to start from one of three.';
+    renderExplain(r); renderYears(r); renderSensitivity(r); drawChart(); save();
   }
   function dlRow(k, v, cls) {
     var d = el('div', cls); d.appendChild(el('dt', null, k)); d.appendChild(el('dd', null, v)); return d;
@@ -423,8 +504,9 @@ if (typeof document !== 'undefined') (function () {
     p1.appendChild(el('strong', null, 'Buying costs ' + money(r.upfront) + ' before you move in. '));
     p1.appendChild(document.createTextNode(
       'That is ' + money(r.down) + ' of deposit and ' + money(r.close.total) + ' of duty and fees, of which '
-      + money(r.close.transferDuty + r.close.mortgageDuty) + ' is stamp duty. A renter keeps that money, and this '
-      + 'comparison has them invest it at ' + trimNum(S.ret, 2) + '% a year.'));
+      + money(r.close.transferDuty.amount + r.close.mortgageDuty.amount) + ' is stamp duty. A renter keeps that money, and this '
+      + 'comparison has them ' + (S.invest ? 'invest it at ' + trimNum(S.ret, 2) + '% a year, along with what \n        they save each month while renting is cheaper.' : 'invest that lump sum at ' + trimNum(S.ret, 2)
+        + '% a year but spend the monthly difference, which is what you have told it.')));
     box.appendChild(p1);
 
     var p2 = el('p');
@@ -451,9 +533,9 @@ if (typeof document !== 'undefined') (function () {
     if (S.status !== 'standard') {
       box.appendChild(el('p', 'hint', 'This includes the Caymanian concession you chose, which is why the duty is '
         + 'lower than the standard 7.5%. Concessions need an approved application to Lands & Survey.'));
-    } else if (r.close.transferDuty > 0) {
+    } else if (r.close.transferDuty.amount > 0) {
       box.appendChild(el('p', 'hint', 'At the standard rate, stamp duty alone is '
-        + money(r.close.transferDuty) + '. A Caymanian first-time buyer may pay nothing on a home up to CI$550,000 — '
+        + money(r.close.transferDuty.amount) + '. A Caymanian first-time buyer may pay nothing on a home up to CI$550,000 — '
         + 'change the status on the left to see it.'));
     }
     var p3 = el('p', 'hint');
@@ -486,6 +568,51 @@ if (typeof document !== 'undefined') (function () {
       frag.appendChild(tr);
     });
     body.appendChild(frag);
+  }
+
+  /* How far the answer moves when one assumption moves. Re-runs the whole model
+     rather than nudging the headline, so every figure stays internally consistent. */
+  function renderSensitivity(base) {
+    var head = $('rvSensHead'), body = $('rvSensBody');
+    head.textContent = ''; body.textContent = '';
+    var at = Math.min(base.buyNet.length, S.years * 12) - 1;
+    var baseGap = base.buyNet[at] - base.rentNet[at];
+
+    var hr = el('tr');
+    ['If this changes', 'Buying is', 'Against your assumptions'].forEach(function (h) {
+      var th = el('th', null, h); th.scope = 'col'; hr.appendChild(th);
+    });
+    head.appendChild(hr);
+
+    var saved = {};
+    ['growth', 'ret', 'rentRise', 'rent', 'sell'].forEach(function (k) { saved[k] = S[k]; });
+    function row(label, key, delta) {
+      S[key] = saved[key] + delta;
+      var r, gap;
+      try {
+        r = model();
+        var i = Math.min(r.buyNet.length, S.years * 12) - 1;
+        gap = r.buyNet[i] - r.rentNet[i];
+      } finally {
+        S[key] = saved[key];          // always put the assumption back
+      }
+      var tr = el('tr');
+      tr.appendChild(el('td', null, label));
+      var td = el('td', null, (gap >= 0 ? '+' : '\u2212') + money(Math.abs(gap)));
+      td.style.fontWeight = '600';
+      td.style.color = gap >= 0 ? 'var(--good-ink)' : 'var(--ink-2)';
+      tr.appendChild(td);
+      var move = gap - baseGap;
+      tr.appendChild(el('td', null, (move >= 0 ? '+' : '\u2212') + money(Math.abs(move))));
+      body.appendChild(tr);
+    }
+    row('Property rises 1% a year slower', 'growth', -1);
+    row('Property rises 1% a year faster', 'growth', 1);
+    row('Investments return 1% more', 'ret', 1);
+    row('Investments return 1% less', 'ret', -1);
+    row('Rent rises 1% a year faster', 'rentRise', 1);
+    row('Rent is CI$500 a month higher', 'rent', 500);
+    row('Selling costs 2% more', 'sell', 2);
   }
 
   /* ---------- chart ---------- */
@@ -579,14 +706,23 @@ if (typeof document !== 'undefined') (function () {
   /* ---------- events ---------- */
   function bind() {
     var form = $('rvForm');
+    var BAND_FIELDS = ['rvGrowth', 'rvReturn', 'rvRentRise', 'rvSell'];
     form.addEventListener('input', function (e) {
       var id = e.target.id;
+      if (BAND_FIELDS.indexOf(id) >= 0) {
+        var checked = document.querySelector('input[name="rvBand"]:checked');
+        if (checked) checked.checked = false;     // your own numbers, not a band
+      }
       if (id === 'rvDownPct') syncDown('pct');
       else if (id === 'rvDownAmt') syncDown('amt');
       else if (id === 'rvPrice') syncDown();
       render();
     });
-    form.addEventListener('change', render);
+    form.addEventListener('change', function (e) {
+      // picking a band writes its assumptions into the fields, which stay editable
+      if (e.target && e.target.name === 'rvBand') applyBand(e.target.value);
+      render();
+    });
     form.addEventListener('focusout', function (e) {
       var t = e.target;
       if (t && t.matches && t.matches('[data-money]')) {

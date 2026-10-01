@@ -344,6 +344,14 @@
         </details>
       </div>
       <div class="field">
+        <label for="lxMaxMonthly">Most a month</label>
+        <div class="control"><span class="affix cur">CI$</span><input id="lxMaxMonthly" type="text" inputmode="decimal" data-money placeholder="Any"></div>
+      </div>
+      <div class="field">
+        <label for="lxMaxCash">Most cash to close</label>
+        <div class="control"><span class="affix cur">CI$</span><input id="lxMaxCash" type="text" inputmode="decimal" data-money placeholder="Any"></div>
+      </div>
+      <div class="field">
         <label for="lxBeds">Bedrooms</label>
         <div class="control"><select id="lxBeds">
           <option value="0">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option>
@@ -1528,11 +1536,29 @@ if (typeof document !== 'undefined') (function () {
     } else banner.hidden = true;
   }
 
+  /* What a listing would cost on the visitor's settings. Strata is never in the
+     listing data, so it stays unknown rather than being counted as nothing. */
+  function listingCost(l) {
+    var isLand = l.ptype === 'land';
+    var lc = compute({ price: l.price_kyd, ptype: isLand ? 'land' : 'home', light: true });
+    var price = l.price_kyd;
+    var insAnnual = isLand ? 0 : price * S.insPct / 100;
+    lc.own = Core.monthlyOwnership({
+      pmt: lc.am.pmt,
+      strata: isLand ? 0 : (l.ptype === 'condo' ? null : 0),   // a condo has fees we do not know
+      insuranceAnnual: insAnnual,
+      lifeMonthly: toKyd(S.life),
+      upkeepAnnual: isLand ? 0 : price * S.upkeepPct / 100
+    });
+    return lc;
+  }
   function scheduleListings() { clearTimeout(LX.timer); LX.timer = setTimeout(renderListings, 120); }
 
   function renderListings() {
     if (!LX.data) return;
     var c = last, rg = rangeFor(c), t = $('lxType').value, beds = +$('lxBeds').value, sort = $('lxSort').value;
+    var maxMonthly = Math.max(0, parseNum($('lxMaxMonthly').value));
+    var maxCash = Math.max(0, parseNum($('lxMaxCash').value));
     var areaKeys = Object.keys(LX.areas), anyArea = areaKeys.length > 0;
     var all = LX.data.listings;
     var items = LX.savedOnly
@@ -1544,6 +1570,11 @@ if (typeof document !== 'undefined') (function () {
           if (!typeOk(l, t)) return false;
           if (anyArea && !LX.areas[l.location]) return false;
           if (beds && !(l.beds >= beds)) return false;
+          if (maxMonthly > 0 || maxCash > 0) {
+            var lc = listingCost(l);
+            if (maxMonthly > 0 && lc.own.total > toKyd(maxMonthly)) return false;
+            if (maxCash > 0 && lc.cash > toKyd(maxCash)) return false;
+          }
           var srcs = l.sources || [l.source];
           return srcs.some(function (n) { return !LX.off[n]; });
         });
@@ -1584,7 +1615,9 @@ if (typeof document !== 'undefined') (function () {
       cnt.appendChild(el('strong', null, items.length + (items.length === 1 ? ' listing' : ' listings')));
       cnt.appendChild(document.createTextNode(' match, ' + rg.label + '.'));
     }
-    $('lxBasis').textContent = 'Payments use your rate, term and ' + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : 'down payment') + '.';
+    $('lxBasis').textContent = 'On your settings: ' + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : money(toKyd(S.downAmt)) + ' down')
+      + ' at ' + trimNum(S.rate, 3) + '% over ' + S.term + ' yrs, insurance ' + trimNum(S.insPct, 2)
+      + '% and upkeep ' + trimNum(S.upkeepPct, 2) + '% of price. Strata fees are not in listing data.';
     if (!items.length && LX.savedOnly) {
       var e3 = el('div', 'panel lx-empty'); e3.style.gridColumn = '1/-1';
       e3.appendChild(el('strong', null, 'Nothing saved yet'));
@@ -1624,7 +1657,7 @@ if (typeof document !== 'undefined') (function () {
     ph.appendChild(el('b', null, l.location || 'Cayman Islands')); return ph;
   }
   function card(l, c) {
-    var lc = compute({ price: l.price_kyd, ptype: l.ptype === 'land' ? 'land' : 'home', light: true });
+    var lc = listingCost(l);
     var art = el('article', 'lx-card' + (LX.current === l.url ? ' current' : ''));
     var ph = el('div', 'lx-photo');
     if (l.image) {
@@ -1661,11 +1694,29 @@ if (typeof document !== 'undefined') (function () {
     art.appendChild(body);
 
     var calc = el('div', 'lx-calc');
-    [['Monthly payment', money(lc.am.pmt)], ['Cash to close', money(lc.cash)]].forEach(function (r) {
+    // A listing never tells us its strata fee, so the monthly figure is a floor, not a total.
+    var monthlyLabel = lc.own.complete ? 'Monthly to own' : 'Monthly, from';
+    var cashRow = ['Cash to close', money(lc.cash)];
+    if (c.savings > 0) {
+      var short = lc.cash - c.savings;
+      cashRow = short > 0 ? ['Cash short by', money(short)] : ['Cash to close', money(lc.cash)];
+    }
+    [[monthlyLabel, money(lc.own.total)], cashRow].forEach(function (r) {
       var d = el('div'); d.appendChild(el('span', 'k', r[0])); d.appendChild(el('span', 'v', r[1])); calc.appendChild(d);
     });
     art.appendChild(calc);
+    if (!lc.own.complete) {
+      var miss = el('div', 'lx-missing');
+      miss.textContent = lc.own.unknown.join(' and ').toLowerCase() + ' not listed — the real cost is higher';
+      art.appendChild(miss);
+    }
 
+    var when = l.scraped_at || (LX.data && LX.data.generated_at);
+    if (when) {
+      var seen = el('div', 'lx-when');
+      seen.textContent = 'Checked ' + fmtDate(when).replace(/,.*$/, '') + ' · ' + (l.sources || [l.source])[0];
+      art.appendChild(seen);
+    }
     var act = el('div', 'lx-actions');
     var use = el('button', 'btn primary', 'Run the numbers'); use.type = 'button'; use.dataset.i = l._i;
     use.setAttribute('aria-label', 'Load ' + (l.title || 'this listing') + ' into the calculator');
@@ -1804,7 +1855,7 @@ if (typeof document !== 'undefined') (function () {
     t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3800);
   }
   function bindListings() {
-    ['lxRange', 'lxType', 'lxBeds', 'lxSort'].forEach(function (id) {
+    ['lxRange', 'lxType', 'lxBeds', 'lxSort', 'lxMaxMonthly', 'lxMaxCash'].forEach(function (id) {
       $(id).addEventListener('change', function () { if (id === 'lxRange') LX.rangeTouched = true; LX.shown = PAGE; savePrefs(); renderListings(); });
     });
     var wrap = $('lxAreaWrap');

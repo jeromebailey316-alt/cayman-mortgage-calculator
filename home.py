@@ -96,15 +96,25 @@ def featured_cards(data: dict, s: dict) -> str:
     return "".join(cards)
 
 
+def _cell(stat: dict) -> str:
+    """Median with its sample size, because a median of three listings is not a market."""
+    if not stat["n"]:
+        return '<span class="none">none listed</span>'
+    size = f'<span class="n">{stat["n"]}</span>'
+    if stat["n"] < 5:
+        return f'{money(stat["median"])} {size}<span class="thin"> few</span>'
+    return f'{money(stat["median"])} {size}'
+
+
 def district_rows(s: dict) -> str:
     rows = []
     for d in s["districts"]:
         rows.append(
-            "<tr><th scope=\"row\">{name}</th><td>{count}</td><td>{homes}</td><td>{land}</td><td>{median}</td>"
-            '<td><a href="/calculator/?district={slug}#listings">See →</a></td></tr>'.format(
-                slug=quote(d["name"]),
-                name=html.escape(d["name"]), count=f"{d['count']:,}", homes=f"{d['homes']:,}",
-                land=f"{d['land']:,}", median=money(d["median"])))
+            '<tr><th scope="row">{name}</th><td>{house}</td><td>{condo}</td><td>{land}</td>'
+            '<td><a href="/calculator/?district={slug}#listings">See {count} →</a></td></tr>'.format(
+                slug=quote(d["name"]), name=html.escape(d["name"]),
+                house=_cell(d["house"]), condo=_cell(d["condo"]), land=_cell(d["land"]),
+                count=f"{d['count']:,}"))
     return "".join(rows)
 
 

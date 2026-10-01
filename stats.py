@@ -61,12 +61,18 @@ def summarise(data: dict) -> dict:
     districts: dict[str, list] = {}
     for l in ls:
         districts.setdefault(district_of(l.get("location", "")), []).append(l)
+    def by_type(rows, t):
+        sel = [r for r in rows if (r["ptype"] == t if t != "house" else r["ptype"] == "house")]
+        return {"n": len(sel), "median": _median([r["price_kyd"] for r in sel])}
+
     out["districts"] = sorted(
         ({"name": d,
           "count": len(v),
           "median": _median([x["price_kyd"] for x in v]),
-          "homes": sum(1 for x in v if x["ptype"] in HOME_TYPES),
-          "land": sum(1 for x in v if x["ptype"] == "land")}
+          "house": by_type(v, "house"),
+          "condo": by_type(v, "condo"),
+          "land": by_type(v, "land"),
+          "homes": sum(1 for x in v if x["ptype"] in HOME_TYPES)}
          for d, v in districts.items() if d != "Elsewhere"),
         key=lambda d: -d["count"])
     return out
