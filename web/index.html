@@ -104,9 +104,46 @@
         <div class="field">
           <label for="savings">Cash you have for the purchase <span style="font-weight:400">(optional)</span></label>
           <div class="control"><span class="affix cur">CI$</span><input id="savings" type="text" inputmode="decimal" data-money placeholder="Down payment plus closing costs"></div>
-          <p class="hint">Add income, cash or both to work out the highest price you can take on, and to rank listings against it.</p>
+          <p class="hint">Add income, cash or both and the page works out what you can take on. Nothing is
+            assumed about your household until you enter it.</p>
         </div>
       </fieldset>
+
+      <details id="householdDetails">
+        <summary>Your household in detail</summary>
+        <div class="body">
+          <p class="hint">Optional, and it changes the answer: a lender looks at your gross income, but what you can
+            comfortably carry depends on what is left after everything else. Figures stay in this browser.</p>
+          <div class="field">
+            <label for="takeHome">Take-home pay, all earners</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="takeHome" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="debts">Loan and credit card payments</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="debts" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+            <p class="hint">Car, personal and student loans, and what you actually pay on cards each month.</p>
+          </div>
+          <div class="field">
+            <label for="commitments">Childcare and other commitments</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="commitments" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="living">Everything else you live on</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="living" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+            <p class="hint">Food, power, water, fuel, phone, insurance, schooling. Leave out rent or mortgage, and
+              leave out anything you entered above.</p>
+          </div>
+          <div class="field">
+            <label for="saveTarget">Still want to save each month</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="saveTarget" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="reserve">Cash to keep back after closing</label>
+            <div class="control"><span class="affix cur">CI$</span><input id="reserve" type="text" inputmode="decimal" data-money></div>
+            <p class="hint">An emergency fund, moving costs, furniture. This is held out of the deposit.</p>
+          </div>
+        </div>
+      </details>
 
       <fieldset>
         <legend>Monthly running costs</legend>
@@ -120,10 +157,26 @@
             <div class="control"><span class="affix cur">CI$</span><input id="life" type="text" inputmode="decimal" data-money><span class="affix">/mo</span></div>
           </div>
         </div>
+        <label class="check" for="strataInsured"><input type="checkbox" id="strataInsured"><span>Building insurance is included in the strata fee</span></label>
+        <div class="field" id="insField">
+          <span class="lab" id="ins-lab">Building insurance</span>
+          <div class="seg small" role="radiogroup" aria-labelledby="ins-lab" style="margin-bottom:8px">
+            <input type="radio" name="insMode" id="insMode-pct" value="pct" checked><label for="insMode-pct">Estimate</label>
+            <input type="radio" name="insMode" id="insMode-amt" value="amt"><label for="insMode-amt">My quote</label>
+          </div>
+          <div class="row even">
+            <div class="control" id="insPctWrap"><input id="insPct" type="text" inputmode="decimal" aria-label="Insurance as a percentage of price"><span class="affix">% of price a year</span></div>
+            <div class="control" id="insAmtWrap" hidden><span class="affix cur">CI$</span><input id="insAmt" type="text" inputmode="decimal" data-money aria-label="Insurance quote a year"><span class="affix">/yr</span></div>
+          </div>
+          <p class="hint" id="insHint">Banks require buildings cover including hurricane. Premiums are rated on the
+            cost to rebuild, which on an expensive lot is well below the purchase price — so a percentage of price
+            overstates it. Enter a real quote when you have one.</p>
+        </div>
         <div class="field">
-          <label for="insPct">Home insurance, yearly premium</label>
-          <div class="control"><input id="insPct" type="text" inputmode="decimal"><span class="affix">% of price</span></div>
-          <p class="hint" id="insHint">Banks require buildings cover including hurricane, plus life cover assigned to the loan. For a condo the strata usually insures the building, so set this lower and enter strata fees instead.</p>
+          <label for="upkeepPct">Maintenance and repairs</label>
+          <div class="control"><input id="upkeepPct" type="text" inputmode="decimal"><span class="affix">% of price a year</span></div>
+          <p class="hint">A planning allowance, not a bill: roughly 1% a year for a house, 0.5% for a condo where
+            strata covers the outside. There is no Cayman-specific published figure for this.</p>
         </div>
       </fieldset>
 
@@ -170,9 +223,9 @@
 
     <!-- ================= RESULTS ================= -->
     <div class="results">
-      <section class="hero" aria-label="Monthly payment">
+      <section class="hero" aria-label="Monthly cost to own">
         <div>
-          <p class="hero-label">Monthly payment</p>
+          <p class="hero-label" id="heroLabel">Estimated monthly cost to own</p>
           <p class="hero-figure" id="outPayment"></p>
           <p class="hero-sub" id="outPaymentSub"></p>
         </div>
@@ -183,11 +236,11 @@
         <div class="kpi"><span class="k">Cash to close</span><span class="v" id="kCash"></span><span class="s" id="kCashS"></span></div>
         <div class="kpi"><span class="k">Closing costs</span><span class="v" id="kCosts"></span><span class="s" id="kCostsS"></span></div>
         <div class="kpi"><span class="k">Loan amount</span><span class="v" id="kLoan"></span><span class="s" id="kLoanS"></span></div>
-        <div class="kpi"><span class="k">Total interest</span><span class="v" id="kInt"></span><span class="s" id="kIntS"></span></div>
+        <div class="kpi"><span class="k">Cash left after closing</span><span class="v" id="kLeft"></span><span class="s" id="kLeftS"></span></div>
       </section>
 
       <section class="panel card" id="budgetCard" aria-labelledby="budH" hidden>
-        <div class="card-head"><h2 id="budH">What you can buy</h2><span class="aside" id="budAside"></span></div>
+        <div class="card-head"><h2 id="budH">What you can afford</h2><span class="aside" id="budAside"></span></div>
         <div class="budget" id="budgetGrid"></div>
         <div id="budgetNote"></div>
       </section>
@@ -363,7 +416,7 @@
 </div>
 
 <div class="dock" aria-hidden="true">
-  <div><span class="k">Monthly</span><span class="v" id="dockPay"></span></div>
+  <div><span class="k">Monthly to own</span><span class="v" id="dockPay"></span></div>
   <div><span class="k">Cash to close</span><span class="v" id="dockCash"></span></div>
 </div>
 
@@ -378,7 +431,9 @@ if (typeof document !== 'undefined') (function () {
   var DEFAULTS = {
     cur: 'KYD', price: 600000, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
     downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.75, term: 25, extra: 0,
-    strata: 0, life: 0, insPct: 1, legalPct: 1, bankPct: 1, valuation: 700, inspection: 750,
+    strata: 0, life: 0, insPct: 1, insAmt: 0, insMode: 'pct', strataInsured: false, upkeepPct: 1,
+    takeHome: 0, debts: 0, commitments: 0, living: 0, saveTarget: 0, reserve: 0,
+    legalPct: 1, bankPct: 1, valuation: 700, inspection: 750,
     chattels: 0, insAtClose: true, fx: 0.82, showTable: false, tmode: 'year'
   };
   // A different starting point each day, so the page doesn't always open on the same
@@ -415,8 +470,9 @@ if (typeof document !== 'undefined') (function () {
     st.downAmt = Math.round(st.price * st.downPct / 100);
     return st;
   }
-  var MONEY = ['price', 'downAmt', 'extra', 'income', 'savings', 'strata', 'life', 'valuation', 'inspection', 'chattels'];
-  var PLAIN = ['downPct', 'rate', 'term', 'insPct', 'legalPct', 'bankPct', 'fx'];
+  var MONEY = ['price', 'downAmt', 'extra', 'income', 'savings', 'strata', 'life', 'valuation', 'inspection',
+               'chattels', 'insAmt', 'takeHome', 'debts', 'commitments', 'living', 'saveTarget', 'reserve'];
+  var PLAIN = ['downPct', 'rate', 'term', 'insPct', 'upkeepPct', 'legalPct', 'bankPct', 'fx'];
   var $ = function (id) { return document.getElementById(id); };
   var S = {}, curNow = 'KYD', last = null, hoverIdx = null, showingExample = false;
   // Which fields the visitor has actually filled in. An example's figures are
@@ -471,6 +527,8 @@ if (typeof document !== 'undefined') (function () {
     MONEY.forEach(function (k) { $(k).value = st[k] ? group(st[k], 0) : (k === 'price' || k === 'downAmt' ? '0' : ''); });
     PLAIN.forEach(function (k) { $(k).value = trimNum(st[k], k === 'fx' ? 4 : 3); });
     $('insAtClose').checked = !!st.insAtClose;
+    $('strataInsured').checked = !!st.strataInsured;
+    setRadio('insMode', st.insMode || 'pct');
     $('showTable').checked = !!st.showTable;
     S.downMaster = st.downMaster || 'pct';
     syncCurrencyLabels();
@@ -488,6 +546,12 @@ if (typeof document !== 'undefined') (function () {
     S.ptype = radio('ptype'); S.joint = radio('joint'); S.status = $('status').value;
     S.island = $('island').value;
     S.insAtClose = $('insAtClose').checked; S.showTable = $('showTable').checked; S.tmode = radio('tmode');
+    S.strataInsured = $('strataInsured').checked;
+    S.insMode = radio('insMode') || 'pct';
+    S.upkeepPct = clamp(parseNum($('upkeepPct').value), 0, 10);
+    $('insPctWrap').hidden = S.insMode !== 'pct';
+    $('insAmtWrap').hidden = S.insMode === 'pct';
+    $('insField').hidden = S.strataInsured;
   }
   function save() {
     try {
@@ -557,7 +621,11 @@ if (typeof document !== 'undefined') (function () {
     var am = ov.light ? { pmt: Core.payment(loan, S.rate / 100, Math.max(1, Math.round(S.term * 12))) }
                       : Core.amortise({ loan: loan, rate: S.rate / 100, years: S.term, extra: toKyd(S.extra) });
     var isHome = ptype === 'home';
-    var insYear = isHome ? price * S.insPct / 100 : 0;
+    // insurance: a quote if they gave one, an estimate from the percentage otherwise,
+    // nothing at all when the strata covers the building
+    var insYear = !isHome || S.strataInsured ? 0
+      : (S.insMode === 'amt' ? (hasEntered('insAmt') ? toKyd(S.insAmt) : null) : price * S.insPct / 100);
+    var insKnown = insYear != null;
     var items = [
       { g: 1, label: 'Down payment', note: price > 0 ? pct(down / price, 1) + ' of the price' : '', v: down },
       { g: 2, label: 'Stamp duty on the transfer', note: dutyShort(td, dutiable), v: td.amount },
@@ -568,12 +636,27 @@ if (typeof document !== 'undefined') (function () {
       { g: 3, label: 'Valuation report', note: 'Required by the lender', v: loan > 0 ? toKyd(S.valuation) : 0 },
       { g: 3, label: 'Inspection or survey', note: '', v: toKyd(S.inspection) }
     ];
-    if (isHome && S.insAtClose) items.push({ g: 3, label: "First year's home insurance", note: pct(S.insPct / 100) + ' of the price', v: insYear });
+    if (isHome && S.insAtClose && insKnown && insYear > 0) {
+      items.push({ g: 3, label: "First year's building insurance",
+                   note: S.insMode === 'amt' ? 'Your quote' : pct(S.insPct / 100) + ' of the price, estimated',
+                   v: insYear });
+    }
     var groups = [0, 0, 0, 0];
     items.forEach(function (it) { groups[it.g] += it.v; });
     var costs = groups[2] + groups[3];
+    var upkeepYear = isHome ? price * S.upkeepPct / 100 : 0;
+    var own = Core.monthlyOwnership({
+      pmt: am.pmt, strata: toKyd(S.strata),
+      insuranceAnnual: insKnown ? insYear : null,
+      lifeMonthly: toKyd(S.life),
+      upkeepAnnual: upkeepYear,
+      strataIncludesInsurance: S.strataInsured
+    });
+    var cashNeeded = down + costs;
     return { price: price, down: down, loan: loan, dutiable: dutiable, chattels: chattels, td: td, md: md, am: am,
-             items: items, groups: groups, costs: costs, cash: down + costs,
+             own: own, upkeepMonth: upkeepYear / 12, insKnown: insKnown,
+             cashLeft: hasEntered('savings') ? toKyd(S.savings) - cashNeeded : null,
+             items: items, groups: groups, costs: costs, cash: cashNeeded,
              insMonth: insYear / 12, strata: toKyd(S.strata), life: toKyd(S.life), extra: toKyd(S.extra),
              income: hasEntered('income') ? toKyd(S.income) : 0,
              savings: hasEntered('savings') ? toKyd(S.savings) : 0 };
@@ -622,19 +705,32 @@ if (typeof document !== 'undefined') (function () {
     $('insHint').hidden = S.ptype === 'land';
 
     // hero
-    var pay = c.am.pmt, whole = Math.floor(disp(pay) + 1e-9), cents = Math.round((disp(pay) - whole) * 100);
+    var headline = c.own.total, pay = c.am.pmt;
+    var whole = Math.floor(disp(headline) + 1e-9), cents = Math.round((disp(headline) - whole) * 100);
     if (cents === 100) { whole += 1; cents = 0; }
     var hf = $('outPayment'); hf.textContent = sym() + group(whole, 0);
     hf.appendChild(el('span', 'cents', '.' + (cents < 10 ? '0' : '') + cents));
-    $('outPaymentSub').textContent = c.loan > 0
-      ? 'Principal and interest on ' + money(c.loan) + ' over ' + S.term + (S.term === 1 ? ' year' : ' years') + ' at ' + trimNum(S.rate, 3) + '%'
-      : 'No loan: this is a cash purchase';
+    $('heroLabel').textContent = c.own.complete ? 'Estimated monthly cost to own' : 'Known monthly costs';
+    $('outPaymentSub').textContent = (c.loan > 0
+      ? 'Including ' + money(pay) + ' of principal and interest on ' + money(c.loan) + ' over ' + S.term
+        + (S.term === 1 ? ' year' : ' years') + ' at ' + trimNum(S.rate, 3) + '%'
+      : 'No loan: this is a cash purchase')
+      + (c.own.complete ? '' : '. ' + c.own.unknown.join(' and ') + ' not entered, so this is not the full cost.');
     var hb = $('heroBreak'); hb.textContent = '';
-    var allIn = pay + c.extra + c.insMonth + c.strata + c.life;
-    [['Principal and interest', pay], ['Extra payment', c.extra], ['Home insurance', c.insMonth], ['Strata fees', c.strata], ['Life insurance', c.life]]
-      .forEach(function (r, i) { if (i === 0 || r[1] > 0) hb.appendChild(dlRow(r[0], money(r[1]))); });
-    hb.appendChild(dlRow('All-in monthly cost', money(allIn), 'total'));
-    $('dockPay').textContent = money(pay); $('dockCash').textContent = money(c.cash);
+    var allIn = c.own.total + c.extra;
+    c.own.parts.forEach(function (part) {
+      if (part.amount === null) {
+        hb.appendChild(dlRow(part.label, 'not entered'));
+      } else if (part.key === 'pmt' || part.amount > 0) {
+        var label = part.label;
+        if (part.key === 'insurance' && c.own.strataIncludesInsurance) label += ' (in strata)';
+        if (part.key === 'insurance' && c.insKnown && S.insMode === 'pct') label += ' (estimate)';
+        hb.appendChild(dlRow(label, money(part.amount)));
+      }
+    });
+    if (c.extra > 0) hb.appendChild(dlRow('Extra payment', money(c.extra)));
+    hb.appendChild(dlRow(c.own.complete ? 'Monthly cost to own' : 'Known monthly costs', money(allIn), 'total'));
+    $('dockPay').textContent = money(c.own.total); $('dockCash').textContent = money(c.cash);
 
     // KPIs
     $('kCash').textContent = money(c.cash);
@@ -643,8 +739,15 @@ if (typeof document !== 'undefined') (function () {
     $('kCostsS').textContent = c.price > 0 ? pct(c.costs / c.price, 1) + ' on top of the price' : '';
     $('kLoan').textContent = money(c.loan);
     $('kLoanS').textContent = c.price > 0 ? pct(c.loan / c.price, 1) + ' loan to value' : '';
-    $('kInt').textContent = money(c.am.totalInterest);
-    $('kIntS').textContent = c.loan > 0 ? money(c.loan + c.am.totalInterest) + ' repaid in total' : '';
+    if (c.cashLeft === null) {
+      $('kLeft').textContent = '—';
+      $('kLeftS').textContent = 'Enter the cash you have to see what is left';
+    } else {
+      $('kLeft').textContent = money(c.cashLeft);
+      $('kLeftS').textContent = c.cashLeft < 0
+        ? money(-c.cashLeft) + ' short of what closing needs'
+        : 'of ' + money(toKyd(S.savings)) + ' once you have closed';
+    }
 
     showExampleNote(showingExample);
     renderCash(c); renderDuty(c); renderAfford(c, allIn); renderAmort(c); drawChart();
@@ -798,39 +901,86 @@ if (typeof document !== 'undefined') (function () {
     return Math.floor(lo / 1000) * 1000;
   }
   function household() {
+    function val(id) { return hasEntered(id) ? toKyd(S[id]) : null; }
     return {
-      grossMonthly: hasEntered('income') ? toKyd(S.income) : null,
-      cashAvailable: hasEntered('savings') ? toKyd(S.savings) : null
+      grossMonthly: val('income'),
+      takeHomeMonthly: val('takeHome'),
+      debtsMonthly: val('debts') || 0,
+      otherCommitments: val('commitments') || 0,
+      livingCosts: val('living') || 0,
+      savingsTarget: val('saveTarget') || 0,
+      cashAvailable: val('savings'),
+      cashReserve: val('reserve') || 0
+    };
+  }
+  // the engine needs the same settings the calculator is showing
+  function engineSettings() {
+    return {
+      downPct: S.downPct, downIsAmount: S.downMaster === 'amt', downAmount: toKyd(S.downAmt),
+      rate: S.rate, term: S.term, ptype: S.ptype, status: S.status,
+      joint: S.joint === 'joint' && S.status !== 'standard', location: S.island,
+      legalPct: S.legalPct, bankPct: S.bankPct, valuation: toKyd(S.valuation),
+      inspection: toKyd(S.inspection), payInsuranceAtClose: S.insAtClose,
+      insPct: S.ptype === 'home' && !S.strataInsured ? S.insPct : 0,
+      upkeepPct: S.ptype === 'home' ? S.upkeepPct : 0,
+      strata: toKyd(S.strata), life: toKyd(S.life), strataIncludesInsurance: S.strataInsured
     };
   }
   function budget() {
-    var h = household(), inc = h.grossMonthly || 0, sav = h.cashAvailable || 0;
-    if (!(inc > 0) && !(sav > 0)) return null;
-    var out = { byIncome: null, bySavings: null };
-    if (inc > 0) out.byIncome = solveMax(function (p) { return compute({ price: p, light: true }).am.pmt <= inc * 0.33; });
-    if (sav > 0) out.bySavings = solveMax(function (p) { return compute({ price: p, light: true }).cash <= sav; });
-    var vals = [out.byIncome, out.bySavings].filter(function (v) { return v != null; });
-    out.max = Math.min.apply(null, vals);
-    out.binds = out.byIncome != null && out.bySavings != null ? (out.byIncome <= out.bySavings ? 'income' : 'savings') : (out.byIncome != null ? 'income' : 'savings');
-    return out;
+    var h = household();
+    if (h.grossMonthly == null && h.takeHomeMonthly == null && h.cashAvailable == null) return null;
+    var b = Core.budgets(h, engineSettings());
+    return b.assessed && b.assessed.length ? b : null;
   }
+  var BUDGET_LABELS = {
+    lending: ['Indicative borrowing estimate', 'What a lender might advance on your gross income. Not an approval.'],
+    comfortable: ['Comfortable purchase budget', 'What is left after your spending and savings carries the full cost to own.'],
+    cash: ['Cash-constrained budget', 'What your cash covers, after the reserve you want to keep.']
+  };
   function renderBudget(c) {
     var card = $('budgetCard');
     if (!B) { card.hidden = true; return; }
     card.hidden = false;
     var grid = $('budgetGrid'), note = $('budgetNote'); grid.textContent = ''; note.textContent = '';
-    function tile(k, v, sub, bind) {
-      var d = el('div', bind ? 'bind' : ''); d.appendChild(el('span', 'k', k)); d.appendChild(el('span', 'v', v)); d.appendChild(el('span', 's', sub)); grid.appendChild(d);
+    B.assessed.forEach(function (key) {
+      var meta = BUDGET_LABELS[key], binds = key === B.limitedBy && B.assessed.length > 1;
+      var d = el('div', binds ? 'bind' : '');
+      d.appendChild(el('span', 'k', meta[0]));
+      d.appendChild(el('span', 'v', money(B[key])));
+      d.appendChild(el('span', 's', binds ? meta[1] + ' This is the one holding you back.' : meta[1]));
+      grid.appendChild(d);
+    });
+    var missing = ['lending', 'comfortable', 'cash'].filter(function (k) { return B.assessed.indexOf(k) < 0; });
+    $('budAside').textContent = (S.downMaster === 'pct' ? 'At ' + trimNum(S.downPct, 2) + '% down, ' : 'With ' + money(toKyd(S.downAmt)) + ' down, ')
+      + trimNum(S.rate, 3) + '% over ' + S.term + ' yrs';
+
+    // what the price in the box means against the budget
+    if (c.price > 0 && B.max != null) {
+      var gap = B.max - c.price;
+      if (gap >= 0) {
+        note.appendChild(callout('good', 'Your price of ' + money(c.price) + ' is inside every limit you have given, with '
+          + money(gap) + ' to spare.'));
+      } else {
+        var why = B.limitedBy === 'cash'
+          ? (function () {
+              var need = Core.purchase(c.price, engineSettings()).cashToClose - (B.cashUsable || 0);
+              return 'Your monthly budget may stretch to this, but you would need about ' + money(need)
+                + ' more in cash to close on it.';
+            })()
+          : B.limitedBy === 'comfortable'
+            ? 'The cash works, but the monthly cost would go past what your spending leaves room for.'
+            : 'A lender is unlikely to advance this much on the income entered.';
+        note.appendChild(callout(c.price <= B.max * 1.1 ? 'warn' : 'crit',
+          'Your price of ' + money(c.price) + ' is ' + money(-gap) + ' above your ' + BUDGET_LABELS[B.limitedBy][0].toLowerCase()
+          + '. ' + why));
+      }
     }
-    var both = B.byIncome != null && B.bySavings != null;
-    if (B.byIncome != null) tile('Limit from your income', money(B.byIncome), 'Payment at 33% of ' + money(c.income) + ' a month', both && B.binds === 'income');
-    if (B.bySavings != null) tile('Limit from your cash', money(B.bySavings), 'Down payment and closing costs within ' + money(c.savings), both && B.binds === 'savings');
-    tile('Your maximum price', money(B.max), both ? 'The lower of the two' : 'On today’s settings', !both);
-    $('budAside').textContent = S.downMaster === 'pct' ? 'At ' + trimNum(S.downPct, 2) + '% down, ' + trimNum(S.rate, 3) + '% over ' + S.term + ' yrs' : 'With ' + money(toKyd(S.downAmt)) + ' down';
-    var gap = B.max - c.price;
-    if (c.price <= 0) return;
-    if (gap >= 0) note.appendChild(callout('good', 'Your price of ' + money(c.price) + ' is within reach, with ' + money(gap) + ' of headroom.'));
-    else note.appendChild(callout(c.price <= B.max * 1.1 ? 'warn' : 'crit', 'Your price of ' + money(c.price) + ' is ' + money(-gap) + ' over what your ' + (B.binds === 'income' ? 'income' : 'cash') + ' supports.' + (B.binds === 'savings' ? ' A larger loan, if the bank agrees, lowers the cash you need.' : ' A longer term or larger down payment would lower the payment.')));
+    if (missing.length) {
+      note.appendChild(el('p', 'hint', 'Not assessed: ' + missing.map(function (k) { return BUDGET_LABELS[k][0].toLowerCase(); }).join(', ')
+        + '. Fill in the matching figures and they appear here.'));
+    }
+    note.appendChild(el('p', 'hint', 'These are estimates on the assumptions shown, not an offer of finance. '
+      + 'A lender will apply its own rules, its own valuation and its own view of your credit.'));
   }
 
   /* ---------- listings ---------- */
