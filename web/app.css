@@ -486,3 +486,18 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 
 /* Firefox and Chromium honour these on the option list; Safari uses color-scheme only */
 .control select option,.lx-bar select option{background:var(--surface);color:var(--ink)}
+
+/* ---------- plan comparison ---------- */
+.scen-tools{display:flex;flex-wrap:wrap;gap:8px}
+.scen-table{min-width:560px}
+.scen-table th.col{min-width:150px;vertical-align:top}
+.scen-table .colhead{display:flex;flex-direction:column;gap:6px;text-align:left}
+.scen-table .colhead .name{font-weight:600;font-size:14px;color:var(--ink);display:flex;gap:6px;align-items:center;justify-content:space-between}
+.scen-table .colhead input[type=text]{width:100%;font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line-strong);
+  border-radius:6px;background:var(--surface);color:var(--ink);font-variant-numeric:tabular-nums}
+.scen-table .colhead label{font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;gap:6px;align-items:center}
+.scen-table .drop{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:16px;line-height:1;padding:0 2px}
+.scen-table .drop:hover{color:var(--crit)}
+.scen-table td.better{color:var(--good-ink);font-weight:600}
+.scen-table td.worse{color:var(--ink-2)}
+.scen-table tbody th{text-align:left;font-weight:600;color:var(--ink-2);font-size:13px;white-space:nowrap}

@@ -263,6 +263,23 @@
         <div class="explain" id="dutyExplain"></div>
       </section>
 
+      <section class="panel card" id="scenCard" aria-labelledby="scenH">
+        <div class="card-head">
+          <h2 id="scenH">Compare plans</h2>
+          <span class="aside">Your plan stays as it is; these sit beside it</span>
+        </div>
+        <div class="scen-tools">
+          <button class="btn" type="button" id="scenAdd">Add a plan</button>
+          <button class="btn" type="button" data-stress="1">Rate +1%</button>
+          <button class="btn" type="button" data-stress="2">Rate +2%</button>
+          <button class="btn" type="button" id="scenClear" hidden>Clear all</button>
+        </div>
+        <div class="scroll" id="scenWrap" hidden>
+          <table class="amort scen-table"><thead id="scenHead"></thead><tbody id="scenBody"></tbody></table>
+        </div>
+        <div id="scenNote"></div>
+      </section>
+
       <section class="panel card" id="affordCard" aria-labelledby="affH" hidden>
         <div class="card-head"><h2 id="affH">Affordability check</h2><span class="aside">Rule of thumb, not a lending decision</span></div>
         <div class="afford-grid" id="affordGrid"></div>
@@ -751,7 +768,7 @@ if (typeof document !== 'undefined') (function () {
 
     showExampleNote(showingExample);
     renderCash(c); renderDuty(c); renderAfford(c, allIn); renderAmort(c); drawChart();
-    B = budget(); renderBudget(c);
+    B = budget(); renderBudget(c); renderScenarios();
     save();
     scheduleListings();
   }
@@ -981,6 +998,170 @@ if (typeof document !== 'undefined') (function () {
     }
     note.appendChild(el('p', 'hint', 'These are estimates on the assumptions shown, not an offer of finance. '
       + 'A lender will apply its own rules, its own valuation and its own view of your credit.'));
+  }
+
+  /* ---------- comparing plans ----------
+     A plan is a handful of overrides on the current settings. Nothing here touches
+     what is in the form, so the original is never overwritten. */
+  var SCEN_STORE = 'caymanMortgage.plans.v1';
+  var plans = [];
+  function loadPlans() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(SCEN_STORE) || '[]');
+      if (Array.isArray(raw)) plans = raw.slice(0, 4);
+    } catch (e) { plans = []; }
+  }
+  function savePlans() {
+    try { localStorage.setItem(SCEN_STORE, JSON.stringify(plans)); } catch (e) { /* ignore */ }
+  }
+  function planFromNow(name, over) {
+    var base = { name: name, price: S.price, downPct: S.downPct, rate: S.rate, term: S.term,
+                 extra: S.extra, income: S.income };
+    Object.keys(over || {}).forEach(function (k) { base[k] = over[k]; });
+    return base;
+  }
+  function planResult(plan) {
+    var set = engineSettings();
+    set.downPct = plan.downPct; set.downIsAmount = false;
+    set.rate = plan.rate; set.term = plan.term;
+    var price = toKyd(plan.price);
+    var p = Core.purchase(price, set);
+    var am = Core.amortise({ loan: p.loan, rate: plan.rate / 100, years: plan.term, extra: toKyd(plan.extra) });
+    var cash = hasEntered('savings') || plan.cashOverride ? toKyd(S.savings) : null;
+    var income = plan.income > 0 ? toKyd(plan.income) : null;
+    var payoff = new Date();
+    payoff.setMonth(payoff.getMonth() + am.months);
+    return {
+      plan: plan, price: price, purchase: p, am: am,
+      monthly: p.ownership.total + toKyd(plan.extra),
+      cashNeeded: p.cashToClose,
+      cashLeft: cash == null ? null : cash - p.cashToClose,
+      interest: am.totalInterest,
+      payoff: payoff, months: am.months,
+      surplus: income == null ? null : income * 0.33 - p.pmt
+    };
+  }
+  var SCEN_ROWS = [
+    ['Purchase price', function (r) { return money(r.price); }, null],
+    ['Monthly cost to own', function (r) { return money(r.monthly); }, 'low'],
+    ['of which principal and interest', function (r) { return money(r.purchase.pmt); }, 'low'],
+    ['Cash needed to close', function (r) { return money(r.cashNeeded); }, 'low'],
+    ['Cash left after closing', function (r) { return r.cashLeft == null ? '—' : money(r.cashLeft); }, 'high'],
+    ['Total interest', function (r) { return money(r.interest); }, 'low'],
+    ['Paid off', function (r) {
+      return r.payoff.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
+        + (r.am.paidOffEarly ? ' (' + span(r.am.monthsSaved) + ' early)' : '');
+    }, null],
+    ['Room against 33% of income', function (r) {
+      return r.surplus == null ? '—' : (r.surplus >= 0 ? money(r.surplus) + ' spare' : money(-r.surplus) + ' over');
+    }, 'high']
+  ];
+  function renderScenarios() {
+    var wrap = $('scenWrap'), head = $('scenHead'), body = $('scenBody'), note = $('scenNote');
+    head.textContent = ''; body.textContent = ''; note.textContent = '';
+    $('scenClear').hidden = plans.length === 0;
+    wrap.hidden = plans.length === 0;
+    if (!plans.length) {
+      note.appendChild(el('p', 'hint', 'Add a plan to try a different price, deposit, rate or term beside your '
+        + 'current one — or stress the rate to see what a rise would cost. Your own figures are not changed.'));
+      return;
+    }
+    var results = [planResult(planFromNow('Your plan'))].concat(plans.map(planResult));
+
+    var hr = el('tr'); hr.appendChild(el('th', null, ''));
+    results.forEach(function (r, i) {
+      var th = el('th', 'col'), box = el('div', 'colhead');
+      var nameRow = el('div', 'name');
+      nameRow.appendChild(el('span', null, i === 0 ? 'Your plan' : r.plan.name));
+      if (i > 0) {
+        var x = el('button', 'drop', '×'); x.type = 'button'; x.dataset.drop = String(i - 1);
+        x.setAttribute('aria-label', 'Remove ' + r.plan.name);
+        nameRow.appendChild(x);
+      }
+      box.appendChild(nameRow);
+      if (i > 0) {
+        [['price', 'Price', 0], ['downPct', 'Deposit %', 2], ['rate', 'Rate %', 3], ['term', 'Term yrs', 0],
+         ['extra', 'Extra /mo', 0]].forEach(function (f) {
+          var lab = el('label'); lab.appendChild(el('span', null, f[1]));
+          var inp = el('input'); inp.type = 'text'; inp.inputMode = 'decimal';
+          inp.value = f[2] ? trimNum(r.plan[f[0]], f[2]) : group(Math.round(r.plan[f[0]]), 0);
+          inp.dataset.plan = String(i - 1); inp.dataset.field = f[0];
+          inp.setAttribute('aria-label', r.plan.name + ' ' + f[1]);
+          lab.appendChild(inp); box.appendChild(lab);
+        });
+      }
+      th.appendChild(box); hr.appendChild(th);
+    });
+    head.appendChild(hr);
+
+    SCEN_ROWS.forEach(function (row) {
+      var tr = el('tr'), th = el('th', null, row[0]); th.scope = 'row'; tr.appendChild(th);
+      var vals = results.map(function (r) { return row[1](r); });
+      var nums = results.map(function (r) {
+        var m = /-?[\d,]+(\.\d+)?/.exec(row[1](r).replace(/[^\d.,-]/g, ''));
+        return m ? parseFloat(m[0].replace(/,/g, '')) : null;
+      });
+      var best = null;
+      if (row[2] && nums.every(function (n) { return n != null; }) && results.length > 1) {
+        best = row[2] === 'low' ? Math.min.apply(null, nums) : Math.max.apply(null, nums);
+        if (nums.filter(function (n) { return n === best; }).length === nums.length) best = null;
+      }
+      vals.forEach(function (v, i) {
+        var td = el('td', null, v);
+        if (best != null && nums[i] === best) td.className = 'better';
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+
+    // the trade-off, said plainly
+    var base = results[0];
+    results.slice(1).forEach(function (r) {
+      var bits = [];
+      if (Math.abs(r.monthly - base.monthly) > 1) {
+        bits.push((r.monthly < base.monthly ? money(base.monthly - r.monthly) + ' a month cheaper'
+                                            : money(r.monthly - base.monthly) + ' a month dearer'));
+      }
+      if (Math.abs(r.interest - base.interest) > 100) {
+        bits.push((r.interest < base.interest ? money(base.interest - r.interest) + ' less interest overall'
+                                              : money(r.interest - base.interest) + ' more interest overall'));
+      }
+      if (Math.abs(r.cashNeeded - base.cashNeeded) > 100) {
+        bits.push((r.cashNeeded < base.cashNeeded ? money(base.cashNeeded - r.cashNeeded) + ' less cash to close'
+                                                  : money(r.cashNeeded - base.cashNeeded) + ' more cash to close'));
+      }
+      if (bits.length) note.appendChild(el('p', 'hint', r.plan.name + ': ' + bits.join(', ') + '.'));
+    });
+  }
+  function bindScenarios() {
+    $('scenAdd').addEventListener('click', function () {
+      if (plans.length >= 3) { toast('Three plans alongside your own is the most that stays readable.'); return; }
+      plans.push(planFromNow('Plan ' + (plans.length + 1)));
+      savePlans(); renderScenarios();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-stress]'), function (b) {
+      b.addEventListener('click', function () {
+        var up = +b.dataset.stress;
+        plans.push(planFromNow('Rate +' + up + '%', { rate: +(S.rate + up).toFixed(3) }));
+        savePlans(); renderScenarios();
+      });
+    });
+    $('scenClear').addEventListener('click', function () { plans = []; savePlans(); renderScenarios(); });
+    $('scenBody').parentNode.addEventListener('click', function (e) {
+      var d = e.target.closest && e.target.closest('[data-drop]');
+      if (!d) return;
+      plans.splice(+d.dataset.drop, 1); savePlans(); renderScenarios();
+    });
+    $('scenHead').addEventListener('input', function (e) {
+      var t = e.target;
+      if (!t.dataset || t.dataset.plan === undefined) return;
+      var plan = plans[+t.dataset.plan];
+      if (!plan) return;
+      plan[t.dataset.field] = parseNum(t.value);
+      savePlans();
+      clearTimeout(plan._t);
+      plan._t = setTimeout(function () { renderScenarios(); }, 600);
+    });
   }
 
   /* ---------- listings ---------- */
@@ -1837,6 +2018,7 @@ if (typeof document !== 'undefined') (function () {
     writeForm(load());
     if (readQuery()) save();      // a price from the link wins over the saved one
     syncDown(); bind(); bindChart(); bindStackTip();
+    loadPlans(); bindScenarios();
     loadListingData(function () { setupListingControls(); render(); renderListings(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
   }
