@@ -10,3 +10,7 @@ site/
 dist/
 data/thumbs/
 data/*.tmp
+
+# Cached listings from agencies paused pending written permission. Kept locally so
+# the sources can be restored quickly, never published.
+data/raw/paused/

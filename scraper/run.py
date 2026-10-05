@@ -21,22 +21,30 @@ RAW = ROOT / "data" / "raw"          # last good result per source, used when a 
 
 # module name -> default max_pages (each module documents what a "page" means for its site)
 SOURCES = {
+    # --- the CIREBA feed and the larger agencies ---
     "cireba": 6,          # the MLS: houses, condos, land, newest first (30 per page per category)
     "remax": 8,           # 6 per page per type
     "bovell": 5,          # the Bovell team's own RE/MAX listings (overlap remax, merged by MLS)
     "williams2": 2,       # 20 per page; only the newest 40 get prices (detail pages)
     "trident": 1,         # 1 = Trident's own listings only; more pages add its copy of the MLS feed,
                           # which duplicates CIREBA without MLS numbers to merge on
-    "era": 1,             # ERA's own listings, one page
     "propertycayman": 1,  # own listings via agent pages (max_pages not used)
-    "mod": 6,             # 8 per page, own listings only, no MLS numbers
     "theagency": 1,       # "Agency listings" via the site's JSON API
-    "shoreline": 1,       # "Our listings"
     "myrealtor": 1,       # all on one page, no MLS numbers
     "irg": 1,             # own listings + up to 40 detail pages
-    "provenance": 1,      # own listings from the site's JSON API
     "rainbow": 3,         # own listings, per category
     "bhhs": 5,            # own listings via the agents API
+    # --- smaller agencies, added 5 October 2026 ---
+    "utopia": 1,          # one REST page covers the lot; Panama and Costa Rica stock filtered out
+    "nine17": 1,          # one API call, then detail pages for status (6 sold would otherwise show)
+    "stoneland": 5,       # paginated index; the sitemap keeps stale rentals so it is not used
+    "tranquil": 3,        # Sister Islands specialist, 2 pages
+    "hab": 3,             # index + category pages + sitemap sweep; photos are never downloaded
+    "elite": 2,           # 10s crawl-delay by request of its robots.txt, so ~3 minutes
+    "islandrealty": 1,    # Sister Islands, and it publishes real MLS numbers
+    "paradisebrac": 1,    # Cayman Brac land, all on one page
+    "premier": 1,         # tiny, but cheap Cayman Brac land the bigger agencies do not carry
+    "tcgrealty": 1,       # only two genuinely available; the sitemap is full of theme demo posts
 }
 
 # Modules that exist but are not run by default, with the reason shown on the page.
@@ -45,6 +53,17 @@ DISABLED = {
                                 "the CIREBA feed, which is already covered."),
     "engelvoelkers": ("Engel & Völkers", "Turned off: the site's robots.txt asks AI agents not to read "
                                          "its listing pages. Run with --include engelvoelkers to scrape it yourself."),
+    # Paused 5 October 2026 pending written permission. Each of these publishes terms
+    # that bar republishing their content without it. See docs/permission-request.md.
+    "era": ("ERA", "Paused: their terms require written permission to republish listings, and to embed "
+                   "or frame their images. Permission has been requested."),
+    "mod": ("MOD Realty", "Paused: their terms (clause 5) require prior written permission to reproduce "
+                          "or republish website content. Permission has been requested."),
+    "shoreline": ("Shoreline", "Paused: their terms (clause 4) require prior written consent to reproduce "
+                               "or display website content. Permission has been requested."),
+    "provenance": ("Provenance", "Paused: their terms require written permission to copy, republish or "
+                                 "extract content, and separately to link to their site. Permission has "
+                                 "been requested."),
 }
 
 # Hosts whose robots.txt disallows the image paths: build.py won't download these,
@@ -155,7 +174,9 @@ def scrape(pages: int | None = None, log=print, include: tuple[str, ...] = ()) -
         raw.extend(r.pop("listings"))
     for m, (name, why) in DISABLED.items():
         if m not in jobs:
-            results.append({"name": name, "ok": False, "count": 0, "error": why})
+            # "off" marks a deliberate choice, so the page can keep it apart from a
+            # site that we tried to read and could not.
+            results.append({"name": name, "ok": False, "off": True, "count": 0, "error": why})
     merged = merge(raw)
     log(f"  {len(raw)} scraped -> {len(merged)} after merging duplicates")
     return {

@@ -1698,17 +1698,22 @@ if (typeof document !== 'undefined') (function () {
   }
   function renderStatus() {
     var box = $('lxStatus'), d = LX.data; box.textContent = '';
-    var srcs = d.sources || [], good = srcs.filter(function (x) { return x.ok; });
-    var live = srcs.filter(function (x) { return x.ok || (x.stale && x.count); });
+    var srcs = d.sources || [];
+    // A site we deliberately do not scrape is not a site that failed, so the two are
+    // counted and explained separately.
+    var off = srcs.filter(function (x) { return x.off; });
+    var tried = srcs.filter(function (x) { return !x.off; });
+    var good = tried.filter(function (x) { return x.ok; });
+    var live = tried.filter(function (x) { return x.ok || (x.stale && x.count); });
     if (d.generated_at) box.appendChild(el('span', null, d.listings.length + ' properties · updated ' + fmtDate(d.generated_at)));
-    if (srcs.length) {
+    if (tried.length) {
       var ok = el('span', 'src-dot'); ok.appendChild(el('i'));
-      ok.appendChild(document.createTextNode(good.length + ' of ' + srcs.length + ' websites read'));
+      ok.appendChild(document.createTextNode(good.length + ' of ' + tried.length + ' websites read'));
       if (live.length > good.length) ok.className = 'src-dot stale';
       ok.title = good.map(function (x) { return x.name + ': ' + x.count; }).join('\n');
       box.appendChild(ok);
     }
-    srcs.forEach(function (x) {
+    tried.forEach(function (x) {
       if (x.ok) return;
       var stale = x.stale && x.count, s = el('span', 'src-dot ' + (stale ? 'stale' : 'bad'));
       s.appendChild(el('i'));
@@ -1716,6 +1721,20 @@ if (typeof document !== 'undefined') (function () {
       s.title = (stale ? 'Could not be read this time, so its last listings are still shown. ' : '') + (x.error || 'Could not be read');
       box.appendChild(s);
     });
+    // Why an agency is missing belongs on the page, not in a tooltip no touchscreen shows.
+    if (off.length) {
+      var det = el('details', 'src-off');
+      det.appendChild(el('summary', null, off.length + ' other agency ' +
+        (off.length === 1 ? 'website is' : 'websites are') + ' not included'));
+      var ul = el('ul');
+      off.forEach(function (x) {
+        var li = el('li'); li.appendChild(el('strong', null, x.name));
+        li.appendChild(document.createTextNode(' — ' + (x.error || 'not scraped')));
+        ul.appendChild(li);
+      });
+      det.appendChild(ul);
+      box.appendChild(det);
+    }
     var lead = $('lxLead'), names = good.slice().sort(function (a, b) { return b.count - a.count; }).map(function (x) { return x.name; });
     if (names.length > 3) lead.textContent = 'Homes and land for sale in the Cayman Islands, gathered from ' + names.slice(0, 3).join(', ') +
       ' and ' + (names.length - 3) + ' more agency websites. Each one is priced through your calculator settings above.';
@@ -1940,6 +1959,8 @@ if (typeof document !== 'undefined') (function () {
     var ph = el('div', 'lx-ph'); ph.appendChild(el('span', null, TYPE_LABEL[l.ptype] || 'Property'));
     ph.appendChild(el('b', null, l.location || 'Cayman Islands')); return ph;
   }
+  var TAKEN = /under offer|pending|conditional|sold|contract/i;
+
   function card(l, c) {
     var lc = listingCost(l);
     var art = el('article', 'lx-card' + (LX.current === l.url ? ' current' : ''));
@@ -1950,6 +1971,8 @@ if (typeof document !== 'undefined') (function () {
       img.src = l.image; ph.appendChild(img);
     } else ph.appendChild(placeholder(l));
     var tags = el('div', 'lx-tags'); tags.appendChild(el('span', 'tag', (l.sources || [l.source])[0]));
+    // Under offer is not sold, but a buyer should see it before they price the place.
+    if (TAKEN.test(l.status || '')) tags.appendChild(el('span', 'pill taken', l.status));
     var fit = fitFor(l, c); if (fit) tags.appendChild(el('span', 'pill ' + fit[0], fit[1]));
     ph.appendChild(tags);
     var id = listingId(l), fav = el('button', 'fav'); fav.type = 'button'; fav.innerHTML = STAR;
@@ -1965,7 +1988,8 @@ if (typeof document !== 'undefined') (function () {
     var orig = fmtOriginal(l); if (orig) pr.appendChild(el('small', null, orig));
     body.appendChild(pr);
     body.appendChild(el('div', 'lx-title', l.title || (TYPE_LABEL[l.ptype] + ' in ' + (l.location || 'Cayman'))));
-    var loc = [l.location, l.status && !/for sale|active/i.test(l.status) ? l.status : ''].filter(Boolean).join(' · ');
+    var extra = l.status && !/for sale|active/i.test(l.status) && !TAKEN.test(l.status) ? l.status : '';
+    var loc = [l.location, extra].filter(Boolean).join(' · ');
     if (loc) body.appendChild(el('div', 'lx-loc', loc));
     var facts = el('div', 'lx-facts');
     if (l.beds) facts.appendChild(el('span', null, trimNum(l.beds, 1) + ' bed'));

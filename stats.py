@@ -105,11 +105,21 @@ NOT_A_HOME = re.compile(
     r"commercial|income[- ]?producing|\broi\b|zoning|development site|投资", re.I)
 
 
+# "Under Offer" and "Pending" are still on the agencies' sites and still honest to
+# list, but they have no business being the front page's pick of the market.
+TAKEN = re.compile(r"under offer|pending|conditional|sold|contract", re.I)
+
+
+def available(l: dict) -> bool:
+    return not TAKEN.search(l.get("status") or "")
+
+
 def featured(data: dict, n: int = 6) -> list[dict]:
     """A mixed half-dozen: the newest listings, plus the best value per square foot,
-    never two from the same area, and nothing without a photo."""
+    never two from the same area, nothing without a photo, nothing already under offer."""
     ls = [l for l in data.get("listings", [])
-          if l.get("price_kyd") and l.get("image") and not NOT_A_HOME.search(l.get("title") or "")]
+          if l.get("price_kyd") and l.get("image") and available(l)
+          and not NOT_A_HOME.search(l.get("title") or "")]
     picked, seen_areas, seen_urls = [], set(), set()
 
     def take(candidates):

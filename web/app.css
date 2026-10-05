@@ -251,6 +251,11 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .src-dot{display:inline-flex;align-items:center;gap:6px}
 .src-dot i{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block}
 .src-dot.bad i{background:var(--crit)}
+/* Agencies we deliberately do not scrape, with the reason readable rather than hovered. */
+.src-off{flex:1 1 100%;font-size:12.5px;color:var(--ink-3)}
+.src-off>summary{cursor:pointer;width:fit-content;padding:2px 0;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.src-off ul{margin:8px 0 0;padding-left:18px;display:grid;gap:5px;max-width:70ch}
+.src-off strong{color:var(--ink-2)}
 .lx-bar{padding:14px 16px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));align-items:end}
 .lx-bar .field.wide{grid-column:span 2}
 @media (max-width:330px){.lx-bar .field.wide{grid-column:auto}}
@@ -295,13 +300,17 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .lx-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .lx-ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;background:linear-gradient(160deg,var(--hero-bg),color-mix(in srgb,var(--hero-bg) 70%,var(--s1)));color:var(--hero-ink-2);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
 .lx-ph b{font-family:var(--display);font-size:22px;letter-spacing:-.01em;text-transform:none;color:var(--hero-ink);font-weight:600}
-.lx-tags{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:6px;pointer-events:none}
+.lx-tags{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;pointer-events:none}
+.lx-tags .pill.taken{order:1}
 .tag{font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:3px 8px;border-radius:6px;background:rgba(8,26,40,.78);color:#fff;white-space:nowrap}
 .pill{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
 .pill.good{background:var(--good-bg);color:var(--good-ink)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .pill.crit{background:var(--crit-bg);color:var(--crit-ink)}
 .pill.neutral{background:var(--surface);color:var(--ink-2)}
+/* Under offer or pending: distinct from the budget-fit pills beside it. */
+.pill.taken{background:#4a3b12;color:#ffe9a8}
+:root:not([data-theme="dark"]) .pill.taken{background:#fff3cd;color:#5c4408;box-shadow:inset 0 0 0 1px rgba(92,68,8,.22)}
 .lx-body{padding:14px 15px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
 .lx-price{font-size:21px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .lx-price small{font-size:12.5px;font-weight:500;color:var(--ink-3)}

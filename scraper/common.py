@@ -22,7 +22,17 @@ import requests
 KYD_PER_USD = 0.82
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/128.0 Safari/537.36 CaymanMortgageCalc/1.0")
-DELAY = 1.0  # seconds between requests to the same site
+DELAY = 1.0  # seconds between requests to the same site, unless robots.txt asks for more
+
+# Hosts whose robots.txt asks a general crawler for more than the default gap.
+# Checked 5 Oct 2026. The Wix sites (Paradise, Premier) also carry a Crawl-delay,
+# but only inside dotbot and AhrefsBot blocks, so it does not apply to us.
+HOST_DELAY = {
+    "eliterealty.ky": 10.0,
+    "www.eliterealty.ky": 10.0,
+    "cirealtors.org": 10.0,
+    "www.cirealtors.org": 10.0,
+}
 
 _session = requests.Session()
 _session.headers.update({"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
@@ -34,9 +44,10 @@ def _throttle(url: str) -> None:
     """Keep at least DELAY seconds between requests to the same host.
     Different sites can be scraped in parallel threads."""
     host = urlparse(url).netloc
+    gap = HOST_DELAY.get(host, DELAY)
     while True:
         with _lock:
-            wait = DELAY - (time.time() - _last.get(host, 0.0))
+            wait = gap - (time.time() - _last.get(host, 0.0))
             if wait <= 0:
                 _last[host] = time.time()
                 return
