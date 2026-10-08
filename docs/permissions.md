@@ -22,6 +22,20 @@ A source only needs an entry here if its terms require permission. Most do not.
 
 ---
 
+## Paradise Realty (Cayman Brac) — confirmed
+
+- **Date recorded:** 8 October 2026
+- **Agreed:** Jerome Bailey reports having received permission from Paradise Realty
+  for their listings to appear on caymanmortgagecalculator.com.
+- **Who gave it / where it is:** _to fill in — name of the person who replied, and
+  the date and subject of their email._
+- **Note:** As with Utopia, Paradise's terms did not require permission, so this is
+  a record rather than a condition. Their 17 Cayman Brac land listings have been
+  live since 5 October 2026 and are unaffected either way. Scraped from
+  paradiserealtycyb.com by `scraper/sources/paradisebrac.py`.
+
+---
+
 ## Still awaiting a reply
 
 These four are paused in `scraper/run.py` because their terms require written
