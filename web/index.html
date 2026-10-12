@@ -419,6 +419,18 @@
     </div>
   </div>
 
+  <div class="cmp-panel" id="cashPanel" hidden role="dialog" aria-modal="true" aria-labelledby="cashTitle">
+    <div class="cmp-card cash-card">
+      <div class="cmp-head">
+        <h2 id="cashTitle">Cash to close</h2>
+        <button class="btn" type="button" id="cashClose">Close</button>
+      </div>
+      <p class="hint" id="cashFor"></p>
+      <div class="cmp-scroll"><table class="cash-table"><tbody id="cashBody"></tbody></table></div>
+      <div class="cmp-foot"><span id="cashFoot"></span></div>
+    </div>
+  </div>
+
   <footer>
     <div class="notes">
       <div>
@@ -662,7 +674,8 @@ if (typeof document !== 'undefined') (function () {
     var down = Math.min(price, S.downMaster === 'pct' ? price * S.downPct / 100 : toKyd(S.downAmt));
     var loan = Math.max(0, price - down), dutiable = Math.max(0, dutyBasis - chattels);
     var joint = S.joint === 'joint' && S.status !== 'standard';
-    var td = Core.transferDuty(dutiable, ptype, S.status, joint, S.island);
+    var island = ov.island || S.island;
+    var td = Core.transferDuty(dutiable, ptype, S.status, joint, island);
     var md = Core.mortgageDuty(loan);
     var am = ov.light ? { pmt: Core.payment(loan, S.rate / 100, Math.max(1, Math.round(S.term * 12))) }
                       : Core.amortise({ loan: loan, rate: S.rate / 100, years: S.term, extra: toKyd(S.extra) });
@@ -674,7 +687,9 @@ if (typeof document !== 'undefined') (function () {
     var insKnown = insYear != null;
     var items = [
       { g: 1, label: 'Down payment', note: price > 0 ? pct(down / price, 1) + ' of the price' : '', v: down },
-      { g: 2, label: 'Stamp duty on the transfer', note: dutyShort(td, dutiable), v: td.amount },
+      // keep: a zero here is the Brac concession or first-time relief doing its job,
+      // which is the most informative line on the bill, not one to hide
+      { g: 2, label: 'Stamp duty on the transfer', note: dutyShort(td, dutiable), v: td.amount, keep: true },
       { g: 2, label: 'Stamp duty on the mortgage', note: loan > 0 ? pct(md.rate, 1) + ' of the loan (' + (md.rate === R.mort.low ? money(R.mort.threshold) + ' or less' : 'over ' + money(R.mort.threshold)) + ')' : 'No loan', v: md.amount },
       { g: 2, label: 'Land Registry fees', note: loan > 0 ? 'CI$50 for the transfer, CI$50 for the charge' : 'CI$50 to register the transfer', v: R.regTransfer + (loan > 0 ? R.regCharge : 0) },
       { g: 3, label: 'Legal fees', note: pct(S.legalPct / 100) + ' of the price', v: price * S.legalPct / 100 },
@@ -1461,6 +1476,8 @@ if (typeof document !== 'undefined') (function () {
   var LX = { data: null, items: [], shown: PAGE, off: {}, areas: {}, byDistrict: {}, current: null, timer: null, busy: false,
              fav: {}, cmp: [], savedOnly: false, shared: 0 };
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></svg>';
+  var INFO = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><path d="M12 7.6v.1" stroke-linecap="round"/></svg>';
   var TYPE_LABEL = { house: 'House', condo: 'Condo', land: 'Land', other: 'Property' };
 
   function setData(d) {
@@ -1775,6 +1792,15 @@ if (typeof document !== 'undefined') (function () {
     if (v === 'near') return { lo: c.price * 0.85, hi: c.price * 1.15, target: c.price, label: 'within 15% of ' + money(c.price) };
     return { lo: 0, hi: Infinity, target: c.price, label: 'at any price' };
   }
+  /* A listing's island decides its duty, not whichever island is selected in the
+     calculator: Cayman Brac has its own concession until the end of 2030, and
+     Little Cayman is not part of it. Mirrors DISTRICT_RULES in stats.py. */
+  function islandOf(area) {
+    var a = (area || '').toLowerCase();
+    if (a.indexOf('little cayman') >= 0) return 'little';
+    if (a.indexOf('cayman brac') >= 0 || /\bbrac\b/.test(a)) return 'brac';
+    return 'grand';
+  }
   function typeOk(l, t) {
     if (t === 'all') return true;
     if (t === 'match') return S.ptype === 'land' ? l.ptype === 'land' : l.ptype !== 'land';
@@ -1843,7 +1869,8 @@ if (typeof document !== 'undefined') (function () {
      listing data, so it stays unknown rather than being counted as nothing. */
   function listingCost(l) {
     var isLand = l.ptype === 'land';
-    var lc = compute({ price: l.price_kyd, ptype: isLand ? 'land' : 'home', light: true });
+    var lc = compute({ price: l.price_kyd, ptype: isLand ? 'land' : 'home', light: true,
+                       island: islandOf(l.location) });
     var price = l.price_kyd;
     var insAnnual = isLand ? 0 : price * S.insPct / 100;
     lc.own = Core.monthlyOwnership({
@@ -1864,23 +1891,28 @@ if (typeof document !== 'undefined') (function () {
     var maxCash = Math.max(0, parseNum($('lxMaxCash').value));
     var areaKeys = Object.keys(LX.areas), anyArea = areaKeys.length > 0;
     var all = LX.data.listings;
+    // ignorePrice lets the empty state work out whether the price band alone is
+    // what is hiding everything, which is usually the answer for land and for the
+    // Sister Islands agencies.
+    function passes(l, skip) {
+      skip = skip || {};
+      if (!(l.price_kyd > 0)) return false;
+      if (!skip.price && (l.price_kyd < rg.lo || l.price_kyd > rg.hi)) return false;
+      if (!skip.type && !typeOk(l, t)) return false;
+      if (anyArea && !LX.areas[l.location]) return false;
+      if (beds && !(l.beds >= beds)) return false;
+      if (maxMonthly > 0 || maxCash > 0) {
+        var lc = listingCost(l);
+        if (maxMonthly > 0 && lc.own.total > toKyd(maxMonthly)) return false;
+        if (maxCash > 0 && lc.cash > toKyd(maxCash)) return false;
+      }
+      var srcs = l.sources || [l.source];
+      return srcs.some(function (n) { return !LX.off[n]; });
+    }
     var items = LX.savedOnly
       // everything saved, whatever the filters say — a shared shortlist must arrive whole
       ? all.filter(function (l) { return LX.fav[listingId(l)]; })
-      : all.filter(function (l) {
-          if (!(l.price_kyd > 0)) return false;
-          if (l.price_kyd < rg.lo || l.price_kyd > rg.hi) return false;
-          if (!typeOk(l, t)) return false;
-          if (anyArea && !LX.areas[l.location]) return false;
-          if (beds && !(l.beds >= beds)) return false;
-          if (maxMonthly > 0 || maxCash > 0) {
-            var lc = listingCost(l);
-            if (maxMonthly > 0 && lc.own.total > toKyd(maxMonthly)) return false;
-            if (maxCash > 0 && lc.cash > toKyd(maxCash)) return false;
-          }
-          var srcs = l.sources || [l.source];
-          return srcs.some(function (n) { return !LX.off[n]; });
-        });
+      : all.filter(function (l) { return passes(l); });
     var cmp = {
       'fit': function (a, b) { return Math.abs(a.price_kyd - rg.target) - Math.abs(b.price_kyd - rg.target); },
       'price-asc': function (a, b) { return a.price_kyd - b.price_kyd; },
@@ -1931,15 +1963,53 @@ if (typeof document !== 'undefined') (function () {
     }
     if (!items.length) {
       var e2 = el('div', 'panel lx-empty'); e2.style.gridColumn = '1/-1';
-      e2.appendChild(el('strong', null, 'Nothing matches these filters'));
-      e2.appendChild(el('span', null, 'Try a wider price range, another area or fewer bedrooms.'));
-      var rb = el('button', 'btn', 'Show every price and area'); rb.type = 'button';
-      rb.addEventListener('click', function () {
-        LX.rangeTouched = true; $('lxRange').value = 'any'; $('lxBeds').value = '0'; LX.areas = {};
-        syncAreaMenu(); Array.prototype.forEach.call($('lxAreaMenu').querySelectorAll('input'), function (i) { i.checked = false; i.indeterminate = false; });
-        savePrefs(); renderListings();
-      });
-      e2.appendChild(rb); grid.appendChild(e2); $('lxMore').hidden = true; return;
+      // If everything else matches and only the price band is excluding them, say so
+      // and say how many: "nothing matches" reads as "this agency is not on the site".
+      // "Nothing matches" reads as "this agency is not on the site". When the price
+      // band or the property type is the only thing in the way — which is what hides
+      // land and the Sister Islands agencies by default — name it and say how many.
+      var hidden = all.filter(function (l) { return passes(l, { price: true, type: true }); });
+      if (hidden.length) {
+        var byPrice = hidden.filter(function (l) { return l.price_kyd < rg.lo || l.price_kyd > rg.hi; });
+        var byType = hidden.filter(function (l) { return !typeOk(l, t); });
+        var lo = Math.min.apply(null, hidden.map(function (l) { return l.price_kyd; }));
+        var hi = Math.max.apply(null, hidden.map(function (l) { return l.price_kyd; }));
+        var names = [];
+        hidden.forEach(function (l) {
+          (l.sources || [l.source]).forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+        });
+        var n = hidden.length;
+        var who = names.length === 1 ? names[0] + ' has ' + (n === 1 ? 'one listing' : 'all ' + n + ' of its listings')
+                : names.length === 2 ? names.join(' and ') + ' have ' + n + ' listings between them'
+                : n + ' listings';
+        var reasons = [];
+        if (byPrice.length) reasons.push('your price range (' + rg.label + ')');
+        if (byType.length) reasons.push('the property type you have chosen');
+        e2.appendChild(el('strong', null, n === 1 ? 'One listing is hidden by your filters'
+                                                  : n + ' listings are hidden by your filters'));
+        e2.appendChild(el('span', null, who + ' here, priced ' + money(lo) + (hi > lo ? ' to ' + money(hi) : '') +
+          ', but ' + reasons.join(' and ') + ' ' + (reasons.length > 1 ? 'exclude' : 'excludes') +
+          (n === 1 ? ' it.' : ' them.')));
+        var pb = el('button', 'btn', byType.length ? 'Show every price and type' : 'Show every price');
+        pb.type = 'button';
+        pb.addEventListener('click', function () {
+          LX.rangeTouched = true; $('lxRange').value = 'any';
+          if (byType.length) $('lxType').value = 'all';
+          LX.shown = PAGE; savePrefs(); renderListings();
+        });
+        e2.appendChild(pb);
+      } else {
+        e2.appendChild(el('strong', null, 'Nothing matches these filters'));
+        e2.appendChild(el('span', null, 'Try a wider price range, another area or fewer bedrooms.'));
+        var rb = el('button', 'btn', 'Show every price and area'); rb.type = 'button';
+        rb.addEventListener('click', function () {
+          LX.rangeTouched = true; $('lxRange').value = 'any'; $('lxBeds').value = '0'; LX.areas = {};
+          syncAreaMenu(); Array.prototype.forEach.call($('lxAreaMenu').querySelectorAll('input'), function (i) { i.checked = false; i.indeterminate = false; });
+          savePrefs(); renderListings();
+        });
+        e2.appendChild(rb);
+      }
+      grid.appendChild(e2); $('lxMore').hidden = true; return;
     }
     var frag = document.createDocumentFragment();
     items.slice(0, LX.shown).forEach(function (l) { frag.appendChild(card(l, c)); });
@@ -2009,8 +2079,18 @@ if (typeof document !== 'undefined') (function () {
       var short = lc.cash - c.savings;
       cashRow = short > 0 ? ['Cash short by', money(short)] : ['Cash to close', money(lc.cash)];
     }
-    [[monthlyLabel, money(lc.own.total)], cashRow].forEach(function (r) {
-      var d = el('div'); d.appendChild(el('span', 'k', r[0])); d.appendChild(el('span', 'v', r[1])); calc.appendChild(d);
+    [[monthlyLabel, money(lc.own.total)], cashRow].forEach(function (r, i) {
+      var d = el('div'), k = el('span', 'k', r[0]);
+      if (i === 1) {
+        // Cash to close is the figure people query most, and it is six separate
+        // charges in a trench coat. Let them open it up.
+        var ib = el('button', 'info'); ib.type = 'button'; ib.innerHTML = INFO;
+        ib.setAttribute('aria-label', 'Show how the ' + money(lc.cash) + ' cash to close is worked out for '
+          + (l.title || 'this listing'));
+        ib.addEventListener('click', function (ev) { ev.stopPropagation(); openCash(l, lc, ib); });
+        k.appendChild(ib);
+      }
+      d.appendChild(k); d.appendChild(el('span', 'v', r[1])); calc.appendChild(d);
     });
     art.appendChild(calc);
     if (!lc.own.complete) {
@@ -2147,6 +2227,53 @@ if (typeof document !== 'undefined') (function () {
   }
   function closeCompare() { $('cmpPanel').hidden = true; }
 
+  /* The cash-to-close breakdown for one listing, from the same items the main
+     calculator itemises, so the two can never disagree. */
+  var CASH_GROUP = { 1: 'Deposit', 2: 'Government duty and fees', 3: 'Professional fees' };
+  var cashReturnTo = null;
+  function openCash(l, lc, trigger) {
+    cashReturnTo = trigger || null;
+    $('cashFor').textContent = (l.title || 'This listing') + ' — ' + money(l.price_kyd)
+      + (l.location ? ' in ' + l.location : '');
+    var body = $('cashBody'); body.textContent = '';
+    [1, 2, 3].forEach(function (g) {
+      // a zero line is noise, except the deposit, where zero is worth seeing
+      var rows = lc.items.filter(function (it) { return it.g === g && (it.v > 0 || g === 1 || it.keep); });
+      if (!rows.length) return;
+      var head = el('tr', 'cash-group'), hc = el('td', null, CASH_GROUP[g]);
+      hc.colSpan = 2; head.appendChild(hc); body.appendChild(head);
+      rows.forEach(function (it) {
+        var tr = el('tr'), k = el('td');
+        k.appendChild(el('span', 'cash-k', it.label));
+        if (it.note) k.appendChild(el('span', 'cash-note', it.note));
+        tr.appendChild(k); tr.appendChild(el('td', 'cash-v', money(it.v)));
+        body.appendChild(tr);
+      });
+    });
+    var tot = el('tr', 'cash-total');
+    tot.appendChild(el('td', null, 'Cash to close'));
+    tot.appendChild(el('td', 'cash-v', money(lc.cash)));
+    body.appendChild(tot);
+
+    var foot = 'Worked out on your calculator settings: '
+      + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : money(toKyd(S.downAmt)) + ' down')
+      + ', legal ' + trimNum(S.legalPct, 2) + '% and bank ' + trimNum(S.bankPct, 2)
+      + '% of the loan. Change them in the calculator above and this follows.';
+    if (hasEntered('savings')) {
+      var short = lc.cash - toKyd(S.savings);
+      foot = (short > 0 ? 'That is ' + money(short) + ' more than the ' + money(toKyd(S.savings)) + ' you have saved. '
+                        : 'Your ' + money(toKyd(S.savings)) + ' saved covers this, leaving ' + money(-short) + '. ') + foot;
+    }
+    $('cashFoot').textContent = foot;
+    $('cashPanel').hidden = false;
+    $('cashClose').focus();
+  }
+  function closeCash() {
+    $('cashPanel').hidden = true;
+    if (cashReturnTo && document.body.contains(cashReturnTo)) cashReturnTo.focus();
+    cashReturnTo = null;
+  }
+
   function useListing(l) {
     LX.current = l.url;
     $('price').value = group(Math.round(disp(l.price_kyd)), 0);
@@ -2226,7 +2353,14 @@ if (typeof document !== 'undefined') (function () {
     });
     $('cmpClose').addEventListener('click', closeCompare);
     $('cmpPanel').addEventListener('click', function (e) { if (e.target === $('cmpPanel')) closeCompare(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('cmpPanel').hidden) closeCompare(); });
+    $('cashPanel').addEventListener('click', function (e) { if (e.target === $('cashPanel')) closeCash(); });
+    $('cashClose').addEventListener('click', closeCash);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      // the breakdown sits above the compare panel, so it closes first
+      if (!$('cashPanel').hidden) closeCash();
+      else if (!$('cmpPanel').hidden) closeCompare();
+    });
   }
 
   /* ---------- chart ---------- */
