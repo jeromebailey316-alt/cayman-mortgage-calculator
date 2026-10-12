@@ -419,15 +419,15 @@
     </div>
   </div>
 
-  <div class="cmp-panel" id="cashPanel" hidden role="dialog" aria-modal="true" aria-labelledby="cashTitle">
-    <div class="cmp-card cash-card">
+  <div class="cmp-panel" id="bdPanel" hidden role="dialog" aria-modal="true" aria-labelledby="bdTitle">
+    <div class="cmp-card bd-card">
       <div class="cmp-head">
-        <h2 id="cashTitle">Cash to close</h2>
-        <button class="btn" type="button" id="cashClose">Close</button>
+        <h2 id="bdTitle">Cash to close</h2>
+        <button class="btn" type="button" id="bdClose">Close</button>
       </div>
-      <p class="hint" id="cashFor"></p>
-      <div class="cmp-scroll"><table class="cash-table"><tbody id="cashBody"></tbody></table></div>
-      <div class="cmp-foot"><span id="cashFoot"></span></div>
+      <p class="hint" id="bdFor"></p>
+      <div class="cmp-scroll"><table class="bd-table"><tbody id="bdBody"></tbody></table></div>
+      <div class="cmp-foot"><span id="bdFoot"></span></div>
     </div>
   </div>
 
@@ -2079,18 +2079,16 @@ if (typeof document !== 'undefined') (function () {
       var short = lc.cash - c.savings;
       cashRow = short > 0 ? ['Cash short by', money(short)] : ['Cash to close', money(lc.cash)];
     }
-    [[monthlyLabel, money(lc.own.total)], cashRow].forEach(function (r, i) {
-      var d = el('div'), k = el('span', 'k', r[0]);
-      if (i === 1) {
-        // Cash to close is the figure people query most, and it is six separate
-        // charges in a trench coat. Let them open it up.
-        var ib = el('button', 'info'); ib.type = 'button'; ib.innerHTML = INFO;
-        ib.setAttribute('aria-label', 'Show how the ' + money(lc.cash) + ' cash to close is worked out for '
-          + (l.title || 'this listing'));
-        ib.addEventListener('click', function (ev) { ev.stopPropagation(); openCash(l, lc, ib); });
-        k.appendChild(ib);
-      }
-      d.appendChild(k); d.appendChild(el('span', 'v', r[1])); calc.appendChild(d);
+    // Both figures are several charges added together, so both can be opened up.
+    [{ kind: 'monthly', label: monthlyLabel, value: money(lc.own.total), of: money(lc.own.total) + ' a month' },
+     { kind: 'cash', label: cashRow[0], value: cashRow[1], of: money(lc.cash) + ' cash to close' }
+    ].forEach(function (r) {
+      var d = el('div'), k = el('span', 'k', r.label);
+      var ib = el('button', 'info'); ib.type = 'button'; ib.innerHTML = INFO;
+      ib.setAttribute('aria-label', 'Show how the ' + r.of + ' is worked out for ' + (l.title || 'this listing'));
+      ib.addEventListener('click', function (ev) { ev.stopPropagation(); openBreakdown(r.kind, l, lc, ib); });
+      k.appendChild(ib);
+      d.appendChild(k); d.appendChild(el('span', 'v', r.value)); calc.appendChild(d);
     });
     art.appendChild(calc);
     if (!lc.own.complete) {
@@ -2227,34 +2225,53 @@ if (typeof document !== 'undefined') (function () {
   }
   function closeCompare() { $('cmpPanel').hidden = true; }
 
-  /* The cash-to-close breakdown for one listing, from the same items the main
-     calculator itemises, so the two can never disagree. */
-  var CASH_GROUP = { 1: 'Deposit', 2: 'Government duty and fees', 3: 'Professional fees' };
-  var cashReturnTo = null;
-  function openCash(l, lc, trigger) {
-    cashReturnTo = trigger || null;
-    $('cashFor').textContent = (l.title || 'This listing') + ' — ' + money(l.price_kyd)
+  /* One dialog, two breakdowns. Both are built from the same parts the main
+     calculator uses, so a card and the calculator can never disagree. */
+  var CASH_GROUPS = { 1: 'Deposit', 2: 'Government duty and fees', 3: 'Professional fees' };
+  var bdReturnTo = null;
+
+  function bdRow(label, note, value) {
+    var tr = el('tr'), k = el('td');
+    k.appendChild(el('span', 'bd-k', label));
+    if (note) k.appendChild(el('span', 'bd-note', note));
+    tr.appendChild(k);
+    // null is "we do not know", never zero: it is shown as such and left out of the total
+    tr.appendChild(value == null ? el('td', 'bd-v unknown', 'Not listed') : el('td', 'bd-v', money(value)));
+    return tr;
+  }
+  function bdHead(text) {
+    var tr = el('tr', 'bd-group'), td = el('td', null, text);
+    td.colSpan = 2; tr.appendChild(td); return tr;
+  }
+  function bdTotal(label, value) {
+    var tr = el('tr', 'bd-total');
+    tr.appendChild(el('td', null, label));
+    tr.appendChild(el('td', 'bd-v', money(value)));
+    return tr;
+  }
+
+  function openBreakdown(kind, l, lc, trigger) {
+    bdReturnTo = trigger || null;
+    var body = $('bdBody'); body.textContent = '';
+    $('bdFor').textContent = (l.title || 'This listing') + ' — ' + money(l.price_kyd)
       + (l.location ? ' in ' + l.location : '');
-    var body = $('cashBody'); body.textContent = '';
+    if (kind === 'cash') renderCashBreakdown(l, lc, body);
+    else renderMonthlyBreakdown(l, lc, body);
+    $('bdPanel').hidden = false;
+    $('bdClose').focus();
+  }
+
+  function renderCashBreakdown(l, lc, body) {
+    $('bdTitle').textContent = 'Cash to close';
     [1, 2, 3].forEach(function (g) {
-      // a zero line is noise, except the deposit, where zero is worth seeing
+      // a zero line is noise, except the deposit, and except a duty line whose zero
+      // is a concession worth seeing
       var rows = lc.items.filter(function (it) { return it.g === g && (it.v > 0 || g === 1 || it.keep); });
       if (!rows.length) return;
-      var head = el('tr', 'cash-group'), hc = el('td', null, CASH_GROUP[g]);
-      hc.colSpan = 2; head.appendChild(hc); body.appendChild(head);
-      rows.forEach(function (it) {
-        var tr = el('tr'), k = el('td');
-        k.appendChild(el('span', 'cash-k', it.label));
-        if (it.note) k.appendChild(el('span', 'cash-note', it.note));
-        tr.appendChild(k); tr.appendChild(el('td', 'cash-v', money(it.v)));
-        body.appendChild(tr);
-      });
+      body.appendChild(bdHead(CASH_GROUPS[g]));
+      rows.forEach(function (it) { body.appendChild(bdRow(it.label, it.note, it.v)); });
     });
-    var tot = el('tr', 'cash-total');
-    tot.appendChild(el('td', null, 'Cash to close'));
-    tot.appendChild(el('td', 'cash-v', money(lc.cash)));
-    body.appendChild(tot);
-
+    body.appendChild(bdTotal('Cash to close', lc.cash));
     var foot = 'Worked out on your calculator settings: '
       + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : money(toKyd(S.downAmt)) + ' down')
       + ', legal ' + trimNum(S.legalPct, 2) + '% and bank ' + trimNum(S.bankPct, 2)
@@ -2264,14 +2281,39 @@ if (typeof document !== 'undefined') (function () {
       foot = (short > 0 ? 'That is ' + money(short) + ' more than the ' + money(toKyd(S.savings)) + ' you have saved. '
                         : 'Your ' + money(toKyd(S.savings)) + ' saved covers this, leaving ' + money(-short) + '. ') + foot;
     }
-    $('cashFoot').textContent = foot;
-    $('cashPanel').hidden = false;
-    $('cashClose').focus();
+    $('bdFoot').textContent = foot;
   }
-  function closeCash() {
-    $('cashPanel').hidden = true;
-    if (cashReturnTo && document.body.contains(cashReturnTo)) cashReturnTo.focus();
-    cashReturnTo = null;
+
+  function renderMonthlyBreakdown(l, lc, body) {
+    var own = lc.own, isLand = l.ptype === 'land';
+    $('bdTitle').textContent = own.complete ? 'Monthly to own' : 'Monthly cost, so far as it is known';
+    // notes say where each figure came from: a rule, their setting, or nothing at all
+    var NOTE = {
+      pmt: money(lc.loan) + ' at ' + trimNum(S.rate, 3) + '% over ' + S.term + ' years',
+      strata: isLand ? 'Land has no strata' : (l.ptype === 'condo'
+        ? 'Not in the listing data — ask the agent'
+        : 'No strata on a standalone home'),
+      insurance: isLand ? 'Land has no building to insure' : trimNum(S.insPct, 2) + '% of the price a year, estimated',
+      life: toKyd(S.life) > 0 ? 'From your calculator settings' : 'None set in the calculator',
+      upkeep: isLand ? 'No building to maintain' : trimNum(S.upkeepPct, 2) + '% of the price a year, an allowance'
+    };
+    body.appendChild(bdHead('Every month'));
+    own.parts.forEach(function (p) { body.appendChild(bdRow(p.label, NOTE[p.key] || '', p.amount)); });
+    body.appendChild(bdTotal(own.complete ? 'Monthly to own' : 'Known so far, each month', own.total));
+
+    var foot = 'The mortgage uses ' + (S.downMaster === 'pct' ? trimNum(S.downPct, 2) + '% down' : money(toKyd(S.downAmt)) + ' down')
+      + ' at ' + trimNum(S.rate, 3) + '% over ' + S.term + ' years. Change any of it in the calculator above.';
+    if (!own.complete) {
+      foot = 'The listing does not publish ' + own.unknown.join(' or ').toLowerCase()
+        + ', so ' + money(own.total) + ' is a floor and the real cost is higher. ' + foot;
+    }
+    $('bdFoot').textContent = foot;
+  }
+
+  function closeBreakdown() {
+    $('bdPanel').hidden = true;
+    if (bdReturnTo && document.body.contains(bdReturnTo)) bdReturnTo.focus();
+    bdReturnTo = null;
   }
 
   function useListing(l) {
@@ -2353,12 +2395,12 @@ if (typeof document !== 'undefined') (function () {
     });
     $('cmpClose').addEventListener('click', closeCompare);
     $('cmpPanel').addEventListener('click', function (e) { if (e.target === $('cmpPanel')) closeCompare(); });
-    $('cashPanel').addEventListener('click', function (e) { if (e.target === $('cashPanel')) closeCash(); });
-    $('cashClose').addEventListener('click', closeCash);
+    $('bdPanel').addEventListener('click', function (e) { if (e.target === $('bdPanel')) closeBreakdown(); });
+    $('bdClose').addEventListener('click', closeBreakdown);
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       // the breakdown sits above the compare panel, so it closes first
-      if (!$('cashPanel').hidden) closeCash();
+      if (!$('bdPanel').hidden) closeBreakdown();
       else if (!$('cmpPanel').hidden) closeCompare();
     });
   }
