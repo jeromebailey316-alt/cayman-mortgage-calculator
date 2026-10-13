@@ -21,18 +21,6 @@
         "site"
       ],
       "port": 8788
-    },
-    {
-      "name": "cayman-site-before",
-      "runtimeExecutable": ".venv/bin/python",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "8789",
-        "--directory",
-        "dist/site-before"
-      ],
-      "port": 8789
     }
   ]
 }
