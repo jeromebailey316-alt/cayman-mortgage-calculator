@@ -28,24 +28,26 @@ def compact(v: float | None) -> str:
 
 
 def stat_tiles(s: dict) -> str:
+    # The first two lead: how much is out there, and what the middle of the market
+    # costs you a month. The rest is supporting detail and is sized that way.
     tiles = [
-        ("Homes for sale", f"{s['count']:,}", f"across {s['sources_ok']} agency websites"),
-        ("Median house", compact(s["median"]["house"]),
-         f"{money(s['psf']['house'])} per sq ft" if s["psf"]["house"] else ""),
-        ("Median condo", compact(s["median"]["condo"]),
-         f"{money(s['psf']['condo'])} per sq ft" if s["psf"]["condo"] else ""),
-        ("Median land", compact(s["median"]["land"]), "lots and parcels"),
+        ("Homes for sale", f"{s['count']:,}", f"across {s['sources_ok']} agency websites", True),
         ("Payment on the median home", money(s["median_home_payment"]),
-         f"{compact(s['median_home'])} at {s['down_pct']}% down, {s['rate']}% over {s['term']} yrs"),
-        ("Under CI$1M", f"{s['under_1m']:,}", f"{s['under_1m_pct']}% of what is listed"),
+         f"{compact(s['median_home'])} at {s['down_pct']}% down, {s['rate']}% over {s['term']} yrs", True),
+        ("Median house", compact(s["median"]["house"]),
+         f"{money(s['psf']['house'])} per sq ft" if s["psf"]["house"] else "", False),
+        ("Median condo", compact(s["median"]["condo"]),
+         f"{money(s['psf']['condo'])} per sq ft" if s["psf"]["condo"] else "", False),
+        ("Median land", compact(s["median"]["land"]), "lots and parcels", False),
+        ("Under CI$1M", f"{s['under_1m']:,}", f"{s['under_1m_pct']}% of what is listed", False),
         ("First-time buyer band", f"{s['first_time_band']:,}",
-         "homes at or under CI$550,000, where a Caymanian first-time buyer pays no duty"),
-        ("At the 10% duty line", f"{s['luxury_duty']:,}", "listed at CI$2M or more"),
+         "homes at or under CI$550,000, where a Caymanian first-time buyer pays no duty", False),
+        ("At the 10% duty line", f"{s['luxury_duty']:,}", "listed at CI$2M or more", False),
     ]
     out = []
-    for k, v, sub in tiles:
-        out.append('<div class="stat"><span class="k">%s</span><span class="v">%s</span>%s</div>'
-                   % (html.escape(k), html.escape(v),
+    for k, v, sub, lead in tiles:
+        out.append('<div class="stat%s"><span class="k">%s</span><span class="v">%s</span>%s</div>'
+                   % (" lead" if lead else "", html.escape(k), html.escape(v),
                       f'<span class="s">{html.escape(sub)}</span>' if sub else ""))
     return "".join(out)
 

@@ -4,13 +4,22 @@
     {
       "name": "cayman-mortgage",
       "runtimeExecutable": ".venv/bin/python",
-      "runtimeArgs": ["server.py", "--no-open"],
+      "runtimeArgs": [
+        "server.py",
+        "--no-open"
+      ],
       "port": 8787
     },
     {
       "name": "cayman-site",
       "runtimeExecutable": ".venv/bin/python",
-      "runtimeArgs": ["-m", "http.server", "8788", "--directory", "site"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8788",
+        "--directory",
+        "site"
+      ],
       "port": 8788
     }
   ]
