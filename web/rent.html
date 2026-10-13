@@ -199,6 +199,8 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="notes">
       <div>
@@ -761,10 +763,16 @@ if (typeof document !== 'undefined') (function () {
     } else window.addEventListener('resize', drawChart);
   }
 
-  writeForm(startingValues());
-  syncDown();
-  bind();
-  render();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
+
+  // core.js is deferred so it does not block the first paint; a deferred script
+  // is guaranteed to have run before DOMContentLoaded, so boot from there.
+  function boot() {
+    writeForm(startingValues());
+    syncDown();
+    bind();
+    render();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script>

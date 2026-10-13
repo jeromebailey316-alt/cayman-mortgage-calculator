@@ -173,6 +173,8 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="notes">
       <div>
@@ -563,9 +565,15 @@ if (typeof document !== 'undefined') (function () {
     });
   }
 
-  $('eqChecked').textContent = 'Lender figures checked September 2026. Banks change their criteria; ask yours.';
-  writeForm(startingValues());
-  bind();
-  render();
+
+  // core.js is deferred so it does not block the first paint; a deferred script
+  // is guaranteed to have run before DOMContentLoaded, so boot from there.
+  function boot() {
+    $('eqChecked').textContent = 'Lender figures checked September 2026. Banks change their criteria; ask yours.';
+    writeForm(startingValues());
+    bind();
+    render();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script>

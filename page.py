@@ -137,8 +137,14 @@ THEME_JS = """
       nav.classList.toggle('more', more);
     };
     mark();
-    nav.addEventListener('scroll', mark, { passive: true });
-    window.addEventListener('resize', mark);
+    var queued = false;
+    var onFrame = function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; mark(); });
+    };
+    nav.addEventListener('scroll', onFrame, { passive: true });
+    window.addEventListener('resize', onFrame, { passive: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navScroll); else navScroll();
 })();
@@ -156,6 +162,8 @@ def nav(active: str, root: str = "/") -> str:
         here = ' aria-current="page"' if key == active else ""
         return f'<a href="{href or root + PAGES[key]["path"]}"{here}>{label}</a>'
     return (
+        # a keyboard user should not have to tab the whole nav on every page
+        '<a class="skip" href="#main">Skip to content</a>'
         '<header class="site">'
         f'<a class="brand" href="{root}" aria-label="{SITE_NAME}, home">'
         f'<img class="logo light-only" src="{root}assets/cmc-secondary-color.svg" width="594" height="128" alt="{SITE_NAME}">'
@@ -172,6 +180,7 @@ def nav(active: str, root: str = "/") -> str:
         '<button class="btn icon" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>'
         '</div>'
         '</header>'
+        '<main id="main">'
     )
 
 
@@ -204,7 +213,7 @@ def json_ld(page: str) -> str:
     return "".join(f'<script type="application/ld+json">{json.dumps(b, ensure_ascii=False)}</script>' for b in blocks)
 
 
-def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
+def head(page: str, canonical: str = "", inline_css: bool = False, core: bool = True) -> str:
     meta = PAGES[page]
     css = (f"<style>{CSS.read_text()}</style>" if inline_css
            else f'<link rel="stylesheet" href="{CSS_HREF}?v={_stamp(CSS)}">')
@@ -216,7 +225,23 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         f'<title>{meta["title"]}</title>'
         f'<meta name="description" content="{meta["description"]}">'
-        '<meta name="color-scheme" content="light dark">'
+        # GitHub Pages cannot set headers, so the policy goes in a meta tag.
+        # Inline scripts and styles are part of the build, so 'unsafe-inline' is
+        # unavoidable here; the value is in object-src/base-uri/form-action, which
+        # shut off whole classes of injection, and in pinning where scripts, fonts
+        # and connections may come from. Listing photos are hotlinked from many
+        # agency domains, so img-src has to allow https generally.
+        + ('' if inline_css else
+           '<meta http-equiv="Content-Security-Policy" content="'
+           "default-src 'self'; "
+           "img-src 'self' https: data:; "
+           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+           "font-src 'self' https://fonts.gstatic.com; "
+           "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; "
+           "connect-src 'self' https://cloudflareinsights.com; "
+           "object-src 'none'; base-uri 'self'; form-action 'none'"
+           '">')
+        + '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#0E2A47">'
         + ("" if inline_css else ICONS)
         + f'<meta property="og:title" content="{meta["title"]}">'
@@ -225,6 +250,10 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         f'<meta property="og:site_name" content="{SITE_NAME}">'
         + og_image
         + (f'<link rel="canonical" href="{canonical}">' if canonical else "")
+        + ('' if inline_css else
+           '<link rel="preconnect" href="https://fonts.googleapis.com">'
+           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+           + ('<link rel="preconnect" href="https://static.cloudflareinsights.com">' if CF_ANALYTICS_TOKEN else ''))
         + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">'
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
@@ -235,8 +264,11 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
            f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
            if CF_ANALYTICS_TOKEN and not inline_css else "")
         + css
-        + (f"<script>{CORE.read_text()}</script>" if inline_css
-           else f'<script src="{CORE_HREF}?v={_stamp(CORE)}"></script>')
+        + ("" if not core else
+           f"<script>{CORE.read_text()}</script>" if inline_css
+           # deferred: the pages that use it boot on DOM ready, and a deferred
+           # script is guaranteed to have run by then
+           else f'<script defer src="{CORE_HREF}?v={_stamp(CORE)}"></script>')
         + f"<script>{THEME_JS}</script>"
         + "</head><body>"
     )
@@ -253,7 +285,8 @@ def render_app(data: dict | None, canonical: str = "", inline_css: bool = False,
 
 
 def render_home(body: str, canonical: str = "") -> str:
-    return head("home", canonical) + body.replace("__NAV__", nav("home")) + TAIL
+    # the front page has no calculator on it, so it has no use for the engine
+    return head("home", canonical, core=False) + body.replace("__NAV__", nav("home")) + TAIL
 
 
 def render_rent(canonical: str = "") -> str:

@@ -431,6 +431,8 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="notes">
       <div>
@@ -482,7 +484,7 @@
 /* ================= UI ================= */
 if (typeof document !== 'undefined') (function () {
   'use strict';
-  var R = Core.R, STORE = 'caymanMortgage.v1';
+  var R, STORE = 'caymanMortgage.v1';
   var DEFAULTS = {
     cur: 'KYD', price: 600000, marketValue: 0, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
     downPct: 15, downAmt: 90000, downMaster: 'pct', rate: 7.75, term: 25, extra: 0,
@@ -2553,6 +2555,7 @@ if (typeof document !== 'undefined') (function () {
   }
 
   function start() {
+    R = Core.R;
     loadPrefs(); loadSaved(); readSharedList(); bindListings();
     writeForm(load());
     if (readQuery()) save();      // a price from the link wins over the saved one
@@ -2561,7 +2564,9 @@ if (typeof document !== 'undefined') (function () {
     loadListingData(function () { setupListingControls(); render(); renderListings(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
   }
-  start();
+  // core.js is deferred so it does not block the first paint; a deferred script
+  // is guaranteed to have run before DOMContentLoaded, so boot from there.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
 </script>
