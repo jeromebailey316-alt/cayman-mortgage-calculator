@@ -29,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # the scrape decision below diffs this push against its base
 
       - uses: actions/setup-python@v5
         with:
@@ -44,16 +46,26 @@ jobs:
         id: plan
         env:
           EVENT: ${{ github.event_name }}
-          COMMITS: ${{ toJSON(github.event.commits) }}
+          BEFORE: ${{ github.event.before }}
         run: |
+          set -u
           if [ "$EVENT" != "push" ]; then
             echo "scrape=true" >> "$GITHUB_OUTPUT"
             echo "::notice::$EVENT run — scraping the agency websites."
             exit 0
           fi
-          if printf '%s' "$COMMITS" \
-             | jq -e 'any(.[]; ((.added + .modified + .removed)[] | startswith("data/")))' >/dev/null
-          then
+          # Diff the whole push, not just its last commit. A force-push or a first
+          # push leaves BEFORE unusable, so fall back to the final commit alone.
+          zero=0000000000000000000000000000000000000000
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != "$zero" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            range="$BEFORE..HEAD"
+          else
+            range="HEAD~1..HEAD"
+          fi
+          changed=$(git diff --name-only "$range" 2>/dev/null || true)
+          echo "Changed in $range:"
+          printf '%s\n' "$changed" | sed 's/^/  /'
+          if printf '%s\n' "$changed" | grep -q '^data/'; then
             echo "scrape=false" >> "$GITHUB_OUTPUT"
             echo "::notice::This push carries listing data — publishing it as committed, not re-scraping."
           else
