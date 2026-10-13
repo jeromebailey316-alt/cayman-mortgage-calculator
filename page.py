@@ -261,7 +261,7 @@ def head(page: str, canonical: str = "", inline_css: bool = False, core: bool = 
            '<link rel="preconnect" href="https://fonts.googleapis.com">'
            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
            + ('<link rel="preconnect" href="https://static.cloudflareinsights.com">' if CF_ANALYTICS_TOKEN else ''))
-        + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap">'
+        + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">'
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
         + ("" if inline_css else json_ld(page))

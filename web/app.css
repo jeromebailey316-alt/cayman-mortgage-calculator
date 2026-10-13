@@ -14,7 +14,7 @@
   --warn-bg:#fff4d9; --warn-ink:#5a4100;
   --crit-bg:#fbe7e7; --crit-ink:#7a1717;
   --shadow:0 1px 2px rgba(15,34,48,.05),0 10px 28px rgba(15,34,48,.06);
-  --display:"Instrument Sans","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --display:"Sora","Avenir Next","Segoe UI",system-ui,sans-serif;
   --body:"Instrument Sans","Segoe UI",system-ui,-apple-system,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -66,7 +66,7 @@ a{color:var(--accent)}
 .top{display:flex;flex-direction:column;gap:16px;margin-bottom:24px}
 .top-row{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between}
 .top-intro{color:var(--ink-2);font-size:16px;line-height:1.55;text-wrap:pretty;max-width:none}
-.top h1{font-size:clamp(28px,4vw,44px);font-weight:700;line-height:1.05}
+.top h1{font-size:clamp(28px,4vw,44px);font-weight:700;line-height:1.1}
 .brand{line-height:0}
 .logo{height:clamp(58px,9.2vw,104px);width:auto;max-width:100%;display:block}
 .dark-only{display:none}
@@ -444,7 +444,7 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:8px}
 /* ================= front page ================= */
 .hero-band{background:var(--hero-bg);color:var(--hero-ink);border-radius:18px;padding:clamp(24px,4vw,40px);
   display:flex;flex-direction:column;gap:clamp(20px,3vw,32px)}
-.hero-band h1{font-size:clamp(28px,4vw,44px);line-height:1.04;font-weight:800;max-width:20ch}
+.hero-band h1{font-size:clamp(28px,4vw,44px);line-height:1.1;font-weight:800;max-width:20ch}
 .hero-band .lede{color:var(--hero-ink-2);font-size:16px;max-width:62ch;line-height:1.5;margin-top:12px}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
 .hero-cta a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:16px;
