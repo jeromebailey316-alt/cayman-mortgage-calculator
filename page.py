@@ -15,6 +15,7 @@ APP_FRAGMENT = WEB / "index.html"
 HOME_FRAGMENT = WEB / "home.html"
 RENT_FRAGMENT = WEB / "rent.html"
 EQUITY_FRAGMENT = WEB / "equity.html"
+NOTFOUND_FRAGMENT = WEB / "404.html"
 CSS = WEB / "app.css"
 CORE = WEB / "core.js"
 
@@ -78,6 +79,11 @@ PAGES = {
         "title": "Cayman home equity calculator: how much can you release?",
         "description": ("How much equity is in your Cayman property, how much a bank would lend against it at 90, 80 "
                         "or 70% loan-to-value, and what releasing it would cost."),
+    },
+    "notfound": {
+        "path": "404.html",
+        "title": f"Page not found — {SITE_NAME}",
+        "description": "That page is not here. The calculators and the current listings are all still available.",
     },
     "calculator": {
         "path": "calculator/",
@@ -250,6 +256,7 @@ def head(page: str, canonical: str = "", inline_css: bool = False, core: bool = 
         f'<meta property="og:site_name" content="{SITE_NAME}">'
         + og_image
         + (f'<link rel="canonical" href="{canonical}">' if canonical else "")
+        + ('<meta name="robots" content="noindex">' if page == "notfound" else "")
         + ('' if inline_css else
            '<link rel="preconnect" href="https://fonts.googleapis.com">'
            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -282,6 +289,12 @@ def render_app(data: dict | None, canonical: str = "", inline_css: bool = False,
     slot = "null" if data is None else json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     body = APP_FRAGMENT.read_text().replace("__LISTINGS_JSON__", slot).replace("__NAV__", nav("calculator", root))
     return head("calculator", canonical, inline_css) + body + TAIL
+
+
+def render_404() -> str:
+    # No canonical and no core.js: it is not a real page and has no calculator on it.
+    # nav("") leaves every tab unmarked, since none of them is where we are.
+    return head("notfound", core=False) + NOTFOUND_FRAGMENT.read_text().replace("__NAV__", nav("")) + TAIL
 
 
 def render_home(body: str, canonical: str = "") -> str:

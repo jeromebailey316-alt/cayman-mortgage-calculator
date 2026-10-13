@@ -62,6 +62,8 @@ def build(data: dict, canonical: str = "", domain: str = "") -> Path:
     (rent / "index.html").write_text(page.render_rent(base + "rent-vs-buy/" if base else ""))
     equity = SITE / "equity"; equity.mkdir()
     (equity / "index.html").write_text(page.render_equity(base + "equity/" if base else ""))
+    # GitHub Pages serves this for any address that does not exist, at any depth
+    (SITE / "404.html").write_text(page.render_404())
     (SITE / "assets" / "app.css").write_text(page.CSS.read_text())
     (SITE / "assets" / "core.js").write_text(page.CORE.read_text())
     (SITE / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
