@@ -31,25 +31,38 @@ def stat_tiles(s: dict) -> str:
     # The first two lead: how much is out there, and what the middle of the market
     # costs you a month. The rest is supporting detail and is sized that way.
     tiles = [
-        ("Homes for sale", f"{s['count']:,}", f"across {s['sources_ok']} agency websites", True),
+        ("Homes for sale", f"{s['count']:,}", f"across {s['sources_ok']} agency websites", True, ""),
         ("Payment on the median home", money(s["median_home_payment"]),
-         f"{compact(s['median_home'])} at {s['down_pct']}% down, {s['rate']}% over {s['term']} yrs", True),
+         f"{compact(s['median_home'])} at {s['down_pct']}% down, {s['rate']}% over {s['term']} yrs", True, ""),
         ("Median house", compact(s["median"]["house"]),
-         f"{money(s['psf']['house'])} per sq ft" if s["psf"]["house"] else "", False),
+         f"{money(s['psf']['house'])} per sq ft" if s["psf"]["house"] else "", False, ""),
         ("Median condo", compact(s["median"]["condo"]),
-         f"{money(s['psf']['condo'])} per sq ft" if s["psf"]["condo"] else "", False),
-        ("Median land", compact(s["median"]["land"]), "lots and parcels", False),
-        ("Under CI$1M", f"{s['under_1m']:,}", f"{s['under_1m_pct']}% of what is listed", False),
+         f"{money(s['psf']['condo'])} per sq ft" if s["psf"]["condo"] else "", False, ""),
+        ("Median land", compact(s["median"]["land"]), "lots and parcels", False, ""),
+        ("Under CI$1M", f"{s['under_1m']:,}", f"{s['under_1m_pct']}% of what is listed", False, ""),
         ("First-time buyer band", f"{s['first_time_band']:,}",
-         "homes at or under CI$550,000, where a Caymanian first-time buyer pays no duty", False),
-        ("At the 10% duty line", f"{s['luxury_duty']:,}", "listed at CI$2M or more", False),
+         f"homes at or under {money(stats.FIRST_TIME_CAP)}, where a Caymanian first-time buyer pays no duty",
+         False, first_time_link()),
+        ("At the 10% duty line", f"{s['luxury_duty']:,}", "listed at CI$2M or more", False, ""),
     ]
     out = []
-    for k, v, sub, lead in tiles:
-        out.append('<div class="stat%s"><span class="k">%s</span><span class="v">%s</span>%s</div>'
+    for k, v, sub, lead, link in tiles:
+        out.append('<div class="stat%s"><span class="k">%s</span><span class="v">%s</span>%s%s</div>'
                    % (" lead" if lead else "", html.escape(k), html.escape(v),
-                      f'<span class="s">{html.escape(sub)}</span>' if sub else ""))
+                      f'<span class="s">{html.escape(sub)}</span>' if sub else "", link))
     return "".join(out)
+
+
+def first_time_link() -> str:
+    """Opens the calculator already set to the band this tile counted: a home at the
+    threshold, first-time Caymanian status, and a deposit, rate and term a buyer in
+    that band would actually be quoted. `range=under` then lists everything up to it,
+    so the listings shown are the ones behind the number."""
+    pl = stats.FIRST_TIME_PLAN
+    q = (f"price={stats.FIRST_TIME_CAP}&ptype=home&status=first"
+         f"&down={pl['down_pct']}&rate={pl['rate']}&term={pl['term']}&range=under")
+    return (f'<a class="stat-link" href="/calculator/?{q}#listings">View Listings'
+            '<span aria-hidden="true"> →</span></a>')
 
 
 def _why(l: dict, s: dict) -> str:

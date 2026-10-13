@@ -18,6 +18,16 @@ DOWN_PCT, RATE, TERM_YEARS = 15, 7.75, 25
 
 HOME_TYPES = ("house", "condo")
 
+# A single Caymanian first-time buyer pays no transfer duty on a home up to this.
+# The tile's count, its caption and the link it carries all read from here, so they
+# cannot drift apart if the threshold changes. Mirrors RULES.first.home.single in core.js.
+FIRST_TIME_CAP = 550_000
+
+# What the first-time buyer link opens the calculator on. The rate and term are the
+# site's planning defaults; 10% is the deposit Cayman banks commonly ask a first-time
+# buyer for on a primary home, which is the lower end of the 10-15% range in the FAQ.
+FIRST_TIME_PLAN = {"down_pct": 10, "rate": RATE, "term": TERM_YEARS}
+
 
 def _median(values) -> float | None:
     vals = [v for v in values if v]
@@ -50,7 +60,7 @@ def summarise(data: dict) -> dict:
         "psf": {t: med_psf(t) for t in HOME_TYPES},
         "under_1m": sum(1 for l in ls if l["price_kyd"] < 1_000_000),
         "luxury_duty": sum(1 for l in ls if l["price_kyd"] >= 2_000_000),
-        "first_time_band": sum(1 for l in homes if l["price_kyd"] <= 550_000),
+        "first_time_band": sum(1 for l in homes if l["price_kyd"] <= FIRST_TIME_CAP),
         "median_home": med_home,
         "median_home_payment": payment(med_home * (100 - DOWN_PCT) / 100) if med_home else None,
         "down_pct": DOWN_PCT, "rate": RATE, "term": TERM_YEARS,

@@ -1532,6 +1532,34 @@ if (typeof document !== 'undefined') (function () {
       touched = true;
     }
     if (ptype === 'home' || ptype === 'land') { setRadio('ptype', ptype); touched = true; }
+
+    // A link can also carry the plan it is illustrating, so a tile that counted
+    // listings on particular terms lands on those same terms.
+    var status = val('status');
+    if (status === 'standard' || status === 'first' || status === 'second') {
+      $('status').value = status; touched = true;
+    }
+    var down = parseNum(val('down'));
+    if (down > 0 && down < 100) { $('downPct').value = trimNum(down, 2); S.downMaster = 'pct'; touched = true; }
+    var rate = parseNum(val('rate'));
+    if (rate > 0 && rate <= 25) { $('rate').value = trimNum(rate, 3); touched = true; }
+    var term = parseNum(val('term'));
+    if (term >= 1 && term <= 40) { $('term').value = String(Math.round(term)); touched = true; }
+
+    // range= means the link is defining the view, not just the plan. Saved filters
+    // would otherwise cut into it and the visitor would land on fewer listings than
+    // the tile promised, which is how an agency can look like it is missing.
+    var range = val('range');
+    if (range === 'near' || range === 'under' || range === 'any') {
+      LX.rangeTouched = true;
+      LX.pref.lxRange = range;
+      $('lxType').value = 'match';
+      $('lxBeds').value = '0';
+      $('lxMaxMonthly').value = '';
+      $('lxMaxCash').value = '';
+      LX.areas = {};
+      LX.off = {};
+    }
     return touched;
   }
 
