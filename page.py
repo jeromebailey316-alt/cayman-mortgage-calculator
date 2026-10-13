@@ -5,8 +5,10 @@ linked on the website and inlined for the single-file build.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -79,6 +81,11 @@ PAGES = {
         "description": ("How much equity is in your Cayman property, how much a bank would lend against it at 90, 80 "
                         "or 70% loan-to-value, and what releasing it would cost."),
     },
+    "404": {
+        "path": "404.html",
+        "title": f"Page not found — {SITE_NAME}",
+        "description": "That page doesn't exist. The calculators and listings are a click away.",
+    },
     "calculator": {
         "path": "calculator/",
         "title": "Cayman mortgage and stamp duty calculator",
@@ -87,62 +94,16 @@ PAGES = {
     },
 }
 
-# Applied before first paint on every page, and binds the light/dark button.
-THEME_JS = """
-(function () {
-  var KEY = 'caymanMortgage.theme';
-  var SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6"/></svg>';
-  var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5a8.5 8.5 0 1 0 10.8 10.8z"/></svg>';
-  function saved() { try { var t = localStorage.getItem(KEY); return t === 'dark' || t === 'light' ? t : null; } catch (e) { return null; } }
-  function systemDark() { return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
-  var t = saved();
-  if (t) document.documentElement.setAttribute('data-theme', t);   // before paint: no flash
-  function apply(choice) {
-    var root = document.documentElement;
-    if (choice) root.setAttribute('data-theme', choice); else root.removeAttribute('data-theme');
-    var dark = choice ? choice === 'dark' : systemDark(), btn = document.getElementById('themeBtn');
-    if (!btn) return;
-    btn.innerHTML = dark ? SUN : MOON;
-    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
-    btn.setAttribute('aria-label', label); btn.title = label;
-  }
-  function start() {
-    apply(saved());
-    var btn = document.getElementById('themeBtn');
-    if (btn) btn.addEventListener('click', function () {
-      var next = (saved() ? saved() === 'dark' : systemDark()) ? 'light' : 'dark';
-      try { localStorage.setItem(KEY, next); } catch (e) { /* ignore */ }
-      apply(next);
-    });
-    if (window.matchMedia) {
-      var mq = matchMedia('(prefers-color-scheme: dark)');
-      var onChange = function () { if (!saved()) apply(null); };
-      if (mq.addEventListener) mq.addEventListener('change', onChange);
-      else if (mq.addListener) mq.addListener(onChange);
-    }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+# The one piece that has to run before first paint: put a saved light/dark choice on
+# <html> so the page never flashes the wrong theme. Kept tiny because it blocks.
+THEME_PREPAINT = ("(function(){try{var t=localStorage.getItem('caymanMortgage.theme');"
+                  "if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();")
 
-  // On a phone the nav scrolls sideways: bring the current page's tab into view,
-  // and fade the right edge while there is more to see.
-  function navScroll() {
-    var nav = document.querySelector('.site-nav');
-    if (!nav) return;
-    var here = nav.querySelector('a[aria-current="page"]');
-    if (here && here.scrollIntoView) {
-      try { here.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) { /* ignore */ }
-    }
-    var mark = function () {
-      var more = nav.scrollWidth - nav.clientWidth - nav.scrollLeft > 8;
-      nav.classList.toggle('more', more);
-    };
-    mark();
-    nav.addEventListener('scroll', mark, { passive: true });
-    window.addEventListener('resize', mark);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', navScroll); else navScroll();
-})();
-"""
+# Everything else the shared header needs (the light/dark button, the sideways nav on
+# a phone) loads deferred from /assets/site.js.
+SITE_JS = WEB / "site.js"
+SITE_JS_HREF = "/assets/site.js"
+
 
 ICONS = ('<link rel="icon" href="/favicon.ico" sizes="48x48">'
          '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
@@ -156,6 +117,7 @@ def nav(active: str, root: str = "/") -> str:
         here = ' aria-current="page"' if key == active else ""
         return f'<a href="{href or root + PAGES[key]["path"]}"{here}>{label}</a>'
     return (
+        '<a class="skip-link" href="#main">Skip to content</a>'
         '<header class="site">'
         f'<a class="brand" href="{root}" aria-label="{SITE_NAME}, home">'
         f'<img class="logo light-only" src="{root}assets/cmc-secondary-color.svg" width="594" height="128" alt="{SITE_NAME}">'
@@ -213,7 +175,8 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
     return (
         '<!doctype html><html lang="en"><head>'
         '<meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+        + ("" if inline_css else CSP_SLOT)
+        + '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         f'<title>{meta["title"]}</title>'
         f'<meta name="description" content="{meta["description"]}">'
         '<meta name="color-scheme" content="light dark">'
@@ -225,6 +188,8 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
         f'<meta property="og:site_name" content="{SITE_NAME}">'
         + og_image
         + (f'<link rel="canonical" href="{canonical}">' if canonical else "")
+        + '<link rel="preconnect" href="https://fonts.googleapis.com">'
+          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
         + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Instrument+Sans:wght@400..600&display=swap">'
         + '<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}'
           'body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
@@ -235,33 +200,104 @@ def head(page: str, canonical: str = "", inline_css: bool = False) -> str:
            f'data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
            if CF_ANALYTICS_TOKEN and not inline_css else "")
         + css
-        + (f"<script>{CORE.read_text()}</script>" if inline_css
-           else f'<script src="{CORE_HREF}?v={_stamp(CORE)}"></script>')
-        + f"<script>{THEME_JS}</script>"
+        + f"<script>{THEME_PREPAINT}</script>"
+        # Deferred: fetched in parallel, run in order once the HTML is parsed. The page
+        # scripts wait for DOMContentLoaded, which fires after both have run.
+        + (f"<script>{CORE.read_text()}</script><script>{SITE_JS.read_text()}</script>" if inline_css
+           else f'<script defer src="{CORE_HREF}?v={_stamp(CORE)}"></script>'
+                f'<script defer src="{SITE_JS_HREF}?v={_stamp(SITE_JS)}"></script>')
         + "</head><body>"
     )
 
 
 TAIL = "</body></html>"
 
+# Content Security Policy. GitHub Pages cannot send response headers, so it goes in a
+# <meta> tag, filled in last by finish() once the page is assembled: every inline
+# script that runs is allowed by its exact SHA-256 hash, so editing a script can never
+# leave it blocked. Data blocks (JSON-LD, the listings JSON) don't execute and need none.
+CSP_SLOT = "<!--CSP-->"
+CSP_BASE = {
+    "default-src": ["'self'"],
+    "script-src": ["'self'", "https://static.cloudflareinsights.com"],
+    # inline style="" attributes are used throughout; styles can't run code
+    "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    "font-src": ["'self'", "https://fonts.gstatic.com"],
+    # listing photos are hotlinked from the agencies' own websites
+    "img-src": ["'self'", "https:", "data:"],
+    "connect-src": ["'self'", "https://cloudflareinsights.com"],
+    "manifest-src": ["'self'"],
+    "object-src": ["'none'"],
+    "base-uri": ["'self'"],
+    "form-action": ["'self'"],
+}
+_INLINE_SCRIPT = re.compile(r"<script(?P<attrs>[^>]*)>(?P<body>.*?)</script>", re.S)
+
+
+def _runs(attrs: str) -> bool:
+    """True for a script block the browser executes (no src, a JavaScript type)."""
+    if "src=" in attrs:
+        return False
+    m = re.search(r"""type=["']?([^"' >]+)""", attrs)
+    return not m or m.group(1).lower() in ("text/javascript", "module", "application/javascript")
+
+
+def finish(html: str) -> str:
+    hashes = []
+    for m in _INLINE_SCRIPT.finditer(html):
+        if _runs(m.group("attrs")):
+            digest = base64.b64encode(hashlib.sha256(m.group("body").encode("utf-8")).digest()).decode()
+            hashes.append(f"'sha256-{digest}'")
+    policy = {k: list(v) for k, v in CSP_BASE.items()}
+    policy["script-src"] += sorted(set(hashes))
+    value = "; ".join(f"{k} {' '.join(v)}" for k, v in policy.items())
+    return html.replace(CSP_SLOT, f'<meta http-equiv="Content-Security-Policy" content="{value}">', 1)
+
 
 def render_app(data: dict | None, canonical: str = "", inline_css: bool = False, root: str = "/") -> str:
     """The calculator page. `data` None means it fetches listings.json beside itself."""
     slot = "null" if data is None else json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     body = APP_FRAGMENT.read_text().replace("__LISTINGS_JSON__", slot).replace("__NAV__", nav("calculator", root))
-    return head("calculator", canonical, inline_css) + body + TAIL
+    return finish(head("calculator", canonical, inline_css) + body + TAIL)
 
 
 def render_home(body: str, canonical: str = "") -> str:
-    return head("home", canonical) + body.replace("__NAV__", nav("home")) + TAIL
+    return finish(head("home", canonical) + body.replace("__NAV__", nav("home")) + TAIL)
 
 
 def render_rent(canonical: str = "") -> str:
-    return head("rent", canonical) + RENT_FRAGMENT.read_text().replace("__NAV__", nav("rent")) + TAIL
+    return finish(head("rent", canonical) + RENT_FRAGMENT.read_text().replace("__NAV__", nav("rent")) + TAIL)
 
 
 def render_equity(canonical: str = "") -> str:
-    return head("equity", canonical) + EQUITY_FRAGMENT.read_text().replace("__NAV__", nav("equity")) + TAIL
+    return finish(head("equity", canonical) + EQUITY_FRAGMENT.read_text().replace("__NAV__", nav("equity")) + TAIL)
+
+
+NOT_FOUND_BODY = """<div class="wrap">
+  __NAV__
+  <main id="main" tabindex="-1">
+    <section class="hero-band">
+      <div>
+        <h1>That page isn't here</h1>
+        <p class="lede">The address may have a typo, or the page has moved. Everything on the site is one click
+          away from the links below.</p>
+        <div class="hero-cta">
+          <a class="go" href="/calculator/">Mortgage calculator</a>
+          <a class="alt" href="/calculator/#listings">Browse listings</a>
+          <a class="alt" href="/">Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>"""
+
+
+def render_404() -> str:
+    """GitHub Pages serves /404.html for any address that doesn't exist. Absolute links
+    throughout, because it can be shown at any depth; noindex so it never ranks."""
+    html = head("404").replace("<meta name=\"color-scheme\"",
+                               '<meta name="robots" content="noindex"><meta name="color-scheme"', 1)
+    return finish(html + NOT_FOUND_BODY.replace("__NAV__", nav("404")) + TAIL)
 
 
 # Kept so older calls (build.py) keep working.

@@ -90,6 +90,8 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, page.CSS.read_bytes(), "text/css")
         elif path == "/assets/core.js":
             self._send(200, page.CORE.read_bytes(), "application/javascript")
+        elif path == "/assets/site.js":
+            self._send(200, page.SITE_JS.read_bytes(), "application/javascript")
         elif (STATIC / path.lstrip("/")).is_file() and ".." not in path:
             f = STATIC / path.lstrip("/")
             types = {".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",

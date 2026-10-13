@@ -1,5 +1,6 @@
 <div class="wrap">
   __NAV__
+  <main id="main" tabindex="-1">
 
   <header class="top">
     <div class="top-row">
@@ -15,7 +16,7 @@
   </header>
 
   <div class="app">
-    <form class="panel inputs" id="eqForm" autocomplete="off" onsubmit="return false">
+    <form class="panel inputs" id="eqForm" autocomplete="off">
       <fieldset>
         <legend>Your property</legend>
         <div class="field">
@@ -173,6 +174,8 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="notes">
       <div>
@@ -225,8 +228,11 @@
 </div>
 
 <script>
-if (typeof document !== 'undefined') (function () {
+// Runs once the HTML is parsed and the deferred /assets/core.js has loaded.
+if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', function () {
   'use strict';
+  // Everything recalculates as you type; Enter must not submit and reload the page.
+  document.getElementById('eqForm').addEventListener('submit', function (e) { e.preventDefault(); });
   var $ = function (id) { return document.getElementById(id); };
   var STORE = 'caymanMortgage.equity.v1', CALC_STORE = 'caymanMortgage.v1';
 
@@ -567,5 +573,5 @@ if (typeof document !== 'undefined') (function () {
   writeForm(startingValues());
   bind();
   render();
-})();
+});
 </script>

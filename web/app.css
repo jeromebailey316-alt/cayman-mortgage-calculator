@@ -577,3 +577,11 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
   .faq-item summary{min-height:48px}
   .multi-menu label{min-height:40px}
 }
+
+/* Skip link: off-screen until a keyboard user tabs to it, then pinned top-left. */
+.skip-link{position:absolute;left:12px;top:-60px;z-index:1000;padding:10px 16px;border-radius:10px;
+  background:var(--ink);color:var(--bg);font-weight:600;text-decoration:none;transition:top .15s}
+.skip-link:focus{top:12px}
+main{display:block}
+main:focus{outline:none}
+@media print{.skip-link{display:none}}

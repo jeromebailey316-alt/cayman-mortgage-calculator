@@ -78,7 +78,7 @@ def featured_cards(data: dict, s: dict) -> str:
         meta = " · ".join(filter(None, [html.escape(l.get("location") or ""), " ".join(facts)]))
         cards.append(
             '<a class="feat" href="/calculator/?price={price:.0f}&ptype={pt}#listings">'
-            '<span class="shot"><img src="{img}" alt="" loading="lazy" referrerpolicy="no-referrer">'
+            '<span class="shot"><img src="{img}" alt="" width="600" height="400" loading="lazy" decoding="async" referrerpolicy="no-referrer">'
             '<span class="tag">{src}</span><span class="why">{why}</span></span>'
             '<span class="body">'
             '<span class="price">{money}</span>'
