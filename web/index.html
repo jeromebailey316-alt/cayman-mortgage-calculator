@@ -1932,7 +1932,11 @@ if (typeof document !== 'undefined') (function () {
     if (!all.length) {
       var e = el('div', 'panel lx-empty');
       if (LX.loading) {
-        e.appendChild(el('strong', null, 'Loading listings…'));
+        // Skeletons rather than a line of text: the grid keeps its shape, so nothing
+        // jumps when the real cards arrive.
+        grid.appendChild(skeletons());
+        $('lxMore').hidden = true; $('lxBasis').textContent = '';
+        return;
       } else if (LX.loadFailed) {
         e.appendChild(el('strong', null, 'The listings could not be loaded'));
         e.appendChild(el('span', null, 'Reload the page to try again. The calculator above works without them.'));
@@ -2032,6 +2036,28 @@ if (typeof document !== 'undefined') (function () {
     ph.appendChild(el('b', null, l.location || 'Cayman Islands')); return ph;
   }
   var TAKEN = /under offer|pending|conditional|sold|contract/i;
+
+  function skeletons(n) {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < (n || 6); i++) {
+      var sk = el('article', 'lx-card skel');
+      sk.setAttribute('aria-hidden', 'true');
+      sk.appendChild(el('div', 'lx-photo skel-box'));
+      var body = el('div', 'lx-body');
+      body.appendChild(el('div', 'skel-line w40 tall'));
+      body.appendChild(el('div', 'skel-line w80'));
+      body.appendChild(el('div', 'skel-line w60'));
+      sk.appendChild(body);
+      var calc = el('div', 'lx-calc');
+      calc.appendChild(el('div', null, '')); calc.appendChild(el('div', null, ''));
+      sk.appendChild(calc);
+      frag.appendChild(sk);
+    }
+    var live = el('p', 'sr-only'); live.setAttribute('role', 'status');
+    live.textContent = 'Loading listings';
+    frag.appendChild(live);
+    return frag;
+  }
 
   function card(l, c) {
     var lc = listingCost(l);
