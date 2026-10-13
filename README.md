@@ -76,13 +76,19 @@ workflow only refuses to publish if fewer than 100 properties survive a run.
 
 ### Topping up from your Mac
 
-ERA, Property Cayman and MOD Realty answer 403 to GitHub's datacenter addresses but are
-fine from a home connection, so those three run from cache on the hosted schedule. To
-refresh them, run a scrape here and push it — that republishes the site too:
+Property Cayman answers 403 to GitHub's datacenter addresses but is fine from a home
+connection, so it runs from cache on the hosted schedule. (ERA and MOD Realty are paused
+on separate grounds — see `docs/permissions.md`.) To refresh it, run a scrape here and
+push it:
 
 ```bash
 .venv/bin/python -m scraper.run && git add data && git commit -m "Listings from a local run" && git push
 ```
+
+A push that touches `data/` publishes what you committed: the workflow sees the data and
+skips its own scrape, so all 21 sources go out at the freshness your machine read them.
+Any other push, the schedule, and the **Run workflow** button all scrape as usual — so if
+you ever want a hosted refresh immediately, use that button rather than pushing data.
 
 **Changing the schedule:** edit the `cron` line in the workflow. GitHub runs scheduled jobs
 on a best-effort basis, so a run can start a few minutes late, or be skipped when GitHub is busy.

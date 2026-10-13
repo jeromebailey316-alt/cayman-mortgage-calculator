@@ -9,8 +9,11 @@ on:
     paths-ignore:
       - "README.md"
     # data/** is NOT ignored: pushing a local scrape (see "Topping up from your Mac" in
-    # the README) republishes the site. The workflow's own commits use GITHUB_TOKEN,
-    # which GitHub deliberately does not let trigger another run, so there is no loop.
+    # the README) republishes the site. Such a push publishes the committed data as it
+    # is — the scrape step below is skipped, because re-scraping here would throw away
+    # the very thing the local run was for: sources that refuse this runner's IP.
+    # The workflow's own commits use GITHUB_TOKEN, which GitHub deliberately does not
+    # let trigger another run, so there is no loop.
 
 permissions:
   contents: write      # commit the refreshed listings
@@ -34,10 +37,35 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      # A push that carries data/ is a scrape run from a real connection, which reads
+      # sources this runner cannot (Property Cayman blocks datacenter IPs). Publish it
+      # as committed. Everything else — the schedule, the Run workflow button — scrapes.
+      - name: Decide whether to scrape
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          COMMITS: ${{ toJSON(github.event.commits) }}
+        run: |
+          if [ "$EVENT" != "push" ]; then
+            echo "scrape=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$EVENT run — scraping the agency websites."
+            exit 0
+          fi
+          if printf '%s' "$COMMITS" \
+             | jq -e 'any(.[]; ((.added + .modified + .removed)[] | startswith("data/")))' >/dev/null
+          then
+            echo "scrape=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::This push carries listing data — publishing it as committed, not re-scraping."
+          else
+            echo "scrape=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Code-only push — scraping the agency websites."
+          fi
+
       # A site that is down or slow keeps its last good listings (data/raw/), so the
       # scrape never leaves the site empty. The step itself must not fail the run.
       - name: Scrape the agency websites
         id: scrape
+        if: steps.plan.outputs.scrape == 'true'
         continue-on-error: true
         timeout-minutes: 25
         run: python -m scraper.run
@@ -60,6 +88,7 @@ jobs:
           PY
 
       - name: Commit the refreshed listings
+        if: steps.plan.outputs.scrape == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
