@@ -64,6 +64,8 @@ def build(data: dict, canonical: str = "", domain: str = "") -> Path:
     (equity / "index.html").write_text(page.render_equity(base + "equity/" if base else ""))
     (SITE / "assets" / "app.css").write_text(page.CSS.read_text())
     (SITE / "assets" / "core.js").write_text(page.CORE.read_text())
+    (SITE / "assets" / "site.js").write_text(page.SITE_JS.read_text())
+    (SITE / "404.html").write_text(page.render_404())
     (SITE / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (calc / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (SITE / "robots.txt").write_text(robots(base or page.SITE_URL + "/"))

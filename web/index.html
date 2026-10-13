@@ -1,5 +1,6 @@
 <div class="wrap">
   __NAV__
+  <main id="main" tabindex="-1">
 
   <header class="top">
     <div class="top-row">
@@ -23,7 +24,7 @@
 
   <div class="app">
     <!-- ================= INPUTS ================= -->
-    <form class="panel inputs" id="form" autocomplete="off" onsubmit="return false">
+    <form class="panel inputs" id="form" autocomplete="off">
       <fieldset>
         <legend>Property</legend>
         <div class="field">
@@ -431,6 +432,8 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="notes">
       <div>
@@ -480,8 +483,11 @@
 /* Core (duty rules, payment, amortisation) is loaded from /assets/core.js */
 
 /* ================= UI ================= */
-if (typeof document !== 'undefined') (function () {
+// Runs once the HTML is parsed and the deferred /assets/core.js has loaded.
+if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', function () {
   'use strict';
+  // Everything recalculates as you type; Enter must not submit and reload the page.
+  document.getElementById('form').addEventListener('submit', function (e) { e.preventDefault(); });
   var R = Core.R, STORE = 'caymanMortgage.v1';
   var DEFAULTS = {
     cur: 'KYD', price: 600000, marketValue: 0, ptype: 'home', status: 'standard', joint: 'single', island: 'grand',
@@ -2562,7 +2568,7 @@ if (typeof document !== 'undefined') (function () {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawChart);
   }
   start();
-})();
+});
 
 </script>
 
