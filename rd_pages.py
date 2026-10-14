@@ -30,9 +30,9 @@ def payment(principal: float, annual_rate: float = RATE, years: int = TERM) -> f
 def _featured(data: dict, n: int = 4) -> list[dict]:
     """The newest listings with a price, one per area, as the board's four tiles.
 
-    No photos: the board's own caption says they appear once agencies confirm
-    permission, and that confirmation is still outstanding for all but two
-    agencies. See REDESIGN-PLAN.md section 4.2.
+    Photos are hotlinked from the agency, as the live site already does: the
+    owner confirmed on 14 October that "listings only with permission" means
+    attribution and linking, not gating. See REDESIGN-PLAN.md section 4.2.
     """
     ls = [l for l in data.get("listings", []) if l.get("price_kyd")]
     ls.sort(key=lambda l: l.get("scraped_at") or "", reverse=True)
@@ -100,6 +100,7 @@ def home(data: dict) -> str:
             address=l.get("title") or "Property for sale",
             locality=l.get("location"),
             beds=l.get("beds"), baths=l.get("baths"), sqft=l.get("sqft"),
+            image=l.get("image"), image_alt="",
             badge_text="For sale", badge_tone="navy",
             monthly=payment(loan),
             agency=(l.get("sources") or [l.get("source")])[0],
@@ -159,8 +160,8 @@ def home(data: dict) -> str:
         'gap:24px">' + "".join(cards) + "</div>"
         '<p style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
         f"Monthly figures are this site's estimates at {e(assume)}, not the agent's. "
-        "Each tile opens the listing on the agent's own site. Photos appear once agencies "
-        "confirm permission.</p></div></section>"
+        "Each tile opens the listing on the agent's own site, where the photo is hosted."
+        "</p></div></section>"
 
         '<section aria-label="Guides" class="r-pad" style="background:var(--navy-900);'
         'color:var(--on-dark);padding:64px 24px">'

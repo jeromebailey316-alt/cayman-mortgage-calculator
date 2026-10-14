@@ -159,6 +159,8 @@ NAV = [
          "description": "What you could release"},
         {"label": "Affordability", "href": "/affordability/", "icon": "percent",
          "description": "The most you can borrow"},
+        {"label": "Rent vs buy", "href": "/rent-vs-buy/", "icon": "house",
+         "description": "The year buying pulls ahead"},
     ]},
     {"label": "Listings", "href": "/listings/"},
     {"label": "Guides", "href": "/guides/stamp-duty/", "menu": [
@@ -266,7 +268,7 @@ def header(active: str = "", logo_height: int = 40, utility=True) -> str:
 
 FOOTER_COLS = [
     ("Calculators", [("Mortgage", "/calculator/"), ("Equity", "/equity/"),
-                     ("Affordability", "/affordability/")]),
+                     ("Affordability", "/affordability/"), ("Rent vs buy", "/rent-vs-buy/")]),
     ("Guides", [("Stamp duty", "/guides/stamp-duty/"), ("Closing costs", "/guides/closing-costs/"),
                 ("Refinancing", "/guides/refinancing/")]),
     ("Listings", [("Buy", "/listings/"), ("For agents", "/agents/")]),

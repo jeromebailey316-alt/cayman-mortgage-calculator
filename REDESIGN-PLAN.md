@@ -86,7 +86,15 @@ and 92 tests behind it) and drive the new interface from it, rather than porting
 board's arithmetic. The board's *presentation* is adopted in full. **Which Brac scheme
 is correct still needs settling** before the stamp duty guide can ship.
 
-### 4.2 "Listings only with permission"
+### 4.2 "Listings only with permission" — ANSWERED 14 Oct: attribution and linking
+
+**Decision:** all 873 listings stay. Every card credits the agency, links to the
+listing on their own site, and photos remain hotlinked from the agency as the live
+site already does. Photos are therefore shown, not gated behind confirmation.
+
+The original question follows for the record.
+
+### 4.2a The question as asked
 
 Section 2 states this as a non-negotiable. Read strictly it means the site may show
 only the two agencies that have confirmed in writing: Utopia Realty and Paradise
@@ -105,7 +113,14 @@ system, rejected it, and asked to keep Sora for headings. The handoff is newer a
 arrives with a full brand book, so I will follow it unless told otherwise, but it
 reverses a recent explicit decision and is worth confirming.
 
-### 4.4 Rent vs buy disappears
+### 4.4 Rent vs buy — ANSWERED 14 Oct: keep it, redesigned
+
+**Decision:** port it to the new design system as a fourth calculator. It has been
+added to the Calculators dropdown and the footer. No inbound link breaks.
+
+The original question follows for the record.
+
+### 4.4a The question as asked
 
 `/rent-vs-buy/` is a live page with its own calculator, horizon control, scenario
 bands and break-even chart. It is absent from the section 3 site map. Section 3 also
