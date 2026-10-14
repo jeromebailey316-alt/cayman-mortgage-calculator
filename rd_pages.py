@@ -569,3 +569,23 @@ def equity(data: dict) -> str:
                        "What your property is worth, less what is secured against it, and how "
                        "much of that a lender would let you borrow.")
             + _two_col(form, results))
+
+
+# ---------------------------------------------------------------------------
+# Boards with no live arithmetic are translated straight from the design files
+# rather than retyped: the copy is approved and already dash-clean.
+import rd_board
+from pathlib import Path as _Path
+
+_BOARDS = _Path(__file__).resolve().parent / "cmc-redesign" / "pages"
+
+
+def from_board(name: str, vals: dict | None = None):
+    def build(data, _n=name, _v=vals):
+        return rd_board.translate(_BOARDS / f"{_n}.dc.html", _v)
+    return build
+
+
+# The agents page shows one illustrative card captioned "Your agency": it
+# demonstrates the format to an agency rather than listing a real property.
+AGENT_SAMPLE = {"price": 850000, "beds": 3, "baths": 2, "sqft": 2100, "monthly": 4800}

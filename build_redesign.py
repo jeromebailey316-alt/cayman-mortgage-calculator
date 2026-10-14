@@ -54,6 +54,33 @@ PAGES = {
         "active": "/equity/",
         "scripts": ["/assets/core.js", "/assets/rd-afford.js"],
     },
+    "about": {
+        "title": "About the Cayman Mortgage Calculator",
+        "description": "Who runs this free Cayman Islands mortgage calculator, and why.",
+        "build": rd_pages.from_board("About"), "active": "/about/",
+    },
+    "contact": {
+        "title": "Contact the Cayman Mortgage Calculator",
+        "description": "How to reach us: one inbox and an Instagram account, no forms.",
+        "build": rd_pages.from_board("Contact"), "active": "/contact/",
+    },
+    "agents": {
+        "title": "For real-estate agents and agencies in the Cayman Islands",
+        "description": ("How Cayman agencies can have their listings shown to buyers who "
+                        "already know their numbers."),
+        "build": rd_pages.from_board("Agents", {"sample": rd_pages.AGENT_SAMPLE}),
+        "active": "/agents/",
+    },
+    "privacy": {
+        "title": "Privacy: Cayman Mortgage Calculator",
+        "description": "What this site stores, what it measures, and what it never collects.",
+        "build": rd_pages.from_board("Privacy"), "active": "/privacy/",
+    },
+    "terms": {
+        "title": "Terms of use: Cayman Mortgage Calculator",
+        "description": "The terms on which this free Cayman mortgage calculator is offered.",
+        "build": rd_pages.from_board("Terms"), "active": "/terms/",
+    },
     "listings": {
         "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
         "description": ("Every listing from the Cayman agencies, priced through your own "
