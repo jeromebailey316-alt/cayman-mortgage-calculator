@@ -30,6 +30,14 @@ PAGES = {
         "build": lambda data: rd_pages.home(data),
         "active": "/",
     },
+    "calculator": {
+        "title": "Cayman mortgage calculator: payment, stamp duty and closing costs",
+        "description": ("Work out a Cayman mortgage: the monthly payment, the stamp duty at "
+                        "your buyer status, and the cash you need on the day you buy."),
+        "build": lambda data: rd_pages.calculator(data),
+        "active": "/calculator/",
+        "scripts": ["/assets/core.js", "/assets/rd-calculator.js"],
+    },
     "listings": {
         "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
         "description": ("Every listing from the Cayman agencies, priced through your own "
@@ -55,7 +63,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)

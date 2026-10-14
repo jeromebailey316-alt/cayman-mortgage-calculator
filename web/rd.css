@@ -58,8 +58,8 @@ h1, h2, h3, h4 { margin: 0; }
   .r-hide    { display: none !important; }
 }
 @media (max-width: 600px) {
-  .r-grid    { grid-template-columns: 1fr !important; }
-  .r-grid-2  { grid-template-columns: 1fr !important; }
+  .r-grid    { grid-template-columns: minmax(0, 1fr) !important; }
+  .r-grid-2  { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

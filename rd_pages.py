@@ -283,3 +283,166 @@ def listings(data: dict) -> str:
         + rd.button("Compare", href="#compare", variant="onDark", size="sm", icon_right="arrow-right")
         + f'<button type="button" id="rdCmpClose" class="rd-cmpbar__x" aria-label="Clear comparison">'
           f'{rd.icon("x", 16)}</button></div>')
+
+
+def _fieldset(legend: str, body: str, aria: str) -> str:
+    return (f'<fieldset aria-label="{e(aria)}" style="border:0;margin:0;padding:0;'
+            'display:flex;flex-direction:column;gap:16px">'
+            f'<legend style="padding:0;font-size:18px;line-height:24px;font-weight:700;'
+            f'color:var(--ink-900)">{e(legend)}</legend>{body}</fieldset>')
+
+
+def _grid(*cells, cols: int = 2) -> str:
+    return (f'<div class="r-grid-2" style="display:grid;'
+            f'grid-template-columns:repeat({cols},minmax(0,1fr));gap:16px">'
+            + "".join(cells) + "</div>")
+
+
+def _stat(label: str, el_id: str, sub_id: str = "") -> str:
+    return ('<div style="display:flex;flex-direction:column;gap:4px;padding:16px 20px;'
+            'border:1px solid var(--line-100);border-radius:12px;background:var(--surface-0)">'
+            f'<span style="font-size:12px;line-height:16px;font-weight:700;letter-spacing:.06em;'
+            f'text-transform:uppercase;color:var(--ink-500)">{e(label)}</span>'
+            f'<span id="{e(el_id)}" style="font-size:24px;line-height:32px;font-weight:700;'
+            'font-variant-numeric:tabular-nums;color:var(--ink-900)">CI$0</span>'
+            + (f'<span id="{e(sub_id)}" style="font-size:12px;line-height:16px;'
+               'color:var(--ink-500)"></span>' if sub_id else "")
+            + "</div>")
+
+
+def calculator(data: dict) -> str:
+    """Ported from cmc-redesign/pages/Calculator.dc.html.
+
+    The board carries its own duty arithmetic, which omits the 10% band at
+    CI$2,000,000 and ignores the island it asks the visitor to choose. This page
+    uses core.js instead, which has both and is covered by the existing tests.
+    See REDESIGN-PLAN.md section 4.1.
+    """
+    islands = [("grand", "Grand Cayman"), ("brac", "Cayman Brac"), ("little", "Little Cayman")]
+    ptypes = [("home", "House or condo"), ("land", "Raw land")]
+    statuses = [("first", "Caymanian, first property"), ("second", "Caymanian, second property"),
+                ("standard", "Standard rate, 7.5%")]
+    buyers = [("single", "One buyer"), ("joint", "Two to ten Caymanians jointly")]
+    terms = [(15, "15 years"), (20, "20 years"), (25, "25 years"), (30, "30 years")]
+
+    inputs = (
+        _fieldset("Property", _grid(
+            rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$", step=1000, min_=0),
+            rd.input_field("Government valuation, if higher", id="cValuation", prefix="CI$",
+                           placeholder="Same as price", step=1000, min_=0, value=None),
+            rd.select_field("Island", islands, id="cIsland", value="grand"),
+            rd.select_field("Property type", ptypes, id="cPtype", value="home"),
+        ), "Property")
+        + _fieldset("Buyer", _grid(
+            rd.select_field("Stamp duty status", statuses, id="cStatus", value="first"),
+            rd.select_field("Buyers", buyers, id="cBuyer", value="single"),
+        ), "Buyer")
+        + _fieldset("Mortgage", _grid(
+            rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5, min_=0, max_=100),
+            rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%", step=0.05, min_=0),
+            rd.select_field("Term", terms, bind="term", value=25),
+            rd.input_field("Extra each month", id="cExtra", prefix="CI$", placeholder="0",
+                           step=50, min_=0, value=None),
+            rd.input_field("Gross monthly income", id="cIncome", prefix="CI$", placeholder="Optional",
+                           step=100, min_=0, value=None),
+            rd.input_field("Cash available", id="cCash", prefix="CI$", placeholder="Optional",
+                           step=1000, min_=0, value=None),
+        ), "Mortgage")
+        + _fieldset("Your household in detail", _grid(
+            rd.input_field("Strata fees each month", id="cStrata", prefix="CI$",
+                           placeholder="Not known", step=25, min_=0, value=None),
+            rd.input_field("Life insurance each month", id="cLife", prefix="CI$", placeholder="0",
+                           step=10, min_=0, value=None),
+            rd.input_field("Building insurance", id="cBldg", suffix="%/yr",
+                           hint="of the purchase price", value=1, step=0.1, min_=0),
+            rd.input_field("Maintenance allowance", id="cMaint", suffix="%/yr",
+                           hint="of the purchase price", value=1, step=0.1, min_=0),
+        ), "Your household in detail")
+        + '<label style="display:flex;gap:12px;align-items:center;font-size:14px;'
+          'line-height:22px;color:var(--ink-700)">'
+          '<input type="checkbox" id="cBldgInStrata"> The strata covers building insurance</label>'
+        + _fieldset("Fee assumptions", _grid(
+            rd.input_field("Legal fees", id="cLegal", suffix="%", hint="of the price", value=1, step=0.1, min_=0),
+            rd.input_field("Bank fee", id="cBank", suffix="%", hint="of the loan", value=1, step=0.1, min_=0),
+            rd.input_field("Valuation", id="cValFee", prefix="CI$", value=600, step=50, min_=0),
+            rd.input_field("Mortgage stamp duty", id="cMortDuty", prefix="CI$", value=None,
+                           readonly=True, inputmode=None, type_="text"),
+        ), "Fee assumptions")
+    )
+
+    results = (
+        '<div style="display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:16px;'
+        'background:var(--navy-900);color:var(--on-dark)">'
+        '<span style="font-size:12px;line-height:16px;font-weight:700;letter-spacing:.08em;'
+        'text-transform:uppercase;color:var(--teal-300)">Estimated monthly payment</span>'
+        '<span id="rMonthly" class="r-big" style="font-size:48px;line-height:52px;font-weight:700;'
+        'letter-spacing:-.02em;font-variant-numeric:tabular-nums">CI$0</span>'
+        '<span id="rMonthlySub" style="font-size:14px;line-height:22px;color:var(--on-dark-muted)">'
+        "</span>"
+        '<div style="padding-top:8px">'
+        + rd.button("See homes that fit these numbers", href="/listings/", variant="onDark",
+                    size="sm", icon_right="arrow-right", id="rFitLink")
+        + "</div></div>"
+
+        + _grid(_stat("Loan amount", "rLoan"), _stat("Deposit", "rDown", "rDownSub"),
+                _stat("Total interest", "rInterest", "rInterestSub"),
+                _stat("Cash to close", "rCash", "rCashSub"), cols=4)
+
+        + '<section aria-label="Monthly cost of owning" style="display:flex;flex-direction:column;'
+          'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "Monthly cost of owning</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="rOwnTable"></table></div>'
+          '<p id="rOwnNote" style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+          "</p></section>"
+
+        + '<section aria-label="Cash you need at closing" style="display:flex;'
+          'flex-direction:column;gap:12px;padding:24px;border:1px solid var(--line-100);'
+          'border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "Cash you need at closing</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="rCashTable"></table></div>'
+          '<p id="rCashNote" style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+          "</p></section>"
+
+        + '<section aria-label="Stamp duty" style="display:flex;flex-direction:column;gap:8px;'
+          'padding:24px;border-radius:12px;background:var(--teal-100)">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">Stamp duty</h2>'
+          '<p id="rDuty" style="margin:0;font-size:32px;line-height:40px;font-weight:700;'
+          'font-variant-numeric:tabular-nums;color:var(--ink-900)">CI$0</p>'
+          '<p id="rDutyWhy" style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
+          "</p></section>"
+
+        + '<section id="rAffordWrap" aria-label="Affordability check" hidden '
+          'style="display:flex;flex-direction:column;gap:8px;padding:24px;'
+          'border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "Affordability check</h2>"
+          '<p id="rAfford" style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
+          "</p></section>"
+
+        + '<section aria-label="Year by year" style="display:flex;flex-direction:column;gap:12px;'
+          'padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">Year by year</h2>'
+          '<div class="rd-scroll"><table class="rd-table" id="rYears"></table></div>'
+          '<p class="cmc-swipe">Swipe sideways to see every column.</p></section>')
+
+    return (
+        '<section aria-label="Page title" class="r-pad" style="background:var(--navy-100);'
+        'padding:40px 24px">'
+        '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:12px">'
+        '<nav aria-label="Breadcrumb" style="font-size:12px;line-height:16px;font-weight:500;'
+        'color:var(--ink-500)"><a href="/" style="color:var(--ink-500);text-decoration:none">Home</a>'
+        ' › Mortgage calculator</nav>'
+        '<h1 style="margin:0;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-.02em">'
+        "Cayman mortgage calculator</h1>"
+        '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
+        "Your monthly payment and the cash you need on the day, with Cayman stamp duty, "
+        "legal fees and bank charges included. Every figure is an estimate.</p></div></section>"
+
+        '<section aria-label="Inputs" class="r-pad" style="padding:40px 24px 64px">'
+        '<div class="r-grid" style="max-width:1200px;margin:0 auto;display:grid;'
+        'grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start">'
+        f'<form id="rdCalc" style="display:flex;flex-direction:column;gap:24px">{inputs}</form>'
+        '<div aria-label="Results" style="display:flex;flex-direction:column;gap:24px">'
+        f"{results}</div></div></section>")
