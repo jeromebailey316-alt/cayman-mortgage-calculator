@@ -44,6 +44,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
+    shutil.copy(ROOT / "web" / "rd-inputs.js", assets / "rd-inputs.js")
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)
     for ico in ("favicon.svg", "favicon.ico"):

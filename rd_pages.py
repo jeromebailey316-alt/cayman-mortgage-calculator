@@ -133,6 +133,15 @@ def home(data: dict) -> str:
                 "Monthly payment, stamp duty and closing costs, side by side.")
         + "</ol></div></section>"
 
+        # The board floats the panel over the hero's lower edge.
+        '<div class="r-pad" style="max-width:1200px;margin:-72px auto 0;padding:0 24px;'
+        'width:100%;box-sizing:border-box;position:relative">'
+        + rd.calculator_panel(
+            href="/calculator/", cta_label="See full breakdown",
+            note="Estimates use the standard amortising formula at KYD prime 7.00% + 0.75%. "
+                 "Your lender's rate, fees and insurance will differ.")
+        + "</div>"
+
         '<section id="how" aria-label="Why use it" style="padding:64px 24px 48px">'
         '<div class="r-grid" style="max-width:1200px;margin:0 auto;display:grid;'
         'grid-template-columns:repeat(4,minmax(0,1fr));gap:24px">'

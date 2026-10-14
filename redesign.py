@@ -148,6 +148,82 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
             + monthly_html + "</div>" + meta_html + agency_html + f"</{tag}>")
 
 
+def field(control: str, label=None, prefix=None, suffix=None, hint=None,
+          error=None, chevron=False, cls="") -> str:
+    """Port of CMC.Field: the label wraps the control, affixes sit inside."""
+    return (f'<label class="{cx("cmc-field", "cmc-field--error" if error else "", cls)}">'
+            + (f'<span class="cmc-field__label">{e(label)}</span>' if label else "")
+            + '<span class="cmc-field__control">'
+            + (f'<span class="cmc-field__affix">{e(prefix)}</span>' if prefix else "")
+            + control
+            + (f'<span class="cmc-field__affix">{e(suffix)}</span>' if suffix else "")
+            + (icon("chevron-down", 16, "cmc-field__chevron") if chevron else "")
+            + "</span>"
+            + (f'<span class="cmc-field__hint cmc-field__hint--error">{e(error)}</span>' if error
+               else f'<span class="cmc-field__hint">{e(hint)}</span>' if hint else "")
+            + "</label>")
+
+
+def input_field(label, bind=None, value=None, type_="number", prefix=None, suffix=None,
+                hint=None, step=None, min_=None, max_=None, inputmode="decimal", **kw) -> str:
+    control = "<input" + attrs(type=type_, value=value, step=step, min=min_, max=max_,
+                               inputmode=inputmode, data_cmc_bind=bind, **kw) + ">"
+    return field(control, label=label, prefix=prefix, suffix=suffix, hint=hint)
+
+
+def select_field(label, options, value=None, bind=None, hint=None, **kw) -> str:
+    opts = "".join(
+        f"<option{attrs(value=v, selected=(str(v) == str(value)) or None)}>{e(t)}</option>"
+        for v, t in options)
+    control = "<select" + attrs(data_cmc_bind=bind, **kw) + f">{opts}</select>"
+    return field(control, label=label, hint=hint, chevron=True)
+
+
+def pill_tabs(items, value=None, cls="") -> str:
+    """Port of CMC.PillTabs. Each tab is a link, so it works without JavaScript."""
+    out = []
+    for v, label, href in items:
+        on = v == value
+        out.append(f'<a class="{cx("cmc-pill", "cmc-pill--on" if on else "")}"'
+                   f'{attrs(href=href, aria_current="page" if on else None)}>{e(label)}</a>')
+    return f'<div class="{cx("cmc-pills", cls)}" role="tablist">' + "".join(out) + "</div>"
+
+
+def calculator_panel(href="/calculator/", cta_label="See full breakdown", note=None,
+                     tabs=True, tab="buy", compact=False) -> str:
+    """Port of CMC.CalculatorPanel. Renders with the shared defaults already in
+    place; rd-inputs.js then binds the controls and keeps the result in step."""
+    d = {"price": 650000, "deposit": 10, "rate": 7.75, "term": 25}
+    loan = d["price"] * (1 - d["deposit"] / 100)
+    r = d["rate"] / 100 / 12
+    n = d["term"] * 12
+    monthly = loan * r / (1 - (1 + r) ** -n)
+    tabs_html = ""
+    if tabs:
+        tabs_html = pill_tabs([("buy", "Buying", "/calculator/"),
+                               ("refi", "Refinancing", "/guides/refinancing/"),
+                               ("afford", "What can I afford?", "/affordability/")],
+                              value=tab, cls="cmc-calc__tabs")
+    return (
+        f'<section class="{cx("cmc-calc", "cmc-calc--compact" if compact else "")}"'
+        ' aria-label="Mortgage calculator">' + tabs_html
+        + '<div class="cmc-calc__grid">'
+        + input_field("Purchase price", bind="price", value=d["price"], prefix="CI$", step=1000, min_=0)
+        + input_field("Deposit", bind="deposit", value=d["deposit"], suffix="%", step=0.5, min_=0, max_=100)
+        + input_field("Interest rate", bind="rate", value=d["rate"], suffix="%", step=0.05, min_=0)
+        + select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"), (30, "30 years")],
+                       value=d["term"], bind="term")
+        + '<div class="cmc-calc__result">'
+          '<span class="cmc-calc__result-label">Estimated monthly</span>'
+          f'<span class="cmc-calc__result-value" data-cmc-result>{e(fmt_money(monthly))}</span>'
+          f'<span class="cmc-calc__result-sub" data-cmc-result-sub>'
+          f'on {e(fmt_money(loan))} over {d["term"]} yrs</span></div>'
+        + button(cta_label, href=href, icon_right="arrow-right", cls="cmc-calc__cta")
+        + "</div>"
+        + (f'<p class="cmc-calc__note">{icon("info", 14)}{e(note)}</p>' if note else "")
+        + "</section>")
+
+
 # ------------------------------------------------------------------- header
 
 NAV = [
@@ -406,7 +482,8 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
           "</head><body>")
 
 
-TAIL = f"<script>{RD_JS}</script></body></html>"
+TAIL = ('<script src="/assets/rd-inputs.js"></script>'
+        f"<script>{RD_JS}</script></body></html>")
 
 
 def page(title: str, description: str, body: str, active: str = "",
