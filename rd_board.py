@@ -60,6 +60,8 @@ _IMPORT = re.compile(
     r'(?P<attrs>[^>]*?)>(?P<inner>.*?)</x-import>', re.S)
 _ATTR = re.compile(r'([a-zA-Z-]+)="([^"]*)"')
 _VAR = re.compile(r"\{\{([a-zA-Z0-9_.]+)\}\}")
+_FOR = re.compile(r'<sc-for\s+list="\{\{(?P<list>[a-zA-Z0-9_.]+)\}\}"\s+as="(?P<as>[a-zA-Z0-9_]+)"'
+                  r'[^>]*>(?P<inner>.*?)</sc-for>', re.S)
 
 
 def _resolve(text: str, vals: dict):
@@ -161,6 +163,32 @@ def byline(author=None, reviewer=None, checked=None, updated=None, note=None) ->
             + "</div>")
 
 
+def without_section(src: str, aria_label: str) -> str:
+    """Drop one <section aria-label="..."> from a board, so a panel that needs
+    real behaviour can be hand-ported and dropped back in its place."""
+    needle = f'aria-label="{aria_label}"'
+    i = src.find(needle)
+    if i < 0:
+        raise ValueError(f'no section labelled {aria_label!r} in this board')
+    start = src.rfind("<section", 0, i)
+    # walk to the matching close, so a nested <section> does not end it early
+    depth, j = 0, start
+    while j < len(src):
+        nxt_open = src.find("<section", j + 1)
+        nxt_close = src.find("</section>", j + 1)
+        if nxt_close < 0:
+            raise ValueError("unbalanced sections in this board")
+        if 0 <= nxt_open < nxt_close:
+            depth += 1
+            j = nxt_open
+            continue
+        if depth == 0:
+            return src[:start] + src[nxt_close + len("</section>"):]
+        depth -= 1
+        j = nxt_close
+    raise ValueError("unbalanced sections in this board")
+
+
 def translate_source(src: str, vals: dict | None = None) -> str:
     """translate(), for a board already read into memory (so a section can be
     held back before translation)."""
@@ -191,6 +219,26 @@ def _translate(src: str, vals: dict | None = None) -> str:
                 rv = _href(str(rv))
             resolved[k] = rv
         return _component(name, resolved, _resolve(m.group("inner"), vals))
+
+    # <sc-for list="{{items}}" as="it"> repeats its contents once per item, with
+    # {{it.x}} bound to that item. Expanded before components, so a card or an
+    # icon inside the loop is translated once per row.
+    def expand(m):
+        rows = _lookup(m.group("list"), vals)
+        if not isinstance(rows, (list, tuple)):
+            raise ValueError(f'sc-for expected a list for {{{{{m.group("list")}}}}}')
+        name, inner, out = m.group("as"), m.group("inner"), []
+        for row in rows:
+            scoped = dict(vals)
+            scoped[name] = row
+            out.append(_VAR.sub(
+                lambda mm: html.escape(str(_lookup(mm.group(1), scoped))), inner))
+        return "".join(out)
+
+    for _ in range(4):                       # nested loops, innermost first
+        body, n = _FOR.subn(expand, body)
+        if not n:
+            break
 
     body = _IMPORT.sub(swap, body)
 

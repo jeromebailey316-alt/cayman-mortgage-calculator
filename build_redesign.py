@@ -89,6 +89,22 @@ PAGES = {
         "active": "/guides/stamp-duty/",
         "scripts": ["/assets/core.js", "/assets/rd-guides.js"],
     },
+    "guides/closing-costs": {
+        "title": "Closing costs in the Cayman Islands: the full checklist",
+        "description": ("Every cost between offer and keys in the Cayman Islands, which are "
+                        "fixed by law and which you should get quoted."),
+        "build": lambda data: rd_pages.closing_costs_guide(data),
+        "active": "/guides/closing-costs/",
+        "scripts": ["/assets/core.js", "/assets/rd-guides.js"],
+    },
+    "guides/refinancing": {
+        "title": "Refinancing a Cayman mortgage: does a new rate pay for itself?",
+        "description": ("Work out the break-even on refinancing in the Cayman Islands, with "
+                        "the stamp duty on a new charge included."),
+        "build": lambda data: rd_pages.refinancing_guide(data),
+        "active": "/guides/refinancing/",
+        "scripts": ["/assets/core.js", "/assets/rd-guides.js"],
+    },
     "listings": {
         "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
         "description": ("Every listing from the Cayman agencies, priced through your own "

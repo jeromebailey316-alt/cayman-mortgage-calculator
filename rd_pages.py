@@ -619,3 +619,142 @@ def stamp_duty_guide(data: dict) -> str:
                         '<span id="gdDuty" style="font-size: 32px; line-height: 40px; '
                         'font-weight: 700">CI$48,750</span>')
     return body
+
+
+def _panel(title: str, inner: str, aria: str) -> str:
+    return (f'<section aria-label="{e(aria)}" class="r-pad" style="padding:40px 24px">'
+            '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;'
+            'gap:16px;padding:24px;border:1px solid var(--line-100);border-radius:12px;'
+            'box-shadow:var(--shadow-sm);background:var(--surface-0)">'
+            f'<h2 style="margin:0;font-size:24px;line-height:32px;font-weight:700">{e(title)}</h2>'
+            f"{inner}</div></section>")
+
+
+def refinancing_guide(data: dict) -> str:
+    """Ported from Refinancing.dc.html. The board wires its inputs through setter
+    callbacks, which leave nothing to bind to, so the break-even panel is built
+    here and dropped in where the board's panel was."""
+    src = (_BOARDS / "Refinancing.dc.html").read_text()
+    body = rd_board.translate_source(rd_board.without_section(src, "Break-even calculator"))
+
+    panel = _panel("Will a new rate pay for itself?",
+        '<form id="rdRefi" style="display:flex;flex-direction:column;gap:16px">'
+        + _grid(
+            rd.input_field("Current balance", id="fBal", prefix="CI$", value=430000, step=5000, min_=0),
+            rd.input_field("Current rate", id="fCur", suffix="%", value=8.25, step=0.05, min_=0),
+            rd.input_field("Years left", id="fYears", value=20, step=1, min_=1),
+            rd.input_field("New rate", id="fNew", suffix="%", value=7.5, step=0.05, min_=0),
+            rd.input_field("New term", id="fTerm", suffix="years", value=20, step=1, min_=1),
+            rd.input_field("Early repayment charge", id="fErc", prefix="CI$", value=0,
+                           step=500, min_=0),
+            rd.input_field("Legal", id="fLegal", prefix="CI$", value=2500, step=100, min_=0),
+            rd.input_field("Valuation", id="fVal", prefix="CI$", value=600, step=50, min_=0),
+            rd.input_field("Bank fee", id="fBank", suffix="%", hint="of the balance",
+                           value=0.5, step=0.1, min_=0),
+            cols=3)
+        + '<label style="display:flex;gap:12px;align-items:center;font-size:14px;'
+          'line-height:22px;color:var(--ink-700)">'
+          '<input type="checkbox" id="fCharge" checked> New lender, so a new legal charge '
+          "and its stamp duty</label></form>"
+        + '<div style="display:flex;flex-direction:column;gap:8px;padding:20px;'
+          'border-radius:12px;background:var(--teal-100)">'
+          '<span id="fVerdictLabel" style="font-size:12px;line-height:16px;font-weight:700;'
+          'letter-spacing:.08em;text-transform:uppercase;color:var(--teal-600)">Break-even</span>'
+          '<span id="fVerdict" style="font-size:32px;line-height:40px;font-weight:700;'
+          'font-variant-numeric:tabular-nums">0 months</span>'
+          '<span id="fNote" style="font-size:14px;line-height:22px;color:var(--ink-700)">'
+          "</span></div>"
+        + '<div class="rd-scroll"><table class="rd-table" id="fTable"></table></div>',
+        "Break-even calculator")
+
+    # back where the board had it: after the opening section, before the sources
+    marker = '<section aria-label="Sources"'
+    i = body.find(marker)
+    return body[:i] + panel + body[i:] if i > 0 else body + panel
+
+
+def _closing_items() -> list[dict]:
+    """The closing-cost lines at the shared defaults, from the same rules the
+    calculator applies. Amounts are illustrative until the visitor sets a price."""
+    price, deposit = 650000, 10
+    loan = price * (1 - deposit / 100)
+    duty_first_excess = max(0, price - 550000) * 0.0375
+    mortgage_duty = loan * (0.015 if loan > 300000 else 0.01)
+    rows = [
+        ("Stamp duty on the transfer", duty_first_excess,
+         "3.75% on the part above CI$550,000 for a Caymanian first property",
+         "Stamp Duty Act (2019 Revision)"),
+        ("Stamp duty on the mortgage", mortgage_duty,
+         "1% up to CI$300,000, then 1.5% of the whole sum", "Stamp Duty Act, Schedule: Mortgage"),
+        ("Land Registry fees", 100.0, "CI$50 to register the transfer, CI$50 for the charge",
+         "Lands and Survey registry fees"),
+        ("Legal fees", price * 0.01, "Commonly around 1% of the price; get this quoted",
+         "Quoted by your attorney"),
+        ("Bank arrangement fee", loan * 0.01, "Commonly around 1% of the loan",
+         "Quoted by your lender"),
+        ("Valuation", 600.0, "Required by the lender before it will advance",
+         "Quoted by the valuer"),
+    ]
+    return [{"title": t, "amount": fmt_money(a), "note": n, "source": src_, "done": False,
+             "toggle": ""} for t, a, n, src_ in rows]
+
+
+def _closing_vals() -> dict:
+    """The Assumptions block's figures, from the same defaults as the checklist."""
+    price, deposit_pct = 650000, 10
+    loan = price * (1 - deposit_pct / 100)
+    stamp = max(0, price - 550000) * 0.0375
+    mduty = loan * (0.015 if loan > 300000 else 0.01)
+    legal = price * 0.01
+    other = legal + loan * 0.01 + 600 + 100
+    total = stamp + mduty + other
+    return {
+        "deposit": fmt_money(price * deposit_pct / 100),
+        "stampDuty": fmt_money(stamp),
+        "mortgageDuty": fmt_money(mduty),
+        "mortgageDutyRate": "1.5%",
+        "legal": fmt_money(legal),
+        "legalRate": "1%",
+        "bankRate": "1%",
+        "valuationRaw": "600",
+        "insuranceRaw": "",
+        "other": fmt_money(other),
+        "total": fmt_money(total),
+        "totalPct": f"{total / price * 100:.1f}%",
+    }
+
+
+def closing_costs_guide(data: dict) -> str:
+    """Ported from ClosingCosts.dc.html, with the cash-at-closing panel rebuilt
+    on core.js so it matches the calculator line for line."""
+    src = (_BOARDS / "ClosingCosts.dc.html").read_text()
+    # The checklist is server-rendered from the same core.js itemisation the
+    # calculator uses, then kept live by rd-guides.js. Ticking a line is runtime
+    # state, so the initial render just shows every line unticked.
+    items = _closing_items()
+    body = rd_board.translate_source(
+        rd_board.without_section(src, "Cash at closing"),
+        dict({"items": items, "ticked": 0, "count": len(items)}, **_closing_vals()))
+
+    panel = _panel("What you need on the day",
+        '<form id="rdClosing" style="display:flex;flex-direction:column;gap:16px">'
+        + _grid(
+            rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$",
+                           step=1000, min_=0),
+            rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5,
+                           min_=0, max_=100),
+            rd.select_field("Stamp duty status",
+                            [("first", "Caymanian, first property"),
+                             ("second", "Caymanian, second property"),
+                             ("standard", "Standard rate, 7.5%")],
+                            id="ccStatus", value="first"),
+            cols=3)
+        + "</form>"
+        + '<div class="rd-scroll"><table class="rd-table" id="ccTable"></table></div>'
+        + '<p id="ccNote" style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+          "</p>",
+        "Cash at closing")
+
+    marker = '<section aria-label="Sources"'
+    i = body.find(marker)
+    return body[:i] + panel + body[i:] if i > 0 else body + panel
