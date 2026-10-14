@@ -204,6 +204,39 @@ section 2 and remove whatever it makes redundant from section 3.
 component bundle as delivered, then our overrides under a banner saying so. Nothing in
 the first two sections is edited.
 
+## 5b. Follow-up 2, and three things that needed a judgement
+
+`cmc-redesign/FOLLOWUP-2.md`. All of A, B and C are done. Three need recording.
+
+**The updated `bundle.css` did not arrive again (A1).** Same hash, same 20,536
+bytes, in the repo and in `~/Documents/cmc-redesign`. The existing file does declare
+`aspect-ratio: 4 / 3` on `.cmc-listing__media`, but the frame is a flex item with
+`overflow: visible`, so a tall photo's intrinsic height wins and rows came out
+ragged. The fix the updated bundle was meant to carry (pin the image inside the
+frame, clip it) is implemented in section 3 of the stylesheet, under a banner saying
+what it is and that it can be deleted if a newer bundle lands. Every card in every
+row is now the same height.
+
+**A4, the Buy tab: removed rather than restored.** The board has Buy and Rent. The
+scraper carries no rentals at all, so there was nothing to put behind a Rent tab, and
+a single tab is not a choice. The pill bar is gone until rental data exists.
+
+**A8, Rent vs Buy: kept, against the instruction.** The report says to remove it from
+navigation, and to remove the route unless it already existed on the live site. It
+does exist: `https://caymanmortgagecalculator.com/rent-vs-buy/` returns 200 today and
+the live navigation links to it twice. Removing it from the new navigation while
+keeping the page would strand a page that visitors can currently reach, and the owner
+asked on 14 October to keep it and redesign it as a fourth calculator. It stays in the
+nav and the footer. Say the word and it comes out.
+
+**B11, nav crispness.** The three things the report asked me to check are all fine:
+Inter 500 is genuinely loaded rather than synthesised, nothing in the header has a
+transform, filter or `backdrop-filter`, and the active underline is an exact 2px
+border. The likely cause is different: `-webkit-font-smoothing: antialiased` was set
+on `body`, which switches off subpixel antialiasing and makes text thinner and softer
+on a standard-density screen, which is where this was seen. It now applies only at
+2x and above.
+
 ## 6. What is built
 
 All fourteen routes exist and pass the same sweep: one `h1`, no horizontal scroll at

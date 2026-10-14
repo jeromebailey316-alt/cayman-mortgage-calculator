@@ -100,7 +100,10 @@
       els.forEach(function (el) {
         var k = el.getAttribute('data-cmc-bind');
         if (document.activeElement === el) return;   // never fight the person typing
-        if (k === 'price') el.value = Math.round(v.price * v.fx);
+        if (k === 'price') {
+          el.value = el.hasAttribute('data-cmc-money')
+            ? groupMoney(v.price * v.fx) : Math.round(v.price * v.fx);
+        }
         else if (k === 'currency') el.value = v.currency;
         else if (k in v) el.value = v[k];
       });
@@ -112,8 +115,8 @@
         var v = inputs.get(), o = {};
         if (k === 'currency') { o.currency = el.value; }
         else {
-          var n = parseFloat(el.value);
-          if (isNaN(n)) return;
+          var n = el.hasAttribute('data-cmc-money') ? parseMoney(el.value) : parseFloat(el.value);
+          if (n == null || isNaN(n)) return;
           o[k] = k === 'price' ? n / v.fx : n;
         }
         inputs.set(o);
@@ -123,6 +126,50 @@
 
     inputs.subscribe(write);
     write(inputs.get());
+  }
+
+  /* ---- money fields: grouped while reading, plain while typing ---- */
+  function parseMoney(v) {
+    var n = parseFloat(String(v).replace(/[^0-9.-]/g, ''));
+    return isNaN(n) ? null : n;
+  }
+  function groupMoney(n) {
+    return Math.round(n).toLocaleString('en-US');
+  }
+  function bindMoney(root) {
+    [].slice.call((root || document).querySelectorAll('[data-cmc-money]')).forEach(function (el) {
+      el.addEventListener('focus', function () {
+        var n = parseMoney(el.value);
+        if (n != null) el.value = String(Math.round(n));   // plain digits to edit
+      });
+      el.addEventListener('blur', function () {
+        var n = parseMoney(el.value);
+        el.value = n == null ? '' : groupMoney(n);
+      });
+      // format whatever the field was rendered with
+      var n = parseMoney(el.value);
+      if (n != null) el.value = groupMoney(n);
+    });
+  }
+
+  /* ---- the CI$ / US$ toggle ---- */
+  function bindCurrency(root) {
+    var btns = [].slice.call((root || document).querySelectorAll('[data-cmc-currency]'));
+    if (!btns.length) return;
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        inputs.set({ currency: b.getAttribute('data-cmc-currency') });
+      });
+    });
+    function paint(v) {
+      btns.forEach(function (b) {
+        var on = b.getAttribute('data-cmc-currency') === v.currency;
+        b.classList.toggle('cmc-pill--active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    inputs.subscribe(paint);
+    paint(inputs.get());
   }
 
   /* ---- the homepage/compact panel: recompute its result from the store ---- */
@@ -145,10 +192,14 @@
   w.CMC.money = money;
   w.CMC.payment = payment;
   w.CMC.bindAll = bindAll;
+  w.CMC.bindCurrency = bindCurrency;
+  w.CMC.parseMoney = parseMoney;
   w.CMC.bindPanel = bindPanel;
 
   function start() {
     bindAll(document);
+    bindCurrency(document);
+    bindMoney(document);
     [].slice.call(document.querySelectorAll('.cmc-calc')).forEach(bindPanel);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

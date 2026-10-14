@@ -295,7 +295,13 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 24px;
-  -webkit-font-smoothing: antialiased;
+}
+/* -webkit-font-smoothing: antialiased turns off subpixel antialiasing, which
+   makes text thinner and softer on a standard-density screen. Keep it for
+   high-density displays, where it helps, and leave everything else to the
+   platform's own subpixel rendering. */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body { -webkit-font-smoothing: antialiased; }
 }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
@@ -438,3 +444,51 @@ details.sec > summary:focus-visible { outline: 2px solid var(--teal-600); outlin
   grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); }
 .rd-stats > div { padding: var(--space-4); min-width: 0; }
 .rd-stat__v { font-size: clamp(18px, 1.7vw, 22px); overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------------------ */
+/* Follow-up 2. The updated bundle.css described in A1 did not arrive, so the
+   fixes it was meant to carry are implemented here instead. Remove these if a
+   newer bundle lands with them.                                             */
+/* ------------------------------------------------------------------------ */
+
+/* A1. The frame already declares aspect-ratio 4/3, but it is a flex item with
+   overflow visible, so a tall photo's intrinsic height wins and cards in a row
+   end up different heights. Pin the image inside the frame and clip it. */
+.cmc-listing__media { overflow: hidden; }
+.cmc-listing__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.cmc-listing__placeholder { position: absolute; inset: 0; }
+
+/* A4. Pills are links here, and a link underlines by default. */
+a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
+
+/* A3. Two lines of title, so a long one cannot change a card's height. */
+.cmc-listing__address {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* A9. The duty table's first column wrapped "Group of 2-10 Caymanians" over
+   three lines on a phone. Give it room and stop it breaking mid-label. */
+.rd-table th:first-child, .rd-table tbody th { white-space: nowrap; }
+@media (max-width: 600px) {
+  .rd-table th:first-child, .rd-table tbody th { white-space: normal; width: 40%; }
+}
+
+/* A10. The boards drop h1 to 36px below 860px. */
+@media (max-width: 860px) {
+  h1, .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+}
+
+/* A7. The homepage panel's price column needs to hold CI$1,000,000 at 1024px. */
+.cmc-calc__grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* A9. The guides' own tables come from the boards unclassed. On a phone the
+   first column collapsed to 117px and "Group of 2-10 Caymanians" ran to four
+   lines. Fixed layout with a 40% first column, as the review suggests. */
+@media (max-width: 600px) {
+  main table { table-layout: fixed; width: 100%; }
+  main table th:first-child, main table td:first-child { width: 40%; }
+  main table th, main table td { word-break: normal; overflow-wrap: break-word; }
+}

@@ -11,6 +11,7 @@
   'use strict';
 
   var CMP_KEY = 'cmc.compare';
+  var FAV_KEY = 'cmc.favourites';
   var PAGE = 12;
   var MAX_COMPARE = 4;
 
@@ -18,6 +19,7 @@
   var view = [];
   var shown = PAGE;
   var compare = [];          // snapshots, so a choice survives paging and reload
+  var favourites = {};       // urls the visitor has starred, kept like compare
 
   var grid, countEl, moreWrap, moreBtn, bar, barCount, panel, table;
 
@@ -31,6 +33,17 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  /* Agencies type their titles by hand: pipes become commas, a bracket gets the
+     space it is missing, doubled spaces collapse. The wording is left alone. */
+  function cleanTitle(t) {
+    return String(t || '').trim()
+      .replace(/\|/g, ', ')
+      .replace(/\s*\(/g, ' (')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\s+,/g, ',')
+      .trim();
+  }
+
   function districtOf(area) {
     var a = (area || '').toLowerCase();
     if (a.indexOf('little cayman') >= 0) return 'Little Cayman';
@@ -68,15 +81,28 @@
       ' stroke-linejoin="round" aria-hidden="true">' + out + '</svg>';
   }
 
+  var PLACEHOLDER_ICON = '';   // filled once the icon paths are available
+
   /* ------------------------------------------------------------------ card */
   function card(l) {
     var id = l.url;
     var comparing = compare.some(function (c) { return c.url === id; });
     var ext = /^https?:\/\//i.test(l.url || '');
+    // An agency photo can 404 or be blocked; swap in the placeholder rather
+    // than leaving a broken image in the frame.
     var media = l.image
-      ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer">'
+      ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer"' +
+        ' onerror="this.parentNode.insertAdjacentHTML(\'afterbegin\',' +
+        ' \'<div class=&quot;cmc-listing__placeholder&quot;>' + PLACEHOLDER_ICON +
+        '</div>\'); this.remove();">'
       : '<div class="cmc-listing__placeholder">' + icon('house', 32) + '</div>';
     media += '<span class="cmc-badge cmc-badge--navy cmc-listing__badge">For sale</span>';
+    var faved = !!favourites[id];
+    media += '<button type="button" class="cmc-listing__fav' +
+      (faved ? ' cmc-listing__fav--on' : '') + '" data-fav="' + esc(id) + '"' +
+      ' aria-pressed="' + (faved ? 'true' : 'false') + '"' +
+      ' aria-label="' + (faved ? 'Remove from saved' : 'Save listing') + '">' +
+      icon('heart', 16) + '</button>';
     media += '<button type="button" class="cmc-listing__compare' +
       (comparing ? ' cmc-listing__compare--on' : '') + '" data-cmp="' + esc(id) + '"' +
       ' aria-pressed="' + (comparing ? 'true' : 'false') + '">' +
@@ -91,11 +117,11 @@
     var agency = (l.sources && l.sources[0]) || l.source || '';
     return '<a class="cmc-listing" href="' + esc(l.url) + '"' +
       (ext ? ' target="_blank" rel="noopener"' : '') +
-      ' aria-label="' + esc(l.title) + ': view on the agent\'s site">' +
+      ' aria-label="' + esc(cleanTitle(l.title)) + ': view on the agent\'s site">' +
       '<div class="cmc-listing__media">' + media + '</div>' +
       '<div class="cmc-listing__body">' +
       '<div class="cmc-listing__price">' + esc(money(l.price_kyd)) + '</div>' +
-      '<div class="cmc-listing__address">' + esc(l.title || 'Property for sale') + '</div>' +
+      '<div class="cmc-listing__address">' + esc(cleanTitle(l.title) || 'Property for sale') + '</div>' +
       (l.location ? '<div class="cmc-listing__locality">' + esc(l.location) + '</div>' : '') +
       '<div class="cmc-listing__monthly">' + icon('calculator', 14) + 'From <strong>' +
       esc(money(monthlyFor(l))) + '</strong>/mo</div>' +
@@ -143,6 +169,12 @@
     // Bound directly rather than delegated: the compare control sits inside the
     // card's anchor, so if interception ever misses, the visitor is thrown out to
     // the agency's site mid-task. A handler on the button itself cannot miss.
+    [].slice.call(grid.querySelectorAll('[data-fav]')).forEach(function (b) {
+      b.addEventListener('click', function (ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        toggleFav(b.getAttribute('data-fav'), b);
+      });
+    });
     [].slice.call(grid.querySelectorAll('[data-cmp]')).forEach(function (b) {
       b.addEventListener('click', function (ev) {
         ev.preventDefault();
@@ -165,6 +197,20 @@
   }
 
   /* --------------------------------------------------------------- compare */
+  function loadFav() {
+    try { favourites = JSON.parse(w.localStorage.getItem(FAV_KEY) || '{}') || {}; }
+    catch (e) { favourites = {}; }
+    if (typeof favourites !== 'object' || !favourites) favourites = {};
+  }
+  function toggleFav(url, btn) {
+    if (favourites[url]) delete favourites[url]; else favourites[url] = 1;
+    try { w.localStorage.setItem(FAV_KEY, JSON.stringify(favourites)); } catch (e) {}
+    var on = !!favourites[url];
+    btn.classList.toggle('cmc-listing__fav--on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? 'Remove from saved' : 'Save listing');
+  }
+
   function loadCompare() {
     try { compare = JSON.parse(w.localStorage.getItem(CMP_KEY) || '[]') || []; }
     catch (e) { compare = []; }
@@ -274,6 +320,9 @@
     panel = d.getElementById('compare');
     table = d.getElementById('rdCmpTable');
 
+    PLACEHOLDER_ICON = icon('house', 32).replace(/"/g, '&quot;');
+
+    loadFav();
     loadCompare();
 
     ['fDistrict', 'fType', 'fMin', 'fMax', 'fBeds', 'fSort'].forEach(function (id) {

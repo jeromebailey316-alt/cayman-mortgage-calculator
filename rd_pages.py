@@ -217,13 +217,14 @@ def listings(data: dict) -> str:
         'flex-direction:column;gap:16px;background:var(--surface-0);'
         'border:1px solid var(--line-100);border-radius:12px;box-shadow:var(--shadow-sm);'
         'padding:20px 24px">'
-        + rd.pill_tabs([("buy", "Buy", "/listings/")], value="buy")
+        # No pill bar: the board has Buy and Rent, but the scraper carries no
+        # rentals, and a single tab is not a choice. It returns with the data.
         + '<div class="r-grid-2" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));'
           'gap:16px;align-items:end">'
         + rd.select_field("District", district_opts, id="fDistrict")
         + rd.select_field("Property type", TYPES, id="fType")
-        + rd.input_field("Min price", prefix="CI$", placeholder="No min", id="fMin", value=None)
-        + rd.input_field("Max price", prefix="CI$", placeholder="No max", id="fMax", value=None)
+        + rd.input_field("Min price", prefix="CI$", placeholder="No min", id="fMin", value=None, money=True)
+        + rd.input_field("Max price", prefix="CI$", placeholder="No max", id="fMax", value=None, money=True)
         + rd.select_field("Beds", bed_opts, id="fBeds")
         + rd.button("Search", icon_left="search", type="submit")
         + "</div></form>")
@@ -330,10 +331,11 @@ def calculator(data: dict) -> str:
     terms = [(15, "15 years"), (20, "20 years"), (25, "25 years"), (30, "30 years")]
 
     inputs = (
-        _fieldset("Property", _grid(
-            rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$", step=1000, min_=0),
+        rd.currency_toggle()
+        + _fieldset("Property", _grid(
+            rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$", step=1000, min_=0, money=True),
             rd.input_field("Government valuation, if higher", id="cValuation", prefix="CI$",
-                           placeholder="Same as price", step=1000, min_=0, value=None),
+                           placeholder="Same as price", step=1000, min_=0, value=None, money=True),
             rd.select_field("Island", islands, id="cIsland", value="grand"),
             rd.select_field("Property type", ptypes, id="cPtype", value="home"),
         ), "Property")
@@ -346,17 +348,17 @@ def calculator(data: dict) -> str:
             rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%", step=0.05, min_=0),
             rd.select_field("Term", terms, bind="term", value=25),
             rd.input_field("Extra each month", id="cExtra", prefix="CI$", placeholder="0",
-                           step=50, min_=0, value=None),
+                           step=50, min_=0, value=None, money=True),
             rd.input_field("Gross monthly income", id="cIncome", prefix="CI$", placeholder="Optional",
-                           step=100, min_=0, value=None),
+                           step=100, min_=0, value=None, money=True),
             rd.input_field("Cash available", id="cCash", prefix="CI$", placeholder="Optional",
-                           step=1000, min_=0, value=None),
+                           step=1000, min_=0, value=None, money=True),
         ), "Mortgage")
         + _fieldset("Your household in detail", _grid(
             rd.input_field("Strata fees each month", id="cStrata", prefix="CI$",
-                           placeholder="Not known", step=25, min_=0, value=None),
+                           placeholder="Not known", step=25, min_=0, value=None, money=True),
             rd.input_field("Life insurance each month", id="cLife", prefix="CI$", placeholder="0",
-                           step=10, min_=0, value=None),
+                           step=10, min_=0, value=None, money=True),
             rd.input_field("Building insurance", id="cBldg", suffix="%/yr",
                            hint="of the purchase price", value=1, step=0.1, min_=0),
             rd.input_field("Maintenance allowance", id="cMaint", suffix="%/yr",
@@ -369,9 +371,9 @@ def calculator(data: dict) -> str:
         + _fieldset("Fee assumptions", _grid(
             rd.input_field("Legal fees", id="cLegal", suffix="%", hint="of the price", value=1, step=0.1, min_=0),
             rd.input_field("Bank fee", id="cBank", suffix="%", hint="of the loan", value=1, step=0.1, min_=0),
-            rd.input_field("Valuation", id="cValFee", prefix="CI$", value=600, step=50, min_=0),
+            rd.input_field("Valuation", id="cValFee", prefix="CI$", value=600, step=50, min_=0, money=True),
             rd.input_field("Mortgage stamp duty", id="cMortDuty", prefix="CI$", value=None,
-                           readonly=True, inputmode=None, type_="text"),
+                           readonly=True, inputmode=None, type_="text", money=True),
         ), "Fee assumptions", collapsible=True, open_=False)
     )
 
@@ -398,6 +400,9 @@ def calculator(data: dict) -> str:
           'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
           '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
           "Monthly cost of owning</h2>"
+          '<p style="margin:0;font-size:13px;line-height:20px;color:var(--ink-500)">'
+          "The mortgage payment above, plus everything else that falls due each "
+          "month.</p>"
           '<div class="rd-scroll"><table class="rd-table" id="rOwnTable"></table></div>'
           '<p id="rOwnNote" style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
           "</p></section>"
@@ -562,16 +567,17 @@ def affordability(data: dict) -> str:
     statuses = [("first", "Caymanian, first property"), ("second", "Caymanian, second property"),
                 ("standard", "Standard rate, 7.5%")]
     form = (
-        '<form id="rdAfford" style="display:flex;flex-direction:column;gap:24px">'
+        '<form id="rdAfford" class="rd-form-panel">'
+        + rd.currency_toggle()
         + _fieldset("What you earn and owe", _grid(
             rd.input_field("Gross monthly income", id="aIncome", prefix="CI$", value=9000,
-                           step=100, min_=0),
+                           step=100, min_=0, money=True),
             rd.input_field("Other monthly debts", id="aDebts", prefix="CI$", value=0,
-                           step=50, min_=0),
+                           step=50, min_=0, money=True),
             rd.input_field("Debt service ceiling", id="aCeiling", suffix="%",
                            hint="of gross income", value=40, step=1, min_=1, max_=100),
             rd.input_field("Cash available", id="aCash", prefix="CI$", value=120000,
-                           step=1000, min_=0),
+                           step=1000, min_=0, money=True),
         ), "Income and cash")
         + _fieldset("The purchase", _grid(
             rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5, min_=0, max_=100),
@@ -609,11 +615,11 @@ def equity(data: dict) -> str:
         '<form id="rdEquity" style="display:flex;flex-direction:column;gap:24px">'
         + _fieldset("Your property", _grid(
             rd.input_field("What it is worth now", id="eValue", prefix="CI$", value=800000,
-                           step=5000, min_=0),
+                           step=5000, min_=0, money=True),
             rd.input_field("Mortgage balance", id="eBalance", prefix="CI$", value=400000,
-                           step=5000, min_=0),
+                           step=5000, min_=0, money=True),
             rd.input_field("Other secured loans", id="eOther", prefix="CI$", value=0,
-                           step=1000, min_=0),
+                           step=1000, min_=0, money=True),
             rd.input_field("Maximum loan to value", id="eLtv", suffix="%", value=80,
                            hint="90% Caymanian, 80% resident, 70% non-resident",
                            step=1, min_=1, max_=100),
@@ -707,15 +713,15 @@ def refinancing_guide(data: dict) -> str:
     panel = _panel("Will a new rate pay for itself?",
         '<form id="rdRefi" style="display:flex;flex-direction:column;gap:16px">'
         + _grid(
-            rd.input_field("Current balance", id="fBal", prefix="CI$", value=430000, step=5000, min_=0),
+            rd.input_field("Current balance", id="fBal", prefix="CI$", value=430000, step=5000, min_=0, money=True),
             rd.input_field("Current rate", id="fCur", suffix="%", value=8.25, step=0.05, min_=0),
             rd.input_field("Years left", id="fYears", value=20, step=1, min_=1),
             rd.input_field("New rate", id="fNew", suffix="%", value=7.5, step=0.05, min_=0),
             rd.input_field("New term", id="fTerm", suffix="years", value=20, step=1, min_=1),
             rd.input_field("Early repayment charge", id="fErc", prefix="CI$", value=0,
-                           step=500, min_=0),
-            rd.input_field("Legal", id="fLegal", prefix="CI$", value=2500, step=100, min_=0),
-            rd.input_field("Valuation", id="fVal", prefix="CI$", value=600, step=50, min_=0),
+                           step=500, min_=0, money=True),
+            rd.input_field("Legal", id="fLegal", prefix="CI$", value=2500, step=100, min_=0, money=True),
+            rd.input_field("Valuation", id="fVal", prefix="CI$", value=600, step=50, min_=0, money=True),
             rd.input_field("Bank fee", id="fBank", suffix="%", hint="of the balance",
                            value=0.5, step=0.1, min_=0),
             cols=3)
@@ -807,7 +813,7 @@ def closing_costs_guide(data: dict) -> str:
         '<form id="rdClosing" style="display:flex;flex-direction:column;gap:16px">'
         + _grid(
             rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$",
-                           step=1000, min_=0),
+                           step=1000, min_=0, money=True),
             rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5,
                            min_=0, max_=100),
             rd.select_field("Stamp duty status",
@@ -837,13 +843,13 @@ def rent_vs_buy(data: dict) -> str:
         '<form id="rdRent" style="display:flex;flex-direction:column;gap:24px">'
         + _fieldset("Renting", _grid(
             rd.input_field("Rent each month", id="vRent", prefix="CI$", value=3200,
-                           step=50, min_=0),
+                           step=50, min_=0, money=True),
             rd.input_field("Rent rises", id="vRentRise", suffix="%/yr", value=3,
                            step=0.5, min_=0),
         ), "Renting")
         + _fieldset("Buying", _grid(
             rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$",
-                           step=1000, min_=0),
+                           step=1000, min_=0, money=True),
             rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5,
                            min_=0, max_=100),
             rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%",

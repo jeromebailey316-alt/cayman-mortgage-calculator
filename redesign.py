@@ -94,6 +94,22 @@ def badge(label, tone="neutral", tint=False) -> str:
             f"{e(label)}</span>")
 
 
+def clean_title(t: str) -> str:
+    """Tidy a scraper title for display without rewriting the agent's words.
+
+    Agencies type these by hand: "New 2Bed|2Bath in Prime Location in West
+    Bay(END UNIT)". Pipes become commas, a bracket gets the space it is missing,
+    and doubled spaces collapse. Nothing else is touched.
+    """
+    import re as _re
+    t = (t or "").strip()
+    t = t.replace("|", ", ")
+    t = _re.sub(r"\s*\(", " (", t)
+    t = _re.sub(r"\s{2,}", " ", t)
+    t = _re.sub(r"\s+,", ",", t)
+    return t.strip()
+
+
 def fmt_money(v, currency="KYD") -> str:
     """CI$ by default; whole dollars, grouped. Matches fmtMoney in the bundle."""
     sym = "US$" if currency == "USD" else "CI$"
@@ -138,6 +154,7 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
         monthly_html = (f'<div class="cmc-listing__monthly">{icon("calculator", 14)}From '
                         f"<strong>{e(fmt_money(monthly, currency))}</strong>/mo</div>")
     label = f"{address}: view on the agent's site" if external and address else None
+    address = clean_title(address)
     return (f'<{tag} class="cmc-listing"'
             + attrs(href=href, target="_blank" if external else None,
                     rel="noopener" if external else None, aria_label=label)
@@ -166,9 +183,20 @@ def field(control: str, label=None, prefix=None, suffix=None, hint=None,
 
 
 def input_field(label, bind=None, value=None, type_="number", prefix=None, suffix=None,
-                hint=None, step=None, min_=None, max_=None, inputmode="decimal", **kw) -> str:
-    # bundle.css styles .cmc-field__input, not a bare input: without the class a
-    # control falls back to the browser's own box.
+                hint=None, step=None, min_=None, max_=None, inputmode="decimal",
+                money=False, **kw) -> str:
+    """bundle.css styles .cmc-field__input, not a bare input: without the class a
+    control falls back to the browser's own box.
+
+    `money` renders a text field that carries thousands separators. A number
+    input cannot show them, and 650000 is materially harder to read at a glance
+    than 650,000 when the figure is someone's house.
+    """
+    if money:
+        type_, step, min_, max_ = "text", None, None, None
+        if value is not None:
+            value = f"{round(float(value)):,}"
+        kw["data_cmc_money"] = True
     control = "<input" + attrs(class_="cmc-field__input", type=type_, value=value, step=step,
                                min=min_, max=max_, inputmode=inputmode,
                                data_cmc_bind=bind, **kw) + ">"
@@ -194,6 +222,22 @@ def pill_tabs(items, value=None, cls="") -> str:
     return f'<div class="{cx("cmc-pills", cls)}" role="tablist">' + "".join(out) + "</div>"
 
 
+def currency_toggle() -> str:
+    """CI$ / US$, bound to the shared currency. All arithmetic stays in CI$;
+    this converts what is displayed and entered, at the fixed peg."""
+    return (
+        '<div class="sec" style="flex-direction:row;align-items:center;'
+        'justify-content:space-between;gap:12px;flex-wrap:wrap">'
+        '<span style="font-size:14px;line-height:22px;font-weight:600;color:var(--ink-900)">'
+        "Show figures in</span>"
+        '<div class="cmc-pills" role="group" aria-label="Currency">'
+        '<button type="button" class="cmc-pill cmc-pill--active" data-cmc-currency="KYD"'
+        ' aria-pressed="true">CI$</button>'
+        '<button type="button" class="cmc-pill" data-cmc-currency="USD"'
+        ' aria-pressed="false">US$</button>'
+        "</div></div>")
+
+
 def calculator_panel(href="/calculator/", cta_label="See full breakdown", note=None,
                      tabs=True, tab="buy", compact=False) -> str:
     """Port of CMC.CalculatorPanel. Renders with the shared defaults already in
@@ -213,7 +257,8 @@ def calculator_panel(href="/calculator/", cta_label="See full breakdown", note=N
         f'<section class="{cx("cmc-calc", "cmc-calc--compact" if compact else "")}"'
         ' aria-label="Mortgage calculator">' + tabs_html
         + '<div class="cmc-calc__grid">'
-        + input_field("Purchase price", bind="price", value=d["price"], prefix="CI$", step=1000, min_=0)
+        + input_field("Purchase price", bind="price", value=d["price"], prefix="CI$",
+                      money=True)
         + input_field("Deposit", bind="deposit", value=d["deposit"], suffix="%", step=0.5, min_=0, max_=100)
         + input_field("Interest rate", bind="rate", value=d["rate"], suffix="%", step=0.05, min_=0)
         + select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"), (30, "30 years")],
@@ -258,8 +303,9 @@ NAV = [
 
 UTILITY = [
     {"icon": "shield-check", "text": "Free to use"},
-    {"icon": "check", "text": "No sign-up"},
+    {"icon": "house", "text": "Listings shown with agents' permission"},
 ]
+UTILITY_RIGHT = "Grand Cayman, Cayman Islands"
 
 
 def header(active: str = "", logo_height: int = 40, utility=True) -> str:
@@ -278,7 +324,9 @@ def header(active: str = "", logo_height: int = 40, utility=True) -> str:
     if utility:
         items = "".join(f"<span>{icon(i['icon'], 14)}{e(i['text'])}</span>" for i in UTILITY)
         util = ('<div class="cmc-utility"><div class="cmc-container cmc-utility__row">'
-                f'<div class="cmc-utility__items">{items}</div></div></div>')
+                f'<div class="cmc-utility__items">{items}</div>'
+                f'<span class="cmc-utility__right">{e(UTILITY_RIGHT)}</span>'
+                "</div></div>")
 
     links = []
     for n, it in enumerate(NAV):

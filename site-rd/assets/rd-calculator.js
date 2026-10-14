@@ -30,6 +30,8 @@
     });
   }
 
+  function trimRate(r) { return String(Math.round(Number(r) * 1000) / 1000); }
+
   var V;            // the shared inputs, refreshed each render
   function money(kyd) { return CMC.money(Math.round(kyd * V.fx), V.symbol); }
 
@@ -88,10 +90,9 @@
     if (!w.Core || !el('rdCalc')) return;
     var m = model();
 
-    el('rMonthly').textContent = money(m.own.total);
-    el('rMonthlySub').textContent = m.own.complete
-      ? 'Mortgage, insurance, upkeep and strata on ' + money(m.loan) + ' over ' + V.term + ' years'
-      : m.own.unknown.join(' and ').toLowerCase() + ' not entered, so this is a floor';
+    el('rMonthly').textContent = money(m.am.pmt);
+    el('rMonthlySub').textContent = 'on a ' + money(m.loan) + ' loan at ' +
+      trimRate(V.rate) + '% over ' + V.term + ' years';
 
     el('rLoan').textContent = money(m.loan);
     el('rDown').textContent = money(m.down);
@@ -171,7 +172,9 @@
       case 'first-free':
         return 'Nothing to pay: a Caymanian buying a first property, inside the threshold.';
       case 'first-taper':
-        return '3.75% on the part above ' + CMC.money(Math.round(td.free * V.fx), V.symbol) + '.';
+        // The board's wording. The arithmetic is already right: 3.75% applies to
+        // the part above the threshold, not to the whole value.
+        return '3.75% above ' + CMC.money(Math.round(td.free * V.fx), V.symbol) + '.';
       case 'second-reduced':
         return '3.75% of ' + basis + ' for a Caymanian second property.';
       case 'first-over': case 'second-over':
