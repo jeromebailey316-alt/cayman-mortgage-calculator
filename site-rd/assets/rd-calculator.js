@@ -188,10 +188,11 @@
     for (y = 1; y <= Math.min(5, Math.ceil(m.am.months / 12)); y++) {
       payY = intY = prinY = 0;
       for (i = (y - 1) * 12; i < y * 12 && i < m.am.rows.length; i++) {
-        payY += m.am.rows[i].payment;
-        intY += m.am.rows[i].interest;
-        prinY += m.am.rows[i].principal;
-        last = m.am.rows[i].balance;
+        // core.js uses short keys on its schedule rows: pay, i, p, bal
+        payY += m.am.rows[i].pay;
+        intY += m.am.rows[i].i;
+        prinY += m.am.rows[i].p;
+        last = m.am.rows[i].bal;
       }
       body += '<tr><th>' + y + '</th><td>' + esc(money(payY)) + '</td><td>' + esc(money(intY)) +
         '</td><td>' + esc(money(prinY)) + '</td><td>' + esc(money(last || 0)) + '</td></tr>';

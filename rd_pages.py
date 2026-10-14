@@ -758,3 +758,61 @@ def closing_costs_guide(data: dict) -> str:
     marker = '<section aria-label="Sources"'
     i = body.find(marker)
     return body[:i] + panel + body[i:] if i > 0 else body + panel
+
+
+def rent_vs_buy(data: dict) -> str:
+    """Kept at the owner's request on 14 October; the hand-off's site map omits
+    it. There is no board for this page, so it is built from the same parts as
+    the other calculators: the shared page head, the two-column layout, the
+    answer block and a table.
+    """
+    form = (
+        '<form id="rdRent" style="display:flex;flex-direction:column;gap:24px">'
+        + _fieldset("Renting", _grid(
+            rd.input_field("Rent each month", id="vRent", prefix="CI$", value=3200,
+                           step=50, min_=0),
+            rd.input_field("Rent rises", id="vRentRise", suffix="%/yr", value=3,
+                           step=0.5, min_=0),
+        ), "Renting")
+        + _fieldset("Buying", _grid(
+            rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$",
+                           step=1000, min_=0),
+            rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5,
+                           min_=0, max_=100),
+            rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%",
+                           step=0.05, min_=0),
+            rd.select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"),
+                                     (30, "30 years")], bind="term", value=25),
+            rd.select_field("Stamp duty status",
+                            [("first", "Caymanian, first property"),
+                             ("second", "Caymanian, second property"),
+                             ("standard", "Standard rate, 7.5%")],
+                            id="vStatus", value="first"),
+            rd.input_field("Prices rise", id="vGrowth", suffix="%/yr", value=3,
+                           step=0.5, min_=0),
+        ), "Buying")
+        + _fieldset("How long you stay", _grid(
+            rd.input_field("Years", id="vYears", value=10, step=1, min_=1, max_=40),
+            rd.input_field("Selling costs", id="vSell", suffix="%", hint="of the sale price",
+                           value=4, step=0.5, min_=0),
+        ), "How long you stay")
+        + "</form>")
+
+    results = (
+        _answer("vLabel", "vVerdict", "vNote")
+        + '<section aria-label="Over your horizon" style="display:flex;flex-direction:column;'
+          'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "Over the years you stay</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="vTable"></table></div>'
+          '<p style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+          "Buying is compared on what you are left with: the equity in the property after "
+          "selling costs, less everything you paid in. Renting is compared on what you paid "
+          "and the deposit you still have. Neither side assumes you invest the "
+          "difference.</p></section>")
+
+    return (_page_head("Rent vs Buy", "Rent or buy in Cayman?",
+                       "Buying costs more at the start and less later. This works out the "
+                       "year the two cross over, for the length of time you actually plan "
+                       "to stay.")
+            + _two_col(form, results))
