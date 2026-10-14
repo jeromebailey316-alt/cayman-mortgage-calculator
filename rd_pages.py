@@ -425,7 +425,26 @@ def calculator(data: dict) -> str:
           'padding:24px;border:1px solid var(--line-100);border-radius:12px">'
           '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">Year by year</h2>'
           '<div class="rd-scroll"><table class="rd-table" id="rYears"></table></div>'
-          '<p class="cmc-swipe">Swipe sideways to see every column.</p></section>')
+          '<p class="cmc-swipe">Swipe sideways to see every column.</p>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:8px">'
+        + rd.button("Download full schedule", id="rXlsx", variant="secondary", size="sm",
+                    icon_left="file-text")
+        + "</div></section>"
+
+        + '<section aria-label="Summary" id="rSummary" style="display:flex;'
+          'flex-direction:column;gap:12px;padding:24px;border:1px solid var(--line-100);'
+          'border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "Take this with you</h2>"
+          '<p style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
+          "A one page summary of these figures, with the assumptions behind them, to read "
+          "away from the screen or take to a lender.</p>"
+          '<div class="rd-no-print" style="display:flex;gap:8px;flex-wrap:wrap">'
+        + rd.button("Save as PDF", id="rPdf", icon_left="file-text")
+        + rd.button("Print", id="rPrint", variant="secondary", icon_left="receipt")
+        + "</div>"
+          '<p id="rExportNote" role="status" style="margin:0;font-size:12px;line-height:16px;'
+          'color:var(--ink-500)"></p></section>')
 
     return (
         '<section aria-label="Page title" class="r-pad" style="background:var(--navy-100);'

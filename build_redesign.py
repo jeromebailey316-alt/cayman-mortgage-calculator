@@ -36,7 +36,7 @@ PAGES = {
                         "your buyer status, and the cash you need on the day you buy."),
         "build": lambda data: rd_pages.calculator(data),
         "active": "/calculator/",
-        "scripts": ["/assets/core.js", "/assets/rd-calculator.js"],
+        "scripts": ["/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js"],
     },
     "affordability": {
         "title": "What can you afford? A Cayman affordability calculator",
@@ -225,7 +225,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "rd-export.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)

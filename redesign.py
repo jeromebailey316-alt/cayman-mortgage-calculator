@@ -552,6 +552,20 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         f"<title>{e(title)}</title>"
         f'<meta name="description" content="{e(description)}">'
+        # The live site carries a policy and the redesign should not lose it.
+        # cdnjs is listed because the spreadsheet and PDF builders are fetched
+        # from there on first use; img-src allows https generally because the
+        # listing photos come from about twenty agency domains.
+        '<meta http-equiv="Content-Security-Policy" content="'
+        "default-src 'self'; "
+        "img-src 'self' https: data:; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
+        "https://www.googletagmanager.com; "
+        "connect-src 'self' https://www.google-analytics.com; "
+        "object-src 'none'; base-uri 'self'; form-action 'none'"
+        '">'
         '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#011533">'
         + (f'<link rel="canonical" href="{e(canonical)}">' if canonical else "")

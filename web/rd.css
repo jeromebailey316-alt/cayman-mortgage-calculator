@@ -68,8 +68,17 @@ h1, h2, h3, h4 { margin: 0; }
 }
 
 @media print {
-  .rd-skip, .cmc-footer { display: none; }
+  /* Print the summary and the figures behind it, nothing else. */
+  .rd-skip, .cmc-footer, .cmc-header, .cmc-totop, .rd-cmpbar,
+  .rd-no-print, form, .cmc-calc__tabs { display: none !important; }
   body { background: #fff; color: #000; }
+  a[href]::after { content: ""; }
+  .rd-scroll { overflow: visible; }
+  .rd-table { page-break-inside: auto; }
+  .rd-table tr { page-break-inside: avoid; }
+  section { page-break-inside: avoid; border: 0 !important; padding: 0 0 16pt 0 !important; }
+  h1 { font-size: 18pt; }
+  h2 { font-size: 13pt; }
 }
 
 /* Comparison table. The bundle ships the swipe hint but not the table. */
