@@ -79,7 +79,7 @@
   function money(n, symbol) {
     var s = symbol || 'CI$';
     var r = Math.round(Number(n) || 0);
-    return s + r.toLocaleString('en-US');
+    return (r < 0 ? '-' : '') + s + Math.abs(r).toLocaleString('en-US');
   }
 
   /* ---- the amortising payment, the one formula the whole site uses ---- */

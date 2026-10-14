@@ -446,3 +446,126 @@ def calculator(data: dict) -> str:
         f'<form id="rdCalc" style="display:flex;flex-direction:column;gap:24px">{inputs}</form>'
         '<div aria-label="Results" style="display:flex;flex-direction:column;gap:24px">'
         f"{results}</div></div></section>")
+
+
+def _page_head(crumb: str, title: str, lede: str) -> str:
+    return ('<section aria-label="Page title" class="r-pad" style="background:var(--navy-100);'
+            'padding:40px 24px">'
+            '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:12px">'
+            '<nav aria-label="Breadcrumb" style="font-size:12px;line-height:16px;font-weight:500;'
+            'color:var(--ink-500)"><a href="/" style="color:var(--ink-500);text-decoration:none">'
+            f"Home</a> › {e(crumb)}</nav>"
+            '<h1 style="margin:0;font-size:40px;line-height:48px;font-weight:700;'
+            f'letter-spacing:-.02em">{e(title)}</h1>'
+            '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
+            f"{e(lede)}</p></div></section>")
+
+
+def _two_col(form: str, results: str) -> str:
+    return ('<section aria-label="Inputs" class="r-pad" style="padding:40px 24px 64px">'
+            '<div class="r-grid" style="max-width:1200px;margin:0 auto;display:grid;'
+            'grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start">'
+            f"{form}"
+            '<div aria-label="Results" style="display:flex;flex-direction:column;gap:24px">'
+            f"{results}</div></div></section>")
+
+
+def _answer(label_id: str, value_id: str, note_id: str, tone: str = "navy") -> str:
+    bg = "var(--navy-900)" if tone == "navy" else "var(--teal-100)"
+    fg = "var(--on-dark)" if tone == "navy" else "var(--ink-900)"
+    muted = "var(--on-dark-muted)" if tone == "navy" else "var(--ink-700)"
+    accent = "var(--teal-300)" if tone == "navy" else "var(--teal-600)"
+    return ('<div style="display:flex;flex-direction:column;gap:12px;padding:24px;'
+            f'border-radius:16px;background:{bg};color:{fg}">'
+            f'<span id="{e(label_id)}" style="font-size:12px;line-height:16px;font-weight:700;'
+            f'letter-spacing:.08em;text-transform:uppercase;color:{accent}"></span>'
+            f'<span id="{e(value_id)}" class="r-big" style="font-size:48px;line-height:52px;'
+            'font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums">CI$0</span>'
+            f'<span id="{e(note_id)}" style="font-size:14px;line-height:22px;color:{muted}">'
+            "</span></div>")
+
+
+def affordability(data: dict) -> str:
+    """Ported from cmc-redesign/pages/Affordability.dc.html.
+
+    Two limits, per HANDOFF 5.3: what your income will carry and what your cash
+    will cover. The cash limit is solved with Core.maxPrice, which steps through
+    the duty thresholds rather than bisecting past them.
+    """
+    statuses = [("first", "Caymanian, first property"), ("second", "Caymanian, second property"),
+                ("standard", "Standard rate, 7.5%")]
+    form = (
+        '<form id="rdAfford" style="display:flex;flex-direction:column;gap:24px">'
+        + _fieldset("What you earn and owe", _grid(
+            rd.input_field("Gross monthly income", id="aIncome", prefix="CI$", value=9000,
+                           step=100, min_=0),
+            rd.input_field("Other monthly debts", id="aDebts", prefix="CI$", value=0,
+                           step=50, min_=0),
+            rd.input_field("Debt service ceiling", id="aCeiling", suffix="%",
+                           hint="of gross income", value=40, step=1, min_=1, max_=100),
+            rd.input_field("Cash available", id="aCash", prefix="CI$", value=120000,
+                           step=1000, min_=0),
+        ), "Income and cash")
+        + _fieldset("The purchase", _grid(
+            rd.input_field("Deposit", bind="deposit", value=10, suffix="%", step=0.5, min_=0, max_=100),
+            rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%", step=0.05, min_=0),
+            rd.select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"),
+                                     (30, "30 years")], bind="term", value=25),
+            rd.select_field("Stamp duty status", statuses, id="aStatus", value="first"),
+        ), "The purchase")
+        + "</form>")
+
+    results = (
+        _answer("aVerdictLabel", "aMax", "aVerdictNote")
+        + '<div style="padding:0">'
+        + rd.button("Run this price in the mortgage calculator", id="aRun",
+                    icon_right="arrow-right") + "</div>"
+        + '<section aria-label="The two limits" style="display:flex;flex-direction:column;'
+          'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "The two limits</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="aTable"></table></div>'
+          '<p style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+          "The lower of the two is what you can actually buy. Lenders also apply their own "
+          "criteria, so treat this as a planning figure.</p></section>")
+
+    return (_page_head("Affordability", "What can you afford?",
+                       "Two things decide it: what your income will carry each month, and what "
+                       "your cash will cover on the day. This works out both and tells you "
+                       "which one is binding.")
+            + _two_col(form, results))
+
+
+def equity(data: dict) -> str:
+    """Ported from cmc-redesign/pages/Equity.dc.html (HANDOFF 5.4)."""
+    form = (
+        '<form id="rdEquity" style="display:flex;flex-direction:column;gap:24px">'
+        + _fieldset("Your property", _grid(
+            rd.input_field("What it is worth now", id="eValue", prefix="CI$", value=800000,
+                           step=5000, min_=0),
+            rd.input_field("Mortgage balance", id="eBalance", prefix="CI$", value=400000,
+                           step=5000, min_=0),
+            rd.input_field("Other secured loans", id="eOther", prefix="CI$", value=0,
+                           step=1000, min_=0),
+            rd.input_field("Maximum loan to value", id="eLtv", suffix="%", value=80,
+                           hint="90% Caymanian, 80% resident, 70% non-resident",
+                           step=1, min_=1, max_=100),
+        ), "Your property")
+        + "</form>")
+
+    results = (
+        _answer("eLabel", "eAvailable", "eNote", tone="teal")
+        + '<section aria-label="How it is worked out" style="display:flex;flex-direction:column;'
+          'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "How it is worked out</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="eTable"></table></div></section>'
+        + '<p style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
+          'Releasing equity means a new or larger charge on the property, which carries its own '
+          'stamp duty. The <a href="/guides/refinancing/">refinancing guide</a> works out '
+          "whether a new rate pays for itself.</p>")
+
+    return (_page_head("Equity", "How much equity do you have?",
+                       "What your property is worth, less what is secured against it, and how "
+                       "much of that a lender would let you borrow.")
+            + _two_col(form, results))

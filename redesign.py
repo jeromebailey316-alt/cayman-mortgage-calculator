@@ -97,7 +97,8 @@ def badge(label, tone="neutral", tint=False) -> str:
 def fmt_money(v, currency="KYD") -> str:
     """CI$ by default; whole dollars, grouped. Matches fmtMoney in the bundle."""
     sym = "US$" if currency == "USD" else "CI$"
-    return f"{sym}{round(v):,}"
+    r = round(v)
+    return f"{'-' if r < 0 else ''}{sym}{abs(r):,}"
 
 
 def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None,

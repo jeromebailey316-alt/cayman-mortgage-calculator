@@ -38,6 +38,22 @@ PAGES = {
         "active": "/calculator/",
         "scripts": ["/assets/core.js", "/assets/rd-calculator.js"],
     },
+    "affordability": {
+        "title": "What can you afford? A Cayman affordability calculator",
+        "description": ("The most you can buy in the Cayman Islands, from what your income "
+                        "carries each month and what your cash covers on the day."),
+        "build": lambda data: rd_pages.affordability(data),
+        "active": "/affordability/",
+        "scripts": ["/assets/core.js", "/assets/rd-afford.js"],
+    },
+    "equity": {
+        "title": "Cayman home equity calculator: how much could you release?",
+        "description": ("What your Cayman property is worth less what is secured against it, "
+                        "and how much of that a lender would advance."),
+        "build": lambda data: rd_pages.equity(data),
+        "active": "/equity/",
+        "scripts": ["/assets/core.js", "/assets/rd-afford.js"],
+    },
     "listings": {
         "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
         "description": ("Every listing from the Cayman agencies, priced through your own "
@@ -63,7 +79,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)
