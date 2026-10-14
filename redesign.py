@@ -466,7 +466,86 @@ RD_JS = """
 """
 
 
-def head(title: str, description: str, canonical: str = "", css_href: str = "/assets/rd.css") -> str:
+# Supplied by the owner when the property is verified; the Privacy page already
+# describes what it measures.
+GA_MEASUREMENT_ID = ""
+
+ORG_JSONLD = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": SITE_NAME,
+    "url": "https://caymanmortgagecalculator.com/",
+    "logo": "https://caymanmortgagecalculator.com/icon-512.png",
+    "email": EMAIL,
+    "sameAs": [INSTAGRAM],
+    "founder": [
+        {"@type": "Person", "name": "Jerome Bailey"},
+        {"@type": "Person", "name": "Janique Bailey"},
+    ],
+}
+
+SITE_JSONLD = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": SITE_NAME,
+    "url": "https://caymanmortgagecalculator.com/",
+}
+
+
+def software_jsonld(name: str, url: str, description: str) -> dict:
+    return {
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        "name": name, "url": url, "description": description,
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any web browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KYD"},
+    }
+
+
+def faq_jsonld(pairs) -> dict:
+    return {
+        "@context": "https://schema.org", "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": q,
+             "acceptedAnswer": {"@type": "Answer", "text": a}}
+            for q, a in pairs],
+    }
+
+
+def breadcrumb_jsonld(crumb: str, url: str) -> dict:
+    return {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home",
+             "item": "https://caymanmortgagecalculator.com/"},
+            {"@type": "ListItem", "position": 2, "name": crumb, "item": url},
+        ],
+    }
+
+
+ICON_LINKS = (
+    '<link rel="icon" href="/favicon.ico" sizes="48x48">'
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
+    '<link rel="manifest" href="/site.webmanifest">'
+)
+
+
+def head(title: str, description: str, canonical: str = "", css_href: str = "/assets/rd.css",
+         jsonld=(), og_image: str = "") -> str:
+    blocks = "".join(
+        f'<script type="application/ld+json">{json.dumps(b, separators=(",", ":"))}</script>'
+        for b in jsonld)
+    og = ""
+    if og_image:
+        og = (f'<meta property="og:image" content="{e(og_image)}">'
+              '<meta name="twitter:card" content="summary_large_image">')
+    ga = ""
+    if GA_MEASUREMENT_ID:
+        ga = (f'<script async src="https://www.googletagmanager.com/gtag/js?id={e(GA_MEASUREMENT_ID)}">'
+              "</script><script>window.dataLayer=window.dataLayer||[];"
+              "function gtag(){dataLayer.push(arguments);}gtag('js',new Date());"
+              f"gtag('config','{e(GA_MEASUREMENT_ID)}',{{anonymize_ip:true}});</script>")
     return (
         '<!doctype html><html lang="en"><head>'
         '<meta charset="utf-8">'
@@ -476,11 +555,18 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
         '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#011533">'
         + (f'<link rel="canonical" href="{e(canonical)}">' if canonical else "")
+        + f'<meta property="og:title" content="{e(title)}">'
+          f'<meta property="og:description" content="{e(description)}">'
+          '<meta property="og:type" content="website">'
+          f'<meta property="og:site_name" content="{e(SITE_NAME)}">'
+        + (f'<meta property="og:url" content="{e(canonical)}">' if canonical else "")
+        + og + ICON_LINKS
         + '<link rel="preconnect" href="https://fonts.googleapis.com">'
           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
           f'<link rel="stylesheet" href="{FONT_HREF}">'
           f'<link rel="stylesheet" href="{e(css_href)}">'
-          "</head><body>")
+        + blocks + ga
+        + "</head><body>")
 
 
 def tail(scripts=(), icons_for_js=False) -> str:
@@ -500,8 +586,8 @@ TAIL = tail()
 
 def page(title: str, description: str, body: str, active: str = "",
          canonical: str = "", css_href: str = "/assets/rd.css",
-         scripts=(), icons_for_js: bool = False) -> str:
-    return (head(title, description, canonical, css_href)
+         scripts=(), icons_for_js: bool = False, jsonld=(), og_image: str = "") -> str:
+    return (head(title, description, canonical, css_href, jsonld, og_image)
             + '<a class="rd-skip" href="#main">Skip to content</a>'
             + header(active=active)
             + f'<main id="main">{body}</main>'
