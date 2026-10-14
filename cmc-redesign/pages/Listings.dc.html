@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Listings</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; }
+.cmp-table th, .cmp-table td { padding: 10px 14px; text-align: left; border-top: 1px solid var(--line-100); vertical-align: top; }
+.cmp-table th { font-size: 12px; line-height: 16px; color: var(--ink-500); font-weight: 600; width: 180px; white-space: nowrap; }
+.cmp-table thead th { color: var(--ink-900); font-size: 14px; line-height: 22px; font-weight: 700; width: auto; white-space: normal; border-top: 0; vertical-align: bottom; }
+.cmp-table td.best { color: var(--teal-600); font-weight: 700; }
+.cmp-bar { position: sticky; bottom: 16px; z-index: 30; margin: 0 24px 16px; justify-content: center; pointer-events: none; }
+.cmp-bar__inner { pointer-events: auto; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 20px; border-radius: 999px; background: var(--navy-900); color: var(--on-dark); box-shadow: var(--shadow-md); font-size: 14px; line-height: 22px; max-width: 100%; }
+.cmp-bar__text { white-space: nowrap; }
+.cmp-bar__clear { width: 40px; height: 40px; flex: none; border: 0; border-radius: 999px; background: transparent; color: var(--on-dark-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.cmp-bar__clear:hover { background: rgba(255,255,255,.1); color: var(--on-dark); }
+.cmp-bar__clear:focus-visible { outline: 2px solid var(--teal-300); outline-offset: 2px; }
+@media (max-width: 860px) {
+  .cmp-bar { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; z-index: 36; }
+  .cmp-bar__inner { width: 100%; border-radius: 0; padding: 10px 8px calc(10px + env(safe-area-inset-bottom, 0px)) 16px; box-shadow: 0 -4px 16px rgba(1, 21, 51, .18); }
+  .cmp-bar__text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .cmp-bar__long { display: none; }
+  [data-comparing="true"] .cmc-totop { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  [data-comparing="true"] .cmc-footer { padding-bottom: 96px; }
+}
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero { padding-bottom: 96px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-hide { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div data-comparing="{{cmpOn}}" style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Search" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Listings</nav>
+        <h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Homes for sale and rent in Grand Cayman</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">Every listing is shown with the agency's permission and links back to their page. The monthly figure on each card is this site's estimate, not the agent's.</p>
+      </div>
+      <form aria-label="Filter listings" style="display: flex; flex-direction: column; gap: 16px; background: var(--surface-0); border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm); padding: 20px 24px">
+        <x-import component-from-global-scope="CMC.PillTabs" items="{{modes}}" value="{{mode}}" on-change="{{setMode}}"></x-import>
+        <div class="r-grid" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) auto; gap: 16px; align-items: end">
+          <x-import component-from-global-scope="CMC.Select" label="District" options="{{districts}}" default-value="Any district"></x-import>
+          <x-import component-from-global-scope="CMC.Select" label="Property type" options="{{types}}" default-value="Any type"></x-import>
+          <x-import component-from-global-scope="CMC.Input" label="Min price" prefix="CI$" placeholder="No min" type="number" input-mode="decimal"></x-import>
+          <x-import component-from-global-scope="CMC.Input" label="Max price" prefix="CI$" placeholder="No max" type="number" input-mode="decimal"></x-import>
+          <x-import component-from-global-scope="CMC.Select" label="Beds" options="{{beds}}" default-value="Any"></x-import>
+          <x-import component-from-global-scope="CMC.Button" variant="primary" icon-left="search" type="submit">Search</x-import>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section aria-label="Results" class="r-pad" style="padding: 40px 24px 64px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+        <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)"><strong style="color: var(--ink-900)">{{count}}</strong> homes {{modeLabel}} · newest first<br><span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Monthly figures are this site's estimates at {{assume}}, your numbers from the calculator. Each tile opens the listing on the agent's own site.</span></span>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap">
+          <x-import component-from-global-scope="CMC.Select" options="{{sorts}}" default-value="Newest" style="width: 200px"></x-import>
+          <x-import component-from-global-scope="CMC.Button" variant="secondary" size="sm" icon-left="calculator" href="Calculator.dc.html">Set my rate &amp; deposit</x-import>
+        </div>
+      </div>
+
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+        <sc-for list="{{listings}}" as="l" hint-placeholder-count="6">
+          <x-import component-from-global-scope="CMC.ListingCard" price="{{l.price}}" period="{{l.period}}" address="{{l.address}}" locality="{{l.locality}}" beds="{{l.beds}}" baths="{{l.baths}}" sqft="{{l.sqft}}" badge="{{l.badge}}" badge-tone="{{l.tone}}" monthly="{{l.monthly}}" agency="[Agency]" href="{{l.url}}" on-favourite="{{l.fav}}" favourited="{{l.saved}}" on-compare="{{l.cmp}}" compared="{{l.comparing}}"></x-import>
+        </sc-for>
+      </div>
+
+      <section aria-label="Compare listings" id="compare" style="display: {{cmpDisplay}}; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-md); background: var(--surface-0)">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700">Compare {{cmpCount}} {{cmpNoun}}</h2>
+            <span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">{{cmpHint}}</span>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap">
+            <x-import component-from-global-scope="CMC.Button" variant="secondary" size="sm" icon-left="calculator" href="Calculator.dc.html">Change deposit, rate or term</x-import>
+            <x-import component-from-global-scope="CMC.Button" variant="ghost" size="sm" on-click="{{clearCompare}}">Clear</x-import>
+          </div>
+        </div>
+        <div style="overflow-x: auto">
+          <table class="cmp-table">
+            <thead><tr><th></th><sc-for list="{{cmpCols}}" as="c" hint-placeholder-count="3"><th>{{c.address}}<br><span style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)">{{c.locality}} · listed by [Agency]</span></th></sc-for></tr></thead>
+            <tbody>
+              <sc-for list="{{cmpRows}}" as="r" hint-placeholder-count="8">
+                <tr><th>{{r.label}}</th><sc-for list="{{r.cells}}" as="x" hint-placeholder-count="3"><td class="{{x.cls}}">{{x.text}}</td></sc-for></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <span class="cmc-swipe">Swipe sideways to see every column.</span>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between">
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Best value in each row is highlighted in teal. Monthly, down payment and stamp duty are this site's estimates at {{assume}}, standard 7.5% duty.</span>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{cmpCols}}" as="c" hint-placeholder-count="3"><x-import component-from-global-scope="CMC.Button" variant="secondary" size="sm" icon-right="external-link" href="{{c.url}}" target="_blank" rel="noopener">{{c.short}}</x-import></sc-for></div>
+        </div>
+      </section>
+
+      <nav aria-label="Pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding-top: 8px">
+        <x-import component-from-global-scope="CMC.Button" variant="secondary" size="sm" aria-disabled="true">Previous</x-import>
+        <span style="display: inline-flex; gap: 4px">
+          <a href="#" aria-current="page" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 6px; background: var(--navy-700); color: var(--on-dark); font-size: 14px; font-weight: 600; text-decoration: none">1</a>
+          <a href="#" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 6px; color: var(--ink-700); font-size: 14px; font-weight: 600; text-decoration: none">2</a>
+          <a href="#" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 6px; color: var(--ink-700); font-size: 14px; font-weight: 600; text-decoration: none">3</a>
+        </span>
+        <x-import component-from-global-scope="CMC.Button" variant="secondary" size="sm" icon-right="arrow-right" href="#">Next</x-import>
+      </nav>
+
+      <div class="r-pad" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 24px; border-radius: 12px; background: var(--teal-100)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="house"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0">
+          <strong style="font-size: 18px; line-height: 24px">Are you an agent?</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">Listings appear here only with your permission and always link back to your original page. Get in touch to be included.</span>
+          <a href="Agents.dc.html" style="font-size: 14px; font-weight: 600; color: var(--teal-600); text-decoration: none">How listings work for agents →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div role="status" class="cmp-bar" style="display: {{cmpDisplay}}">
+    <div class="cmp-bar__inner">
+      <span class="cmp-bar__text"><strong>{{cmpCount}}</strong> selected<span class="cmp-bar__long"> to compare{{cmpMax}}</span></span>
+      <x-import component-from-global-scope="CMC.Button" variant="onDark" size="sm" icon-right="arrow-right" href="#compare">Compare</x-import>
+      <button type="button" class="cmp-bar__clear" aria-label="Clear the comparison" title="Clear" onClick="{{clearCompare}}"><x-import component-from-global-scope="CMC.Icon" name="x" size="{{eighteen}}"></x-import></button>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    // The compare selection lives in the browser (localStorage 'cmc.compare') so it survives paging, filtering and a reload
+    let compare = {};
+    try { compare = JSON.parse(localStorage.getItem('cmc.compare') || '{}') || {}; } catch (e) { compare = {}; }
+    this.state = { mode: 'buy', saved: {}, compare, inputsTick: 0 };
+    CMC.inputs.subscribe(() => this.setState({ inputsTick: Date.now() }));
+  }
+  setCompare(compare) {
+    try { localStorage.setItem('cmc.compare', JSON.stringify(compare)); } catch (e) {}
+    this.setState({ compare });
+  }
+  monthly(price) {
+    const s = CMC.inputs.get();
+    const p = price * (1 - s.deposit / 100), r = s.rate / 100 / 12, n = s.term * 12;
+    return Math.round(r === 0 ? p / n : p * r / (1 - Math.pow(1 + r, -n)));
+  }
+  renderVals() {
+    const mode = this.state.mode;
+    const s = CMC.inputs.get();
+    const assume = s.deposit + '% deposit, ' + s.rate + '% over ' + s.term + ' years';
+    // url: the listing on the agent's own site; placeholders until each agency confirms
+    const all = [
+      { id: 1, price: 850000, url: 'https://agency.example/listings/south-sound-canal-front', address: 'Canal-front family home', locality: 'South Sound', beds: 4, baths: 3, sqft: 2450, badge: 'For sale', tone: 'navy', sale: true },
+      { id: 2, price: 625000, url: 'https://agency.example/listings/smb-two-bed-condo', address: 'Two-bedroom condo', locality: 'Seven Mile Beach corridor', beds: 2, baths: 2, sqft: 1240, badge: 'For sale', tone: 'navy', sale: true },
+      { id: 3, price: 495000, url: 'https://agency.example/listings/west-bay-starter-home', address: 'Starter home on a corner lot', locality: 'West Bay', beds: 3, baths: 2, sqft: 1380, badge: 'New', tone: 'teal', sale: true },
+      { id: 4, price: 1150000, url: 'https://agency.example/listings/crystal-harbour-pool-home', address: 'Four-bedroom with pool', locality: 'Crystal Harbour', beds: 4, baths: 4, sqft: 3100, badge: 'For sale', tone: 'navy', sale: true },
+      { id: 5, price: 389000, url: 'https://agency.example/listings/savannah-townhouse', address: 'Townhouse near schools', locality: 'Savannah', beds: 3, baths: 2, sqft: 1500, badge: 'For sale', tone: 'navy', sale: true },
+      { id: 6, price: 729000, url: 'https://agency.example/listings/george-town-duplex', address: 'Duplex with rental unit', locality: 'George Town', beds: 5, baths: 3, sqft: 2600, badge: 'New', tone: 'teal', sale: true },
+      { id: 7, price: 3200, url: 'https://agency.example/rentals/savannah-townhouse-garage', address: 'Townhouse with garage', locality: 'Savannah', beds: 3, baths: 2, sqft: 1600, badge: 'For rent', tone: 'teal', sale: false },
+      { id: 8, price: 2450, url: 'https://agency.example/rentals/george-town-one-bed', address: 'One-bedroom apartment', locality: 'George Town', beds: 1, baths: 1, sqft: 720, badge: 'For rent', tone: 'teal', sale: false },
+      { id: 9, price: 4800, url: 'https://agency.example/rentals/prospect-canal-front', address: 'Canal-front home', locality: 'Prospect', beds: 3, baths: 2, sqft: 1900, badge: 'For rent', tone: 'teal', sale: false },
+      { id: 10, price: 2900, url: 'https://agency.example/rentals/west-bay-road-condo', address: 'Two-bedroom condo', locality: 'West Bay Road', beds: 2, baths: 2, sqft: 1100, badge: 'New', tone: 'teal', sale: false },
+      { id: 11, price: 6500, url: 'https://agency.example/rentals/rum-point-villa', address: 'Beachfront villa', locality: 'Rum Point', beds: 4, baths: 3, sqft: 2800, badge: 'For rent', tone: 'teal', sale: false },
+      { id: 12, price: 2100, url: 'https://agency.example/rentals/george-town-studio', address: 'Studio near town', locality: 'George Town', beds: 1, baths: 1, sqft: 540, badge: 'For rent', tone: 'teal', sale: false }
+    ];
+    const listings = all.filter(l => mode === 'buy' ? l.sale : !l.sale).map(l => ({
+      ...l,
+      period: l.sale ? undefined : 'mo',
+      monthly: l.sale ? this.monthly(l.price) : undefined,
+      saved: !!this.state.saved[l.id],
+      fav: () => this.setState({ saved: { ...this.state.saved, [l.id]: !this.state.saved[l.id] } }),
+      comparing: !!this.state.compare[l.id],
+      cmp: () => {
+        const c = { ...this.state.compare };
+        if (c[l.id]) delete c[l.id];
+        else if (Object.keys(c).length < 4) { const { id, price, address, locality, beds, baths, sqft, badge, sale, url } = l; c[id] = { id, price, address, locality, beds, baths, sqft, badge, sale, url }; }
+        this.setCompare(c);
+      }
+    }));
+    // Comparison: up to four of the listings currently shown
+    const money = (n) => 'CI$' + Math.round(n).toLocaleString('en-US');
+    // Saved selections, whichever page they came from; monthly is recomputed from today's shared inputs
+    const chosen = Object.values(this.state.compare).filter(l => l && (mode === 'buy' ? l.sale : !l.sale)).map(l => ({ ...l, monthly: l.sale ? this.monthly(l.price) : undefined }));
+    const cmpCount = chosen.length;
+    const row = (label, vals, fmt, best) => {
+      const nums = vals.filter(v => typeof v === 'number');
+      const target = best === 'min' ? Math.min(...nums) : best === 'max' ? Math.max(...nums) : null;
+      return { label, cells: vals.map(v => ({ text: v == null ? 'n/a' : fmt(v), cls: target != null && v === target && nums.length > 1 ? 'best' : '' })) };
+    };
+    const buy = mode === 'buy';
+    const cmpRows = cmpCount ? [
+      row(buy ? 'Price' : 'Rent a month', chosen.map(l => l.price), money, 'min'),
+      buy ? row('Estimated monthly', chosen.map(l => l.monthly), money, 'min') : row('Rent a year', chosen.map(l => l.price * 12), money, 'min'),
+      buy ? row('Down payment (' + s.deposit + '%)', chosen.map(l => l.price * s.deposit / 100), money, 'min') : null,
+      buy ? row('Stamp duty (7.5%)', chosen.map(l => l.price * 0.075), money, 'min') : null,
+      row('Bedrooms', chosen.map(l => l.beds), v => String(v), 'max'),
+      row('Bathrooms', chosen.map(l => l.baths), v => String(v), 'max'),
+      row('Size', chosen.map(l => l.sqft), v => v.toLocaleString('en-US') + ' sq ft', 'max'),
+      row(buy ? 'Price per sq ft' : 'Rent per sq ft a month', chosen.map(l => l.price / l.sqft), v => 'CI$' + v.toFixed(buy ? 0 : 2), 'min'),
+      row('Status', chosen.map(l => l.badge), v => v, null),
+      row('District', chosen.map(l => l.locality), v => v, null)
+    ].filter(Boolean) : [];
+    const cmpCols = chosen.map(l => ({ ...l, short: l.locality.split(' ')[0] + ': ' + (buy ? money(l.price) : money(l.price) + '/mo') }));
+    return {
+      logoHeight: 56, assume,
+      cmpCount, cmpNoun: cmpCount === 1 ? 'listing' : 'listings', cmpRows, cmpCols,
+      cmpHint: cmpCount < 2 ? 'Tick "Compare" on at least one more listing to see them side by side (up to four). Your selection is kept while you page through listings.' : 'Side by side, with the same deposit, rate and term you set in the calculator. Kept in your browser while you page through.',
+      cmpDisplay: cmpCount > 0 ? 'flex' : 'none', cmpOn: cmpCount > 0, eighteen: 18, cmpMax: cmpCount >= 4 ? ' (maximum four)' : '',
+      clearCompare: () => this.setCompare({}),
+      mode, modes: [{ value: 'buy', label: 'Buy' }, { value: 'rent', label: 'Rent' }],
+      setMode: (v) => this.setState({ mode: v }),
+      modeLabel: mode === 'buy' ? 'for sale' : 'for rent',
+      count: listings.length,
+      listings,
+      districts: ['Any district', 'George Town', 'Seven Mile Beach', 'West Bay', 'South Sound', 'Prospect', 'Savannah', 'Bodden Town', 'East End', 'North Side'],
+      types: ['Any type', 'House', 'Condo', 'Townhouse', 'Duplex', 'Land'],
+      beds: ['Any', '1+', '2+', '3+', '4+'],
+      sorts: ['Newest', 'Price: low to high', 'Price: high to low', 'Monthly: low to high'],
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html', active: true }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

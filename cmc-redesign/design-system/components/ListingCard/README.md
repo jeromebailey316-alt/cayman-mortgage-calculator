@@ -1,0 +1,8 @@
+# ListingCard
+
+A property in the featured grid: photo (4:3) with one `Badge` top-left and an optional favourite chip top-right; price in heading-4; address and locality; an optional teal "From CI$x/mo" line that links the listing to the calculator; a meta row (beds, baths, sq ft) above a hairline; and the listing agency, since every listing on this site is shown with the agent's permission and links back to their page.
+
+- Pass `href` to make the whole card a link. On the site `href` is the listing's page on the agent's own website: an absolute `http(s)` link opens in a new tab (`rel="noopener"`) and the card shows "View on agent's site" with an external-link icon beside the agency name. Enquiries happen there, never here. `onFavourite` adds the heart. `onCompare` + `compared` add the "Compare" chip bottom-left of the photo; the listings page lets a visitor tick up to four and shows them side by side (price, monthly, down payment, stamp duty, beds, baths, size, price per sq ft) with the best value in each row in teal and a bar that counts the selection: a centred navy pill on desktop (count, Compare button, × to clear), a full-width strip fixed to the bottom edge on phones and tablets, with the BackToTop button lifted above it. The selection is kept in the browser (`localStorage` key `cmc.compare`, a snapshot of each chosen listing) so it survives paging, filtering and a reload; monthly figures are recomputed from the shared inputs each time.
+- `period="mo"` for rentals; `monthly` is the site's own estimate, not the agent's figure.
+- With no `image` the card shows a navy-100 placeholder — fine for drafts, never in production.
+- Grid: 4 across at 1200px, 2 at 768px, 1 below, with `space-5` gaps.
