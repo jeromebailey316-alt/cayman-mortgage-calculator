@@ -178,7 +178,35 @@ prop on the card, though the live site surfaces all of them. The new card loses 
 MLS number, the land area, the "also listed with" cross-reference and the
 "checked at" provenance line unless the component is extended.
 
-## 6. Order of work
+## 6. What is built
+
+All fourteen routes exist and pass the same sweep: one `h1`, no horizontal scroll at
+390px, no em or en dashes, no placeholder links, no NaN, every control named, every
+input labelled, landmarks present.
+
+| Route | Built from | Arithmetic |
+| --- | --- | --- |
+| `/` | Main board, hand-ported | Shared inputs |
+| `/calculator/` | Calculator board, hand-ported | `core.js` |
+| `/affordability/` | Affordability board, hand-ported | `core.js`, `maxPrice` |
+| `/equity/` | Equity board, hand-ported | Arithmetic in page |
+| `/rent-vs-buy/` | No board; built in system | `core.js` |
+| `/listings/` | Listings board, hand-ported | `core.js` for duty |
+| `/guides/stamp-duty/` | Translated, panel hand-built | `core.js` |
+| `/guides/closing-costs/` | Translated, panel hand-built | `core.js` |
+| `/guides/refinancing/` | Translated, panel hand-built | `core.js` |
+| `/about/` `/contact/` `/agents/` `/privacy/` `/terms/` | Translated wholesale | n/a |
+
+Also done: shared inputs with cross-tab sync, compare with snapshots in
+`localStorage`, Excel and PDF export with a CSV fallback, print styles, the full
+icon set rendered from `icon-512.svg`, manifest, sitemap, robots, canonical and
+Open Graph tags, JSON-LD on every page, and a content security policy.
+
+**Not done:** `GA_MEASUREMENT_ID` is an empty placeholder in `redesign.py` until the
+owner supplies it, and the Cayman Brac section of the stamp duty guide is held back
+pending section 4.1.
+
+## 7. Order of work
 
 1. Tokens and the base stylesheet.
 2. Header, footer, back-to-top, shared inputs; the page shell in `page.py`.
