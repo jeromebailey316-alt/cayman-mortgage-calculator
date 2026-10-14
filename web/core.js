@@ -43,16 +43,28 @@ var Core = (function () {
        Act rather than a rate in the Regulations, so it is applied for and approved,
        and it expires. Undeveloped land at 0% must be built on within two years or
        the duty is clawed back with a 10% penalty. */
+    /* Stamp Duty Concessions in Cayman Brac, Lands & Survey, effective
+       1 January 2026, sheet updated 14 January 2026. Three rates, all keyed to
+       the consideration, meaning the purchase price or the market value,
+       whichever is higher:
+         0%   undeveloped land under CI$2,000,000, conditional on development
+         3%   developed property under CI$2,000,000
+         10%  anything, developed or not, at CI$2,000,000 or more
+       The sheet states no end date, so none is assumed here. */
     brac: {
       from: '2026-01-01',
-      expires: '2030-12-31',
-      cap: 2000000,          // at or above this, the standard 10% applies
+      expires: null,         // the published sheet gives no expiry; do not invent one
+      cap: 2000000,          // "less than CI$2,000,000" for the 0% and 3% rates
       developed: 0.03,
       undeveloped: 0,
+      over: 0.10,            // at or above the cap, stated by the sheet itself
       source: 'https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-rates-cayman-brac-(2025).pdf',
-      note: 'Cayman Brac concession, effective 1 January 2026, approved to 31 December 2030. '
-          + 'Undeveloped land at 0% must be developed within two years, with a transfer '
-          + 'restriction and full duty plus a 10% penalty if it is not.'
+      note: 'Cayman Brac concession, effective 1 January 2026. The 0% on undeveloped '
+          + 'land is conditional: the property must be developed within two years of '
+          + 'the waiver, with planning approval and a Certificate of Occupancy. The '
+          + 'Minister may extend by up to two further years. If it is not developed, '
+          + 'the waived duty becomes payable in full plus a 10% penalty, and a '
+          + 'restriction bars transfer until the conditions are met.'
     }
   };
 
@@ -83,15 +95,24 @@ var Core = (function () {
   function bracDuty(v, ptype, asOf) {
     var b = RULES.brac;
     var day = asOf || RULES.verified;
-    if (day > b.expires) return null;              // concession lapsed
-    if (v >= b.cap) return null;                   // CI$2M and over: standard 10%
+    if (day < b.from) return null;                 // not yet in force
+    if (b.expires && day > b.expires) return null; // only if an end date is published
     var undeveloped = ptype === 'land';
+    // The sheet sets the 10% itself rather than deferring to the Grand Cayman
+    // rate, so it is stated here too: if one threshold moves the other should
+    // not follow it silently.
+    if (v >= b.cap) {
+      return {
+        amount: v * b.over, rate: b.over, value: v, rule: 'brac-over',
+        conditional: false, note: b.note, source: b.source
+      };
+    }
     var rate = undeveloped ? b.undeveloped : b.developed;
     return {
       amount: v * rate, rate: rate, value: v,
       rule: undeveloped ? 'brac-land' : 'brac-developed',
       conditional: undeveloped,                    // the 0% comes with a build condition
-      expires: b.expires, note: b.note, source: b.source
+      note: b.note, source: b.source
     };
   }
 

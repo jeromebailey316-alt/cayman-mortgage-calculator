@@ -119,18 +119,14 @@ jobs:
       - name: Build the site
         # DOMAIN also writes site/CNAME, which is what keeps the custom domain
         # attached across deploys. Clear it to fall back to the github.io address.
-        env:
-          DOMAIN: caymanmortgagecalculator.com
         run: |
-          if [ -n "$DOMAIN" ]; then
-            python build_site.py --domain "$DOMAIN"
-          else
-            python build_site.py --url "${{ steps.pages.outputs.base_url }}"
-          fi
+          # The redesign. build_redesign.py writes its own CNAME from a domain
+          # constant, so the custom domain ships with every deploy.
+          python build_redesign.py
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: site-rd
 
   deploy:
     needs: build

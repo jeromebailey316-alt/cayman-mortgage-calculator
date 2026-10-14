@@ -1,0 +1,528 @@
+/* ========================================================================== */
+/* 1. tokens.css, as delivered. Do not edit here. */
+/* ========================================================================== */
+:root,[data-theme="light"]{--navy-900:#011533;
+--navy-700:#002767;
+--navy-600:#013484;
+--navy-300:#6e92d0;
+--navy-100:#eaf2fd;
+--teal-600:#0f7c7e;
+--teal-300:#5fd4cb;
+--teal-100:#e3f4f3;
+--on-teal:#ffffff;
+--ink-900:#0a0b10;
+--ink-700:#3f3f44;
+--ink-500:#707072;
+--line-300:#88888c;
+--line-100:#e7e9ee;
+--surface-100:#f0f1f5;
+--surface-0:#ffffff;
+--on-dark:#ffffff;
+--on-dark-muted:#a6b7d5;
+--logo-navy:#0e2a47;
+--shadow-sm:0 1px 2px rgba(1, 21, 51, 0.06);
+--shadow-md:0 8px 24px rgba(1, 21, 51, 0.10);}
+[data-theme="dark"]{--navy-900:#050f24;
+--navy-700:#3b6fd1;
+--navy-600:#2f5fbf;
+--navy-300:#6e92d0;
+--navy-100:#16284a;
+--teal-600:#5fd4cb;
+--teal-300:#5fd4cb;
+--teal-100:#12393c;
+--on-teal:#0b1730;
+--ink-900:#f4f6fb;
+--ink-700:#d3d9e6;
+--ink-500:#9aa6bd;
+--line-300:#566480;
+--line-100:#1f2d49;
+--surface-100:#15223d;
+--surface-0:#0b1730;
+--on-dark:#ffffff;
+--on-dark-muted:#a6b7d5;
+--logo-navy:#0e2a47;
+--shadow-sm:0 1px 2px rgba(0, 0, 0, 0.40);
+--shadow-md:0 8px 24px rgba(0, 0, 0, 0.55);}
+:root{--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;--radius-sm:6px;--radius-md:12px;--radius-lg:16px;--radius-full:999px;--font-sans:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+
+/* ========================================================================== */
+/* 2. components/bundle.css, as delivered. Do not edit here. */
+/* ========================================================================== */
+/* Cayman Mortgage Calculator — component styles. Every colour, length and face is a token from tokens.css. */
+
+:root { color-scheme: light; }
+/* ---------- Base: the page itself, so a build without the mockup helmets still matches ---------- */
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--navy-700); }
+a:hover { color: var(--navy-600); }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font-family: inherit; }
+.cmc-container { max-width: 1248px; margin: 0 auto; padding: 0 var(--space-5); }
+x-import { display: contents; } /* mockup wrapper only: components lay out as if placed directly in the page */
+.cmc-swipe { display: none; font-size: 12px; line-height: 16px; color: var(--ink-500); margin-top: var(--space-2); }
+@media (max-width: 860px) { .cmc-swipe { display: block; } .cmc-container { padding: 0 var(--space-4); } .cmc-btn { white-space: normal; text-align: center; } }
+.cmc-icon { flex: none; }
+
+/* ---------- Button ---------- */
+.cmc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 600;
+  padding: var(--space-3) var(--space-5); border-radius: var(--radius-sm); border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; white-space: nowrap; transition: background-color .15s, border-color .15s, color .15s;
+  box-sizing: border-box; max-width: 100%;
+}
+.cmc-btn:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; }
+.cmc-btn--sm { padding: var(--space-2) var(--space-4); }
+.cmc-btn--block { display: flex; width: 100%; }
+.cmc-btn--primary { background: var(--navy-700); color: var(--on-dark); }
+.cmc-btn--primary:hover { background: var(--navy-600); }
+.cmc-btn--secondary { background: var(--surface-0); color: var(--ink-900); border-color: var(--line-300); }
+.cmc-btn--secondary:hover { background: var(--surface-100); }
+.cmc-btn--ghost { background: transparent; color: var(--navy-700); padding-left: var(--space-2); padding-right: var(--space-2); }
+.cmc-btn--ghost:hover { background: var(--navy-100); }
+.cmc-btn--onDark { background: var(--surface-0); color: var(--navy-900); }
+.cmc-btn--onDark:hover { background: var(--navy-100); }
+[data-theme="dark"] .cmc-btn--onDark { background: var(--ink-900); color: var(--surface-0); }
+.cmc-btn[disabled], .cmc-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Field (Input / Select) ---------- */
+.cmc-field { display: flex; flex-direction: column; gap: var(--space-1); font-family: var(--font-sans); min-width: 0; }
+.cmc-field__label { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700); }
+.cmc-field__control {
+  display: flex; align-items: center; gap: var(--space-2); position: relative;
+  background: var(--surface-0); border: 1px solid var(--line-100); border-radius: var(--radius-sm); padding: 0 var(--space-3);
+  transition: border-color .15s, box-shadow .15s;
+}
+.cmc-field__control:focus-within { border-color: var(--teal-600); box-shadow: 0 0 0 3px var(--teal-100); }
+.cmc-field__input, .cmc-field__control > input, .cmc-field__control > select, .cmc-field__control > textarea {
+  flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; color: var(--ink-900);
+  font: inherit; font-size: 15px; line-height: 22px; padding: 10px 0; outline: none; appearance: none; -webkit-appearance: none;
+}
+.cmc-field__input::placeholder { color: var(--ink-500); }
+.cmc-field__input--select, .cmc-field__control > select { padding-right: var(--space-5); cursor: pointer; }
+.cmc-field__affix { font-size: 14px; color: var(--ink-500); font-weight: 500; }
+.cmc-field__chevron { position: absolute; right: var(--space-3); color: var(--ink-500); pointer-events: none; }
+.cmc-field__hint { font-size: 12px; line-height: 16px; color: var(--ink-500); }
+.cmc-field__hint--error { color: var(--ink-900); font-weight: 500; }
+.cmc-field--error .cmc-field__control { border-color: var(--ink-700); }
+input[type=number].cmc-field__input::-webkit-inner-spin-button, .cmc-field__control > input[type=number]::-webkit-inner-spin-button { opacity: 0; }
+
+/* ---------- PillTabs ---------- */
+.cmc-pills { display: inline-flex; gap: var(--space-1); padding: var(--space-1); background: var(--surface-100); border-radius: var(--radius-full); font-family: var(--font-sans); }
+.cmc-pill { border: 0; background: transparent; color: var(--ink-700); font: inherit; font-size: 14px; line-height: 20px; font-weight: 600; padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+.cmc-pill:hover { color: var(--ink-900); }
+.cmc-pill--active, .cmc-pill--on, .cmc-pill[aria-current="page"] { background: var(--surface-0); color: var(--navy-700); box-shadow: var(--shadow-sm); }
+.cmc-pill:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 1px; }
+
+/* ---------- Badge ---------- */
+.cmc-badge { display: inline-flex; align-items: center; font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px var(--space-2); border-radius: var(--radius-sm); }
+.cmc-badge--navy { background: var(--navy-600); color: var(--on-dark); }
+.cmc-badge--teal { background: var(--teal-600); color: var(--on-teal); }
+.cmc-badge--neutral { background: var(--surface-100); color: var(--ink-700); }
+.cmc-badge--tint { background: var(--teal-100); color: var(--teal-600); }
+[data-theme="dark"] .cmc-badge--tint { color: var(--teal-300); }
+
+/* ---------- ListingCard ---------- */
+.cmc-listing {
+  display: flex; flex-direction: column; background: var(--surface-0); border: 1px solid var(--line-100); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm); overflow: hidden; font-family: var(--font-sans); color: var(--ink-900); text-decoration: none; min-width: 0;
+  transition: box-shadow .15s, transform .15s;
+}
+a.cmc-listing:hover { box-shadow: var(--shadow-md); }
+.cmc-listing__media { position: relative; aspect-ratio: 4 / 3; background: var(--navy-100); }
+.cmc-listing__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cmc-listing__placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--navy-700); }
+.cmc-listing__badge { position: absolute; top: var(--space-3); left: var(--space-3); }
+.cmc-listing__fav { position: absolute; top: var(--space-3); right: var(--space-3); width: 32px; height: 32px; border-radius: var(--radius-full); border: 0; background: rgba(110, 146, 208, .55); color: var(--on-dark); display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); }
+.cmc-listing__fav--on { background: var(--teal-600); color: var(--on-teal); }
+.cmc-listing__compare { position: absolute; left: var(--space-3); bottom: var(--space-3); display: inline-flex; align-items: center; gap: var(--space-2); height: 28px; padding: 0 var(--space-3) 0 var(--space-2); border: 0; border-radius: var(--radius-full); background: rgba(255,255,255,.92); color: var(--ink-900); font: inherit; font-size: 12px; line-height: 16px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-sm); }
+.cmc-listing__compare-box { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid var(--ink-500); display: inline-flex; align-items: center; justify-content: center; background: var(--surface-0); color: var(--on-teal); }
+.cmc-listing__compare--on { background: var(--teal-600); color: var(--on-teal); }
+.cmc-listing__compare--on .cmc-listing__compare-box { background: var(--on-teal); border-color: var(--on-teal); color: var(--teal-600); }
+.cmc-listing__compare:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; }
+.cmc-listing__fav:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; }
+.cmc-listing__body { padding: var(--space-4) var(--space-4) var(--space-3); display: flex; flex-direction: column; gap: var(--space-1); }
+.cmc-listing__price { font-size: 18px; line-height: 24px; font-weight: 700; }
+.cmc-listing__period { font-size: 14px; font-weight: 500; color: var(--ink-500); }
+.cmc-listing__address { font-size: 14px; line-height: 22px; color: var(--ink-700); }
+.cmc-listing__locality { font-size: 14px; line-height: 22px; color: var(--ink-500); }
+.cmc-listing__monthly { display: inline-flex; align-items: center; gap: var(--space-1); margin-top: var(--space-1); font-size: 12px; line-height: 16px; color: var(--teal-600); }
+[data-theme="dark"] .cmc-listing__monthly { color: var(--teal-300); }
+.cmc-listing__monthly strong { font-weight: 700; }
+.cmc-listing__meta { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-top: 1px solid var(--line-100); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500); }
+.cmc-listing__meta { flex-wrap: wrap; row-gap: var(--space-1); }
+.cmc-listing__meta span { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; }
+.cmc-listing__agency { padding: 0 var(--space-4) var(--space-3); font-size: 12px; line-height: 16px; color: var(--ink-500); }
+.cmc-listing__agency { display: flex; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; }
+.cmc-listing__ext { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--teal-600); }
+.cmc-listing:hover .cmc-listing__ext { text-decoration: underline; }
+
+/* ---------- CalculatorPanel ---------- */
+.cmc-calc { background: var(--surface-0); border: 1px solid var(--line-100); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: var(--space-5); font-family: var(--font-sans); color: var(--ink-900); }
+.cmc-calc__tabs { margin-bottom: var(--space-4); }
+.cmc-calc__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto auto; gap: var(--space-4); align-items: end; }
+.cmc-calc--compact .cmc-calc__grid, .cmc-calc[data-narrow] .cmc-calc__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cmc-calc__result { display: flex; flex-direction: column; padding: 0 var(--space-4); border-left: 1px solid var(--line-100); min-width: 160px; }
+.cmc-calc--compact .cmc-calc__result { border-left: 0; padding: var(--space-3) 0 0; grid-column: 1 / -1; border-top: 1px solid var(--line-100); }
+.cmc-calc__result-label { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-500); }
+.cmc-calc__result-value { font-size: 24px; line-height: 32px; font-weight: 700; color: var(--navy-700); }
+.cmc-calc__result-sub { font-size: 12px; line-height: 16px; color: var(--ink-500); }
+.cmc-calc--compact .cmc-calc__cta { grid-column: 1 / -1; }
+.cmc-calc__note { display: flex; gap: var(--space-2); align-items: flex-start; margin: var(--space-4) 0 0; font-size: 12px; line-height: 16px; color: var(--ink-500); }
+.cmc-calc__note .cmc-icon { margin-top: 1px; }
+
+@media (max-width: 860px) {
+  .cmc-calc__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cmc-calc__result { border-left: 0; padding: var(--space-3) 0 0; grid-column: 1 / -1; border-top: 1px solid var(--line-100); }
+  .cmc-calc__cta { grid-column: 1 / -1; }
+  .cmc-pills { flex-wrap: wrap; border-radius: var(--radius-md); }
+}
+
+/* ---------- Byline ---------- */
+.cmc-byline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); padding: var(--space-3) var(--space-4); border: 1px solid var(--line-100); border-radius: var(--radius-md); background: var(--surface-100); font-family: var(--font-sans); font-size: 12px; line-height: 16px; color: var(--ink-700); }
+.cmc-byline .cmc-icon { color: var(--teal-600); }
+.cmc-byline__k { color: var(--ink-500); }
+.cmc-byline strong { color: var(--ink-900); font-weight: 600; }
+.cmc-byline__note { flex-basis: 100%; color: var(--ink-500); }
+
+/* ---------- Header ---------- */
+.cmc-header { font-family: var(--font-sans); background: var(--surface-0); border-bottom: 1px solid var(--line-100); position: sticky; top: 0; z-index: 40; }
+.cmc-header--dark { background: var(--navy-900); border-bottom-color: transparent; }
+.cmc-utility { background: var(--navy-900); color: var(--on-dark); font-size: 12px; line-height: 16px; font-weight: 500; }
+.cmc-utility__row { display: flex; justify-content: space-between; align-items: center; height: 32px; }
+.cmc-utility__items { display: flex; gap: var(--space-5); }
+.cmc-utility__items span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.cmc-utility__right { color: var(--on-dark-muted); }
+.cmc-header__row { display: flex; align-items: center; gap: var(--space-5); height: 72px; }
+.cmc-header__logo { display: inline-flex; align-items: center; flex: none; }
+.cmc-header__logo img { height: 40px; max-height: 64px; width: auto; display: block; }
+.cmc-header__fallback { font-size: 18px; font-weight: 700; color: var(--navy-900); }
+.cmc-header--dark .cmc-header__fallback { color: var(--on-dark); }
+.cmc-header__nav { display: flex; gap: var(--space-5); margin-left: auto; }
+.cmc-header__item { position: relative; display: flex; align-items: center; height: 72px; }
+.cmc-header__link-group { display: inline-flex; align-items: center; gap: 2px; }
+.cmc-header__toggle { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink-500); cursor: pointer; padding: 0; }
+.cmc-header__toggle .cmc-icon { transition: transform .15s; }
+.cmc-header__toggle:hover { background: var(--navy-100); color: var(--navy-700); }
+.cmc-header__toggle--open .cmc-icon { transform: rotate(180deg); }
+.cmc-header__toggle:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 1px; }
+.cmc-header--dark .cmc-header__toggle { color: var(--on-dark-muted); } .cmc-header--dark .cmc-header__toggle:hover { background: rgba(255,255,255,.08); color: var(--on-dark); }
+.cmc-header__dropdown { position: absolute; top: calc(100% - var(--space-2)); left: calc(-1 * var(--space-3)); min-width: 260px; margin: 0; padding: var(--space-2); list-style: none; background: var(--surface-0); border: 1px solid var(--line-100); border-radius: var(--radius-md); box-shadow: var(--shadow-md); z-index: 20; display: none; }
+.cmc-header__item--menu:hover .cmc-header__dropdown, .cmc-header__item--menu:focus-within .cmc-header__dropdown, .cmc-header__item--open .cmc-header__dropdown { display: block; }
+.cmc-header__dropdown-link { display: flex; gap: var(--space-3); align-items: flex-start; padding: var(--space-3); border-radius: var(--radius-sm); color: var(--ink-900); text-decoration: none; font-size: 14px; line-height: 20px; font-weight: 600; }
+.cmc-header__dropdown-link .cmc-icon { color: var(--navy-700); margin-top: 1px; }
+.cmc-header__dropdown-link:hover { background: var(--navy-100); }
+.cmc-header__dropdown-link--active { background: var(--navy-100); color: var(--navy-700); }
+.cmc-header__dropdown-text { display: flex; flex-direction: column; gap: 2px; }
+.cmc-header__dropdown-desc { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ink-500); }
+.cmc-header--dark .cmc-header__dropdown { background: var(--navy-900); border-color: rgba(255,255,255,.12); }
+.cmc-header--dark .cmc-header__dropdown-link { color: var(--on-dark); }
+.cmc-header--dark .cmc-header__dropdown-link .cmc-icon { color: var(--teal-300); }
+.cmc-header--dark .cmc-header__dropdown-link:hover, .cmc-header--dark .cmc-header__dropdown-link--active { background: rgba(255,255,255,.08); }
+.cmc-header--dark .cmc-header__dropdown-desc { color: var(--on-dark-muted); }
+.cmc-header__link { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink-700); text-decoration: none; padding: var(--space-2) 0; border-bottom: 2px solid transparent; }
+.cmc-header__link:hover { color: var(--ink-900); }
+.cmc-header__link--active { color: var(--navy-700); border-bottom-color: var(--navy-700); }
+.cmc-header--dark .cmc-header__link { color: var(--on-dark-muted); }
+.cmc-header--dark .cmc-header__link:hover, .cmc-header--dark .cmc-header__link--active { color: var(--on-dark); border-bottom-color: var(--teal-300); }
+.cmc-header__actions { display: flex; align-items: center; gap: var(--space-3); }
+.cmc-header__menu { display: none; border: 0; background: transparent; color: var(--ink-700); width: 40px; height: 40px; border-radius: var(--radius-sm); cursor: pointer; }
+.cmc-header--dark .cmc-header__menu { color: var(--on-dark); }
+.cmc-header__drawer { display: none; }
+@media (max-width: 860px) {
+  .cmc-utility { display: none; }
+  .cmc-header__row { height: 60px; gap: var(--space-3); }
+  .cmc-header__logo img { height: 36px !important; max-width: 60vw; object-fit: contain; }
+  .cmc-header__nav { display: none; }
+  .cmc-header__cta { display: none; }
+  .cmc-header__menu { display: inline-flex; align-items: center; justify-content: center; }
+  .cmc-header__menu--open { background: var(--navy-100); color: var(--navy-700); }
+  .cmc-header__actions { margin-left: auto; }
+  .cmc-header__drawer { display: flex; flex-direction: column; gap: var(--space-2); position: absolute; left: 0; right: 0; top: 100%; max-height: calc(100vh - 60px); overflow-y: auto; padding: var(--space-3) var(--space-4) var(--space-5); background: var(--surface-0); border-bottom: 1px solid var(--line-100); box-shadow: var(--shadow-md); }
+  .cmc-header--dark .cmc-header__drawer { background: var(--navy-900); border-bottom-color: rgba(255,255,255,.12); }
+  .cmc-header__drawer-group { display: flex; flex-direction: column; }
+  .cmc-header__drawer-link { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-2); font-size: 16px; font-weight: 600; color: var(--ink-900); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-link--active { color: var(--navy-700); }
+  .cmc-header__drawer-sub { display: flex; flex-direction: column; padding-left: var(--space-2); }
+  .cmc-header__drawer-sublink { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); font-size: 15px; font-weight: 500; color: var(--ink-700); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-sublink .cmc-icon { color: var(--navy-700); }
+  .cmc-header__drawer-sublink--active { color: var(--navy-700); background: var(--navy-100); }
+  .cmc-header--dark .cmc-header__drawer-link, .cmc-header--dark .cmc-header__drawer-sublink { color: var(--on-dark); }
+  .cmc-header__drawer-cta { margin-top: var(--space-3); }
+}
+
+/* ---------- BackToTop ---------- */
+.cmc-totop { position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 35; width: 44px; height: 44px; border-radius: var(--radius-full); border: 0; background: var(--navy-700); color: var(--on-dark); box-shadow: var(--shadow-md); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .2s, transform .2s, background-color .15s; }
+.cmc-totop--show { opacity: 1; transform: none; pointer-events: auto; }
+.cmc-totop:hover { background: var(--navy-600); }
+.cmc-totop:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; }
+@media (max-width: 860px) { .cmc-totop { right: var(--space-3); bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); } }
+@media print { .cmc-totop, .cmc-header { display: none; } }
+
+/* ---------- Footer ---------- */
+.cmc-footer { background: var(--navy-900); color: var(--on-dark); font-family: var(--font-sans); padding: var(--space-8) 0 var(--space-5); }
+.cmc-footer__grid { display: grid; grid-template-columns: 1.6fr repeat(4, 1fr); gap: var(--space-6); }
+.cmc-footer__brand img { height: 36px; width: auto; display: block; }
+.cmc-footer__brand p { margin: var(--space-4) 0 0; font-size: 14px; line-height: 22px; color: var(--on-dark-muted); max-width: 32ch; }
+.cmc-footer__fallback { font-size: 18px; font-weight: 700; }
+.cmc-footer__col h4 { margin: 0 0 var(--space-3); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--on-dark); }
+.cmc-footer__col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.cmc-footer__col a { color: var(--on-dark-muted); text-decoration: none; font-size: 14px; line-height: 22px; }
+.cmc-footer__col a:hover { color: var(--on-dark); }
+.cmc-footer__legal { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-top: var(--space-7); padding-top: var(--space-4); border-top: 1px solid rgba(255, 255, 255, .12); font-size: 12px; line-height: 16px; color: var(--on-dark-muted); }
+.cmc-footer__legal-links { display: flex; gap: var(--space-4); }
+.cmc-footer__legal-links a { color: var(--on-dark-muted); text-decoration: none; }
+.cmc-footer__legal-links a:hover { color: var(--on-dark); }
+@media (max-width: 860px) { .cmc-footer__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .cmc-footer__grid { grid-template-columns: 1fr; } }
+
+/* ========================================================================== */
+/* 3. Site overrides and page-level styles, added by this repo.
+      Everything below is ours; the two sections above are not. */
+/* ========================================================================== */
+/* Page-level styles for the redesign.
+
+   Sections 1 and 2 of the served stylesheet are tokens.css and bundle.css as
+   delivered. The delivered bundle now carries the page base itself: the reset,
+   body background and face, link colours and colour-scheme all live there, so
+   they are not repeated here. This file holds only what the bundle does not.
+   Nothing here introduces a colour; every value is a token. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* The bundle sets the family and colours; the reading size is ours. */
+body { font-size: 16px; line-height: 24px; }
+
+/* The bundle turns on antialiased smoothing unconditionally. That switches off
+   subpixel antialiasing, which makes text thinner and softer on a standard
+   density screen, which is where this was reported. Keep it where it helps. */
+@media not all and (-webkit-min-device-pixel-ratio: 2), not all and (min-resolution: 192dpi) {
+  body { -webkit-font-smoothing: auto; }
+}
+
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+h1, h2, h3, h4 { margin: 0; }
+
+/* The first tab stop on every page. */
+.rd-skip {
+  position: absolute; left: var(--space-2); top: -60px; z-index: 100;
+  background: var(--teal-600); color: var(--on-teal);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-weight: 600; text-decoration: none; transition: top .12s;
+}
+.rd-skip:focus { top: 0; color: var(--on-teal); }
+
+/* Footer contact lines: the bundle styles the columns but not these. */
+.rd-footer-contact {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin: 0; font-size: 14px; line-height: 20px; color: var(--on-dark-muted);
+}
+.rd-footer-contact a { color: var(--on-dark); text-decoration: none; }
+.rd-footer-contact a:hover { text-decoration: underline; }
+.rd-footer-contact .cmc-icon { color: var(--teal-300); flex: none; }
+
+/* Responsive helpers used by the page boards, lifted from their <helmet> blocks
+   so every page shares one definition instead of repeating them inline. */
+@media (max-width: 860px) {
+  .r-grid    { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2  { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1      { font-size: 36px !important; line-height: 42px !important; }
+  .r-big     { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero    { padding-bottom: var(--space-9) !important; }
+  .r-pad     { padding-left: var(--space-4) !important; padding-right: var(--space-4) !important; }
+  .r-hide    { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid    { grid-template-columns: minmax(0, 1fr) !important; }
+  .r-grid-2  { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-skip { transition: none; }
+  .cmc-totop { transition: none; }
+}
+
+@media print {
+  /* Print the summary and the figures behind it, nothing else. */
+  .rd-skip, .cmc-footer, .cmc-header, .cmc-totop, .rd-cmpbar,
+  .rd-no-print, form, .cmc-calc__tabs { display: none !important; }
+  body { background: #fff; color: #000; }
+  a[href]::after { content: ""; }
+  .rd-scroll { overflow: visible; }
+  .rd-table { page-break-inside: auto; }
+  .rd-table tr { page-break-inside: avoid; }
+  section { page-break-inside: avoid; border: 0 !important; padding: 0 0 16pt 0 !important; }
+  h1 { font-size: 18pt; }
+  h2 { font-size: 13pt; }
+}
+
+/* Comparison table. The bundle ships the swipe hint but not the table. */
+.rd-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rd-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.rd-table th, .rd-table td {
+  padding: var(--space-3); text-align: left; vertical-align: top;
+  border-bottom: 1px solid var(--line-100); white-space: nowrap;
+}
+.rd-table thead th { font-weight: 700; color: var(--ink-900); }
+.rd-table tbody th { font-weight: 500; color: var(--ink-500); }
+.rd-table td { font-variant-numeric: tabular-nums; }
+.rd-table .rd-best { color: var(--teal-600); font-weight: 700; }
+
+/* The compare bar: a centred pill on desktop, a full-width strip on phones. */
+.rd-cmpbar {
+  position: fixed; z-index: 36; left: 50%; transform: translateX(-50%);
+  bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-full);
+  background: var(--navy-900); color: var(--on-dark); box-shadow: var(--shadow-md);
+  font-size: 14px; font-weight: 600;
+}
+.rd-cmpbar__x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: 0; border-radius: var(--radius-full);
+  background: transparent; color: var(--on-dark-muted); cursor: pointer;
+}
+.rd-cmpbar__x:hover { background: rgba(255,255,255,.12); color: var(--on-dark); }
+@media (max-width: 860px) {
+  .rd-cmpbar {
+    left: 0; right: 0; transform: none; bottom: 0; border-radius: 0;
+    justify-content: space-between;
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  }
+  /* lift the back-to-top button above the strip */
+  body.rd-has-compare .cmc-totop { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* --ink-500 on --surface-100 is 4.38:1, just under AA for 12px text, and the
+   byline sets both its key and its note in it. Darkened to --ink-700, which is
+   the next step down the same ramp rather than a new colour. Section 8 says not
+   to lighten text; this darkens it. Overridden here rather than in the
+   delivered bundle, so the design system stays as shipped. */
+.cmc-byline__k,
+.cmc-byline__note { color: var(--ink-700); }
+
+/* Form sections on the calculator, from the board's own helmet block. The two
+   detail-heavy groups are <details>, so the page opens at a readable length. */
+.sec { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5);
+  border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec > h2, .sec > legend { margin: 0; padding: 0; font-size: 18px; line-height: 24px;
+  font-weight: 700; color: var(--ink-900); }
+.sec .hint { font-size: 12px; line-height: 16px; color: var(--ink-500); margin: -8px 0 0; }
+
+details.sec > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  justify-content: space-between; gap: var(--space-3);
+  font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900);
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after {
+  content: "+"; font-weight: 400; font-size: 22px; line-height: 1; color: var(--ink-500);
+}
+details.sec[open] > summary::after { content: "\2212"; }
+details.sec > summary:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px;
+  border-radius: var(--radius-sm); }
+
+/* The form is one panel with hairline-separated sections, as on the board. */
+.rd-form-panel { background: var(--surface-0); border: 1px solid var(--line-100);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+
+/* The four result figures. A fixed four-column row clipped every one of them at
+   1024px, where each card got 126px for a 140px number. Auto-fit lets the row
+   decide how many fit, and the value shrinks a little on the way down. */
+.rd-stats { display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); }
+.rd-stats > div { padding: var(--space-4); min-width: 0; }
+.rd-stat__v { font-size: clamp(18px, 1.7vw, 22px); overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------------------ */
+/* Follow-up 2. The updated bundle.css described in A1 did not arrive, so the
+   fixes it was meant to carry are implemented here instead. Remove these if a
+   newer bundle lands with them.                                             */
+/* ------------------------------------------------------------------------ */
+
+/* A1. Still needed against the updated bundle, which declares aspect-ratio 4/3
+   on the frame but leaves the image in flow. The frame is a flex item with
+   overflow visible, so a tall photo's intrinsic height wins and cards in a row
+   come out different heights. Pin the image inside the frame and clip it. */
+.cmc-listing__media { overflow: hidden; }
+.cmc-listing__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.cmc-listing__placeholder { position: absolute; inset: 0; }
+
+/* A4. Pills are links here, and a link underlines by default. */
+a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
+
+/* A3. Two lines of title, so a long one cannot change a card's height. */
+.cmc-listing__address {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* A9. The duty table's first column wrapped "Group of 2-10 Caymanians" over
+   three lines on a phone. Give it room and stop it breaking mid-label. */
+.rd-table th:first-child, .rd-table tbody th { white-space: nowrap; }
+@media (max-width: 600px) {
+  .rd-table th:first-child, .rd-table tbody th { white-space: normal; width: 40%; }
+}
+
+/* A10. The boards drop h1 to 36px below 860px. */
+@media (max-width: 860px) {
+  h1, .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+}
+
+/* A7. The homepage panel's price column needs to hold CI$1,000,000 at 1024px. */
+.cmc-calc__grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* A9. The guides' own tables come from the boards unclassed. On a phone the
+   first column collapsed to 117px and "Group of 2-10 Caymanians" ran to four
+   lines. Fixed layout with a 40% first column, as the review suggests. */
+@media (max-width: 600px) {
+  main table { table-layout: fixed; width: 100%; }
+  main table th:first-child, main table td:first-child { width: 40%; }
+  main table th, main table td { word-break: normal; overflow-wrap: break-word; }
+}
+
+
+/* The bundle hands over to the drawer at 860px, but the desktop header does not
+   actually fit until about 960: at 900px the row overflowed by 22px even with
+   the original 40px logo, because six nav items, the logo and the CTA need more
+   width than that. The handover rules are repeated here for that band, so it
+   uses the phone header, which fits. */
+@media (min-width: 861px) and (max-width: 960px) {
+  .cmc-header__row { height: 60px; gap: var(--space-3); }
+  .cmc-header__logo img { height: 36px !important; max-width: 60vw; object-fit: contain; }
+  .cmc-header__nav { display: none; }
+  .cmc-header__cta { display: none; }
+  .cmc-header__menu { display: inline-flex; align-items: center; justify-content: center; }
+  .cmc-header__menu--open { background: var(--navy-100); color: var(--navy-700); }
+  .cmc-header__actions { margin-left: auto; }
+  .cmc-header__drawer { display: flex; flex-direction: column; gap: var(--space-2); position: absolute; left: 0; right: 0; top: 100%; max-height: calc(100vh - 60px); overflow-y: auto; padding: var(--space-3) var(--space-4) var(--space-5); background: var(--surface-0); border-bottom: 1px solid var(--line-100); box-shadow: var(--shadow-md); }
+  .cmc-header--dark .cmc-header__drawer { background: var(--navy-900); border-bottom-color: rgba(255,255,255,.12); }
+  .cmc-header__drawer-group { display: flex; flex-direction: column; }
+  .cmc-header__drawer-link { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-2); font-size: 16px; font-weight: 600; color: var(--ink-900); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-link--active { color: var(--navy-700); }
+  .cmc-header__drawer-sub { display: flex; flex-direction: column; padding-left: var(--space-2); }
+  .cmc-header__drawer-sublink { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); font-size: 15px; font-weight: 500; color: var(--ink-700); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-sublink .cmc-icon { color: var(--navy-700); }
+  .cmc-header__drawer-sublink--active { color: var(--navy-700); background: var(--navy-100); }
+  .cmc-header--dark .cmc-header__drawer-link, .cmc-header--dark .cmc-header__drawer-sublink { color: var(--on-dark); }
+  .cmc-header__drawer-cta { margin-top: var(--space-3); }
+  .cmc-header__logo img { height: 44px !important; }
+}
+
+
+
+/* A more prominent lockup than the component's 40px default, sized here rather
+   than inline so these media queries can win.
+
+   56px on a full desktop: the contract allows up to 64 in the 72px row, and 56
+   leaves 8px of air above and below where 64 would all but touch the edges.
+   Below 1024px the nav and CTA need that width back, so it steps to 44, which
+   is still larger than the 36 the bundle would otherwise impose on a phone. */
+.cmc-header__logo img { height: 56px; }
+@media (max-width: 1023px) { .cmc-header__logo img { height: 44px !important; } }

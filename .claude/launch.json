@@ -21,6 +21,18 @@
         "site"
       ],
       "port": 8788
+    },
+    {
+      "name": "cmc-redesign",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "site-rd"
+      ],
+      "port": 8790
     }
   ]
 }

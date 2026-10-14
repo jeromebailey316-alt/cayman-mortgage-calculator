@@ -1,0 +1,246 @@
+/* Page-level styles for the redesign.
+
+   Sections 1 and 2 of the served stylesheet are tokens.css and bundle.css as
+   delivered. The delivered bundle now carries the page base itself: the reset,
+   body background and face, link colours and colour-scheme all live there, so
+   they are not repeated here. This file holds only what the bundle does not.
+   Nothing here introduces a colour; every value is a token. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* The bundle sets the family and colours; the reading size is ours. */
+body { font-size: 16px; line-height: 24px; }
+
+/* The bundle turns on antialiased smoothing unconditionally. That switches off
+   subpixel antialiasing, which makes text thinner and softer on a standard
+   density screen, which is where this was reported. Keep it where it helps. */
+@media not all and (-webkit-min-device-pixel-ratio: 2), not all and (min-resolution: 192dpi) {
+  body { -webkit-font-smoothing: auto; }
+}
+
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+h1, h2, h3, h4 { margin: 0; }
+
+/* The first tab stop on every page. */
+.rd-skip {
+  position: absolute; left: var(--space-2); top: -60px; z-index: 100;
+  background: var(--teal-600); color: var(--on-teal);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-weight: 600; text-decoration: none; transition: top .12s;
+}
+.rd-skip:focus { top: 0; color: var(--on-teal); }
+
+/* Footer contact lines: the bundle styles the columns but not these. */
+.rd-footer-contact {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin: 0; font-size: 14px; line-height: 20px; color: var(--on-dark-muted);
+}
+.rd-footer-contact a { color: var(--on-dark); text-decoration: none; }
+.rd-footer-contact a:hover { text-decoration: underline; }
+.rd-footer-contact .cmc-icon { color: var(--teal-300); flex: none; }
+
+/* Responsive helpers used by the page boards, lifted from their <helmet> blocks
+   so every page shares one definition instead of repeating them inline. */
+@media (max-width: 860px) {
+  .r-grid    { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2  { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1      { font-size: 36px !important; line-height: 42px !important; }
+  .r-big     { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero    { padding-bottom: var(--space-9) !important; }
+  .r-pad     { padding-left: var(--space-4) !important; padding-right: var(--space-4) !important; }
+  .r-hide    { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid    { grid-template-columns: minmax(0, 1fr) !important; }
+  .r-grid-2  { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-skip { transition: none; }
+  .cmc-totop { transition: none; }
+}
+
+@media print {
+  /* Print the summary and the figures behind it, nothing else. */
+  .rd-skip, .cmc-footer, .cmc-header, .cmc-totop, .rd-cmpbar,
+  .rd-no-print, form, .cmc-calc__tabs { display: none !important; }
+  body { background: #fff; color: #000; }
+  a[href]::after { content: ""; }
+  .rd-scroll { overflow: visible; }
+  .rd-table { page-break-inside: auto; }
+  .rd-table tr { page-break-inside: avoid; }
+  section { page-break-inside: avoid; border: 0 !important; padding: 0 0 16pt 0 !important; }
+  h1 { font-size: 18pt; }
+  h2 { font-size: 13pt; }
+}
+
+/* Comparison table. The bundle ships the swipe hint but not the table. */
+.rd-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rd-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.rd-table th, .rd-table td {
+  padding: var(--space-3); text-align: left; vertical-align: top;
+  border-bottom: 1px solid var(--line-100); white-space: nowrap;
+}
+.rd-table thead th { font-weight: 700; color: var(--ink-900); }
+.rd-table tbody th { font-weight: 500; color: var(--ink-500); }
+.rd-table td { font-variant-numeric: tabular-nums; }
+.rd-table .rd-best { color: var(--teal-600); font-weight: 700; }
+
+/* The compare bar: a centred pill on desktop, a full-width strip on phones. */
+.rd-cmpbar {
+  position: fixed; z-index: 36; left: 50%; transform: translateX(-50%);
+  bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-full);
+  background: var(--navy-900); color: var(--on-dark); box-shadow: var(--shadow-md);
+  font-size: 14px; font-weight: 600;
+}
+.rd-cmpbar__x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: 0; border-radius: var(--radius-full);
+  background: transparent; color: var(--on-dark-muted); cursor: pointer;
+}
+.rd-cmpbar__x:hover { background: rgba(255,255,255,.12); color: var(--on-dark); }
+@media (max-width: 860px) {
+  .rd-cmpbar {
+    left: 0; right: 0; transform: none; bottom: 0; border-radius: 0;
+    justify-content: space-between;
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  }
+  /* lift the back-to-top button above the strip */
+  body.rd-has-compare .cmc-totop { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* --ink-500 on --surface-100 is 4.38:1, just under AA for 12px text, and the
+   byline sets both its key and its note in it. Darkened to --ink-700, which is
+   the next step down the same ramp rather than a new colour. Section 8 says not
+   to lighten text; this darkens it. Overridden here rather than in the
+   delivered bundle, so the design system stays as shipped. */
+.cmc-byline__k,
+.cmc-byline__note { color: var(--ink-700); }
+
+/* Form sections on the calculator, from the board's own helmet block. The two
+   detail-heavy groups are <details>, so the page opens at a readable length. */
+.sec { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5);
+  border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec > h2, .sec > legend { margin: 0; padding: 0; font-size: 18px; line-height: 24px;
+  font-weight: 700; color: var(--ink-900); }
+.sec .hint { font-size: 12px; line-height: 16px; color: var(--ink-500); margin: -8px 0 0; }
+
+details.sec > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  justify-content: space-between; gap: var(--space-3);
+  font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900);
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after {
+  content: "+"; font-weight: 400; font-size: 22px; line-height: 1; color: var(--ink-500);
+}
+details.sec[open] > summary::after { content: "\2212"; }
+details.sec > summary:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px;
+  border-radius: var(--radius-sm); }
+
+/* The form is one panel with hairline-separated sections, as on the board. */
+.rd-form-panel { background: var(--surface-0); border: 1px solid var(--line-100);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+
+/* The four result figures. A fixed four-column row clipped every one of them at
+   1024px, where each card got 126px for a 140px number. Auto-fit lets the row
+   decide how many fit, and the value shrinks a little on the way down. */
+.rd-stats { display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); }
+.rd-stats > div { padding: var(--space-4); min-width: 0; }
+.rd-stat__v { font-size: clamp(18px, 1.7vw, 22px); overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------------------ */
+/* Follow-up 2. The updated bundle.css described in A1 did not arrive, so the
+   fixes it was meant to carry are implemented here instead. Remove these if a
+   newer bundle lands with them.                                             */
+/* ------------------------------------------------------------------------ */
+
+/* A1. Still needed against the updated bundle, which declares aspect-ratio 4/3
+   on the frame but leaves the image in flow. The frame is a flex item with
+   overflow visible, so a tall photo's intrinsic height wins and cards in a row
+   come out different heights. Pin the image inside the frame and clip it. */
+.cmc-listing__media { overflow: hidden; }
+.cmc-listing__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.cmc-listing__placeholder { position: absolute; inset: 0; }
+
+/* A4. Pills are links here, and a link underlines by default. */
+a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
+
+/* A3. Two lines of title, so a long one cannot change a card's height. */
+.cmc-listing__address {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* A9. The duty table's first column wrapped "Group of 2-10 Caymanians" over
+   three lines on a phone. Give it room and stop it breaking mid-label. */
+.rd-table th:first-child, .rd-table tbody th { white-space: nowrap; }
+@media (max-width: 600px) {
+  .rd-table th:first-child, .rd-table tbody th { white-space: normal; width: 40%; }
+}
+
+/* A10. The boards drop h1 to 36px below 860px. */
+@media (max-width: 860px) {
+  h1, .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+}
+
+/* A7. The homepage panel's price column needs to hold CI$1,000,000 at 1024px. */
+.cmc-calc__grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* A9. The guides' own tables come from the boards unclassed. On a phone the
+   first column collapsed to 117px and "Group of 2-10 Caymanians" ran to four
+   lines. Fixed layout with a 40% first column, as the review suggests. */
+@media (max-width: 600px) {
+  main table { table-layout: fixed; width: 100%; }
+  main table th:first-child, main table td:first-child { width: 40%; }
+  main table th, main table td { word-break: normal; overflow-wrap: break-word; }
+}
+
+
+/* The bundle hands over to the drawer at 860px, but the desktop header does not
+   actually fit until about 960: at 900px the row overflowed by 22px even with
+   the original 40px logo, because six nav items, the logo and the CTA need more
+   width than that. The handover rules are repeated here for that band, so it
+   uses the phone header, which fits. */
+@media (min-width: 861px) and (max-width: 960px) {
+  .cmc-header__row { height: 60px; gap: var(--space-3); }
+  .cmc-header__logo img { height: 36px !important; max-width: 60vw; object-fit: contain; }
+  .cmc-header__nav { display: none; }
+  .cmc-header__cta { display: none; }
+  .cmc-header__menu { display: inline-flex; align-items: center; justify-content: center; }
+  .cmc-header__menu--open { background: var(--navy-100); color: var(--navy-700); }
+  .cmc-header__actions { margin-left: auto; }
+  .cmc-header__drawer { display: flex; flex-direction: column; gap: var(--space-2); position: absolute; left: 0; right: 0; top: 100%; max-height: calc(100vh - 60px); overflow-y: auto; padding: var(--space-3) var(--space-4) var(--space-5); background: var(--surface-0); border-bottom: 1px solid var(--line-100); box-shadow: var(--shadow-md); }
+  .cmc-header--dark .cmc-header__drawer { background: var(--navy-900); border-bottom-color: rgba(255,255,255,.12); }
+  .cmc-header__drawer-group { display: flex; flex-direction: column; }
+  .cmc-header__drawer-link { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-2); font-size: 16px; font-weight: 600; color: var(--ink-900); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-link--active { color: var(--navy-700); }
+  .cmc-header__drawer-sub { display: flex; flex-direction: column; padding-left: var(--space-2); }
+  .cmc-header__drawer-sublink { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); font-size: 15px; font-weight: 500; color: var(--ink-700); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-sublink .cmc-icon { color: var(--navy-700); }
+  .cmc-header__drawer-sublink--active { color: var(--navy-700); background: var(--navy-100); }
+  .cmc-header--dark .cmc-header__drawer-link, .cmc-header--dark .cmc-header__drawer-sublink { color: var(--on-dark); }
+  .cmc-header__drawer-cta { margin-top: var(--space-3); }
+  .cmc-header__logo img { height: 44px !important; }
+}
+
+
+
+/* A more prominent lockup than the component's 40px default, sized here rather
+   than inline so these media queries can win.
+
+   56px on a full desktop: the contract allows up to 64 in the 72px row, and 56
+   leaves 8px of air above and below where 64 would all but touch the edges.
+   Below 1024px the nav and CTA need that width back, so it steps to 44, which
+   is still larger than the 36 the bundle would otherwise impose on a phone. */
+.cmc-header__logo img { height: 56px; }
+@media (max-width: 1023px) { .cmc-header__logo img { height: 44px !important; } }

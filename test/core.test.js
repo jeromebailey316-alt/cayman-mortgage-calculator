@@ -100,8 +100,21 @@ near('little cayman: no island concession, standard 7.5%',
 near('grand cayman: unchanged', Core.transferDuty(400000, 'home', 'standard', false, 'grand').amount, 30000);
 ok('brac: a Caymanian first-time buyer keeps the better of the two reliefs',
    Core.transferDuty(400000, 'home', 'first', false, 'brac').amount === 0);
-ok('brac: the concession lapses after it expires',
-   Core.transferDuty(400000, 'home', 'standard', false, 'brac', '2031-01-01').amount === 30000);
+// The published sheet (Lands & Survey, effective 1 January 2026) gives no end
+// date, so the concession must not lapse on a date we invented.
+ok('brac: no expiry is assumed, because the sheet publishes none',
+   Core.transferDuty(400000, 'home', 'standard', false, 'brac', '2031-01-01').amount === 12000);
+ok('brac: it does not apply before it took effect',
+   Core.transferDuty(400000, 'home', 'standard', false, 'brac', '2025-06-01').amount === 30000);
+ok('brac: the 10% at and above CI$2M is the island rule, not the Grand Cayman one',
+   Core.transferDuty(2000000, 'land', 'standard', false, 'brac').rule === 'brac-over');
+near('brac: undeveloped land at CI$2M is 10%, not free',
+     Core.transferDuty(2000000, 'land', 'standard', false, 'brac').amount, 200000);
+ok('brac: the duty basis follows the higher of price and valuation',
+   Core.closingCosts({ price: 1900000, valuationBasis: 2100000, ptype: 'home',
+                       status: 'standard', location: 'brac' }).transferDuty.rule === 'brac-over');
+ok('brac: a developed property keeps the 3% with no build condition',
+   Core.transferDuty(400000, 'home', 'standard', false, 'brac').conditional === false);
 ok('brac: a Brac purchase is cheaper than the same house on Grand Cayman',
    Core.transferDuty(400000, 'home', 'standard', false, 'brac').amount
    < Core.transferDuty(400000, 'home', 'standard', false, 'grand').amount);
