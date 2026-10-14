@@ -27,25 +27,78 @@ def payment(principal: float, annual_rate: float = RATE, years: int = TERM) -> f
     return principal * r / (1 - (1 + r) ** -n) if r else principal / n
 
 
-def _featured(data: dict, n: int = 4) -> list[dict]:
-    """The newest listings with a price, one per area, as the board's four tiles.
+TAKEN = __import__("re").compile(r"under offer|pending|conditional|sold|contract", __import__("re").I)
 
-    Photos are hotlinked from the agency, as the live site already does: the
-    owner confirmed on 14 October that "listings only with permission" means
-    attribution and linking, not gating. See REDESIGN-PLAN.md section 4.2.
+
+def _agency_of(l: dict) -> str:
+    return (l.get("sources") or [l.get("source")])[0] or ""
+
+
+def _day_index(data: dict) -> int:
+    """Days since the epoch, from the scrape date so a rebuild on the same day
+    picks the same listings. Four builds a day must not reshuffle the page."""
+    from datetime import date, datetime, timezone
+    stamp = (data.get("generated_at") or "")[:10]
+    try:
+        d = date.fromisoformat(stamp)
+    except ValueError:
+        d = datetime.now(timezone.utc).date()
+    return d.toordinal()
+
+
+def _featured(data: dict, n: int = 4) -> list[dict]:
+    """Four listings a day, from four different agencies, rotating.
+
+    Sampling listings at random would hand the homepage to whoever has the most
+    stock: CIREBA carries 472 of the 873 and would take roughly half the slots
+    for ever, while an agency with one listing would appear about once a year.
+    So the rotation is over agencies, not listings. Each day the window moves on
+    by four, and because four and the number of agencies share no common factor
+    the window visits every agency before any repeats: with 21 agencies that is
+    a 21 day cycle in which each appears exactly four times.
+
+    Within the chosen agency the listing also moves with the day, so an agency
+    does not show the same property every time its turn comes round.
     """
     ls = [l for l in data.get("listings", []) if l.get("price_kyd")]
-    ls.sort(key=lambda l: l.get("scraped_at") or "", reverse=True)
-    out, seen = [], set()
+    if not ls:
+        return []
+
+    by_agency: dict[str, list[dict]] = {}
     for l in ls:
-        area = l.get("location") or ""
-        if area and area in seen:
-            continue
-        seen.add(area)
-        out.append(l)
-        if len(out) == n:
+        by_agency.setdefault(_agency_of(l), []).append(l)
+
+    # A fixed arbitrary order, not alphabetical: alphabetical would always pair
+    # the same neighbours, so the same agencies would keep sharing a day.
+    import hashlib
+    agencies = sorted(by_agency, key=lambda a: hashlib.sha1(a.encode()).hexdigest())
+    if not agencies:
+        return []
+
+    day = _day_index(data)
+    picked, used_areas = [], set()
+    # Walk from today's offset; take the first listing that adds something new.
+    for step in range(len(agencies)):
+        if len(picked) == n:
             break
-    return out
+        agency = agencies[(day * n + step) % len(agencies)]
+        rows = by_agency[agency]
+        # Within the agency: a photo, still available, a home rather than a bare
+        # lot since the section is headed "Homes", and an area not already used.
+        # An agency that only sells land still shows land, which is honest.
+        ordered = sorted(
+            rows,
+            key=lambda l: (not l.get("image"),
+                           bool(TAKEN.search(l.get("status") or "")),
+                           l.get("ptype") == "land",
+                           (l.get("location") or "") in used_areas))
+        offset = day % len(ordered)
+        choice = ordered[offset % len(ordered)]
+        picked.append(choice)
+        if choice.get("location"):
+            used_areas.add(choice["location"])
+
+    return picked[:n]
 
 
 def _step(num: int, title: str, sub: str) -> str:
