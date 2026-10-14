@@ -158,6 +158,7 @@ def home(data: dict) -> str:
             monthly=payment(loan),
             agency=(l.get("sources") or [l.get("source")])[0],
             href=l.get("url"),
+            ptype_for_calc=l.get("ptype"),
         ))
     assume = f"{DEPOSIT_PCT}% down, {RATE}% over {TERM} years"
 

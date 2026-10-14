@@ -244,3 +244,12 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
    is still larger than the 36 the bundle would otherwise impose on a phone. */
 .cmc-header__logo img { height: 56px; }
 @media (max-width: 1023px) { .cmc-header__logo img { height: 44px !important; } }
+
+/* "Use in calculator" on a listing tile. A row of its own rather than a third
+   chip over the photo, which already carries the favourite and compare
+   controls. */
+.rd-listing-actions {
+  padding: 0 var(--space-4) var(--space-4);
+  margin-top: auto;
+}
+.rd-listing-actions .cmc-btn { width: 100%; justify-content: center; }

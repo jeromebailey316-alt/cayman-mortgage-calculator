@@ -94,6 +94,35 @@ def badge(label, tone="neutral", tint=False) -> str:
             f"{e(label)}</span>")
 
 
+def island_of(area: str) -> str:
+    """Which island a listing sits on, from the area the agency wrote.
+    Duty differs by island, so this travels with the price into the calculator."""
+    import re as _re
+    a = (area or "").lower()
+    if "little cayman" in a:
+        return "little"
+    if "cayman brac" in a or _re.search(r"\bbrac\b", a):
+        return "brac"
+    return "grand"
+
+
+def use_in_calculator(price, location=None, ptype=None) -> str:
+    """The action that carries a listing into the calculator.
+
+    It sits inside the card's anchor, as the favourite and compare controls
+    already do in the delivered component, so its handler must stop the click
+    reaching the link: otherwise the visitor is sent to the agency's website
+    instead of the calculator.
+    """
+    return (
+        '<div class="rd-listing-actions">'
+        '<button type="button" class="cmc-btn cmc-btn--secondary cmc-btn--sm rd-use-calc"'
+        + attrs(data_use_price=int(round(price or 0)),
+                data_use_island=island_of(location),
+                data_use_ptype="land" if ptype == "land" else "home")
+        + f">{icon('calculator', 16)}<span>Use in calculator</span></button></div>")
+
+
 def clean_title(t: str) -> str:
     """Tidy a scraper title for display without rewriting the agent's words.
 
@@ -103,6 +132,10 @@ def clean_title(t: str) -> str:
     """
     import re as _re
     t = (t or "").strip()
+    # Agencies type en and em dashes into their titles, and the brief rules them
+    # out of rendered text. A plain hyphen matches the " - " most of the other
+    # titles already use, and keeps the agent's wording recognisable.
+    t = t.replace("\u2014", " - ").replace("\u2013", " - ")
     t = t.replace("|", ", ")
     t = _re.sub(r"\s*\(", " (", t)
     t = _re.sub(r"\s{2,}", " ", t)
@@ -119,7 +152,8 @@ def fmt_money(v, currency="KYD") -> str:
 
 def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None,
                  image=None, image_alt="", badge_text=None, badge_tone="navy",
-                 monthly=None, agency=None, href=None, currency="KYD") -> str:
+                 monthly=None, agency=None, href=None, currency="KYD",
+                 ptype_for_calc=None) -> str:
     """Port of CMC.ListingCard. Values that are unknown are omitted rather than
     shown as zero, which is how the rest of this site treats missing data."""
     external = bool(href) and href.lower().startswith(("http://", "https://"))
@@ -155,6 +189,7 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
                         f"<strong>{e(fmt_money(monthly, currency))}</strong>/mo</div>")
     label = f"{address}: view on the agent's site" if external and address else None
     address = clean_title(address)
+    locality = clean_title(locality) if locality else locality
     return (f'<{tag} class="cmc-listing"'
             + attrs(href=href, target="_blank" if external else None,
                     rel="noopener" if external else None, aria_label=label)
@@ -163,7 +198,8 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
             f'<div class="cmc-listing__price">{e(fmt_money(price, currency))}</div>'
             f'<div class="cmc-listing__address">{e(address)}</div>'
             + (f'<div class="cmc-listing__locality">{e(locality)}</div>' if locality else "")
-            + monthly_html + "</div>" + meta_html + agency_html + f"</{tag}>")
+            + monthly_html + "</div>" + meta_html + agency_html
+            + use_in_calculator(price, locality, ptype_for_calc) + f"</{tag}>")
 
 
 def field(control: str, label=None, prefix=None, suffix=None, hint=None,

@@ -222,6 +222,17 @@
       location.replace('/listings/');
       return;
     }
+    // Arriving from a listing tile: the price came through the shared inputs,
+    // the island and property type through the URL, because duty depends on
+    // both and neither is part of the shared set.
+    var q = new URLSearchParams(location.search);
+    var island = q.get('island'), ptype = q.get('ptype');
+    if (island === 'grand' || island === 'brac' || island === 'little') {
+      el('cIsland').value = island;
+    }
+    if (ptype === 'home' || ptype === 'land') {
+      el('cPtype').value = ptype;
+    }
     ['cValuation', 'cIsland', 'cPtype', 'cStatus', 'cBuyer', 'cExtra', 'cIncome', 'cCash',
      'cStrata', 'cLife', 'cBldg', 'cMaint', 'cLegal', 'cBank', 'cValFee', 'cBldgInStrata']
       .forEach(function (id) {

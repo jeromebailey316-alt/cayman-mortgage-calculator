@@ -152,6 +152,34 @@
     });
   }
 
+  /* ---- "Use in calculator" on a listing tile ----
+     Sets the shared price and hands the island and property type to the
+     calculator in the URL, because duty depends on both: a Cayman Brac lot
+     priced as a Grand Cayman house would be wrong by thousands.
+
+     The control sits inside the card's link to the agent's site, as the
+     favourite and compare chips already do, so the click must be stopped from
+     reaching it. Bound per button rather than delegated: a delegated handler
+     that misses once sends the visitor off to the agency instead. */
+  function bindUseInCalculator(root) {
+    [].slice.call((root || document).querySelectorAll('.rd-use-calc')).forEach(function (b) {
+      if (b.dataset.rdBound) return;
+      b.dataset.rdBound = '1';
+      b.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var price = parseFloat(b.getAttribute('data-use-price'));
+        if (!isNaN(price) && price > 0) inputs.set({ price: price });
+        var q = [];
+        var island = b.getAttribute('data-use-island');
+        var ptype = b.getAttribute('data-use-ptype');
+        if (island) q.push('island=' + encodeURIComponent(island));
+        if (ptype) q.push('ptype=' + encodeURIComponent(ptype));
+        w.location.assign('/calculator/' + (q.length ? '?' + q.join('&') : ''));
+      });
+    });
+  }
+
   /* ---- the CI$ / US$ toggle ---- */
   function bindCurrency(root) {
     var btns = [].slice.call((root || document).querySelectorAll('[data-cmc-currency]'));
@@ -194,12 +222,14 @@
   w.CMC.bindAll = bindAll;
   w.CMC.bindCurrency = bindCurrency;
   w.CMC.parseMoney = parseMoney;
+  w.CMC.bindUseInCalculator = bindUseInCalculator;
   w.CMC.bindPanel = bindPanel;
 
   function start() {
     bindAll(document);
     bindCurrency(document);
     bindMoney(document);
+    bindUseInCalculator(document);
     [].slice.call(document.querySelectorAll('.cmc-calc')).forEach(bindPanel);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

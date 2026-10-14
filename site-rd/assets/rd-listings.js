@@ -37,6 +37,9 @@
      space it is missing, doubled spaces collapse. The wording is left alone. */
   function cleanTitle(t) {
     return String(t || '').trim()
+      // en and em dashes are ruled out of rendered text; a plain hyphen matches
+      // the " - " most other titles already use
+      .replace(/[\u2013\u2014]/g, ' - ')
       .replace(/\|/g, ', ')
       .replace(/\s*\(/g, ' (')
       .replace(/\s{2,}/g, ' ')
@@ -122,13 +125,20 @@
       '<div class="cmc-listing__body">' +
       '<div class="cmc-listing__price">' + esc(money(l.price_kyd)) + '</div>' +
       '<div class="cmc-listing__address">' + esc(cleanTitle(l.title) || 'Property for sale') + '</div>' +
-      (l.location ? '<div class="cmc-listing__locality">' + esc(l.location) + '</div>' : '') +
+      (l.location ? '<div class="cmc-listing__locality">' + esc(cleanTitle(l.location)) + '</div>' : '') +
       '<div class="cmc-listing__monthly">' + icon('calculator', 14) + 'From <strong>' +
       esc(money(monthlyFor(l))) + '</strong>/mo</div>' +
       '</div>' +
       (meta ? '<div class="cmc-listing__meta">' + meta + '</div>' : '') +
       '<div class="cmc-listing__agency"><span>Listed by ' + esc(agency) + '</span>' +
       (ext ? '<span class="cmc-listing__ext">View on agent\'s site' + icon('external-link', 12) + '</span>' : '') +
+      '</div>' +
+      '<div class="rd-listing-actions">' +
+        '<button type="button" class="cmc-btn cmc-btn--secondary cmc-btn--sm rd-use-calc"' +
+        ' data-use-price="' + Math.round(l.price_kyd) + '"' +
+        ' data-use-island="' + islandOf(l.location) + '"' +
+        ' data-use-ptype="' + (l.ptype === 'land' ? 'land' : 'home') + '">' +
+        icon('calculator', 16) + '<span>Use in calculator</span></button>' +
       '</div></a>';
   }
 
@@ -169,6 +179,7 @@
     // Bound directly rather than delegated: the compare control sits inside the
     // card's anchor, so if interception ever misses, the visitor is thrown out to
     // the agency's site mid-task. A handler on the button itself cannot miss.
+    if (w.CMC && CMC.bindUseInCalculator) CMC.bindUseInCalculator(grid);
     [].slice.call(grid.querySelectorAll('[data-fav]')).forEach(function (b) {
       b.addEventListener('click', function (ev) {
         ev.preventDefault(); ev.stopPropagation();
