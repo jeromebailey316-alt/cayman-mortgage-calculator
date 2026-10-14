@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Contact</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Contact</nav>
+      <h1 class="r-h1" style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Get in touch</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">Cayman Mortgage Calculator is an independent, free site run from Grand Cayman. It is not a lender, a broker or an agency, and every figure on it is an estimate. One inbox, no forms, no mailing list.</p>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px">
+
+    <section aria-label="Email" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding: 32px; border-radius: 16px; background: var(--navy-900); color: var(--on-dark)">
+      <div style="display: flex; gap: 20px; align-items: center; min-width: 0">
+        <span style="width: 56px; height: 56px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="mail" size="{{twentyEight}}"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Email: the one way to reach us</span>
+          <a href="mailto:caymanmortgagecalculator@gmail.com" style="font-size: 24px; line-height: 32px; font-weight: 700; color: var(--on-dark); text-decoration: none; overflow-wrap: anywhere">caymanmortgagecalculator@gmail.com</a>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Replies within a few days. Please don't send account numbers, statements or ID.</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap">
+        <x-import component-from-global-scope="CMC.Button" variant="onDark" icon-left="mail" href="mailto:caymanmortgagecalculator@gmail.com">Write to us</x-import>
+        <a href="https://www.instagram.com/caymanmortgagecalc" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 6px; border: 1px solid rgba(255,255,255,.3); color: var(--on-dark); font-size: 14px; line-height: 20px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><path d="M17.5 6.5h.01"></path></svg>@caymanmortgagecalc</a>
+      </div>
+    </section>
+
+    <div class="r-grid" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+      <section aria-label="For agents" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-100); color: var(--teal-600); display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="CMC.Icon" name="house"></x-import></span>
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700">Agents and agencies</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700)">Want your listings on the site? This is how it works:</p>
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 22px; color: var(--ink-700); display: flex; flex-direction: column; gap: 6px">
+          <li><strong style="color: var(--ink-900)">Permission first.</strong> Nothing is shown until you say yes, in writing.</li>
+          <li><strong style="color: var(--ink-900)">Your page gets the click.</strong> Every card links back to the listing on your own site, with your agency named.</li>
+          <li><strong style="color: var(--ink-900)">No fee, no contract.</strong> Say the word and a listing comes down.</li>
+          <li><strong style="color: var(--ink-900)">Our estimate, clearly labelled.</strong> The monthly figure on a card is this site's calculation, never presented as yours.</li>
+        </ul>
+        <x-import component-from-global-scope="CMC.Button" variant="primary" icon-left="mail" href="mailto:caymanmortgagecalculator@gmail.com?subject=Listings%20on%20Cayman%20Mortgage%20Calculator">Email about listings</x-import>
+      </section>
+
+      <section aria-label="For everyone else" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="CMC.Icon" name="calculator"></x-import></span>
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700">Everyone else</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700)">Buyers, owners, lenders, the curious: write if you have:</p>
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 22px; color: var(--ink-700); display: flex; flex-direction: column; gap: 6px">
+          <li><strong style="color: var(--ink-900)">A correction.</strong> A rate, a threshold or a rule that has changed: tell us and we'll fix it and credit the source.</li>
+          <li><strong style="color: var(--ink-900)">A question about a figure.</strong> How a number on the page was worked out.</li>
+          <li><strong style="color: var(--ink-900)">A suggestion.</strong> A calculator or guide you wish existed.</li>
+        </ul>
+        <x-import component-from-global-scope="CMC.Button" variant="secondary" icon-left="mail" href="mailto:caymanmortgagecalculator@gmail.com?subject=Question%20about%20the%20site">Email a question</x-import>
+      </section>
+    </div>
+
+    <section aria-label="Before you write" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 12px; background: var(--teal-100)">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <span style="color: var(--teal-600); display: inline-flex"><x-import component-from-global-scope="CMC.Icon" name="info"></x-import></span>
+        <h2 style="margin: 0; font-size: 18px; line-height: 24px; font-weight: 700">Before you write: three things we get asked most</h2>
+      </div>
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <strong style="font-size: 14px; line-height: 22px">Are the estimates advice?</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">No. They use the standard amortising formula and the figures you enter. Your lender's rate, fees and insurance will differ. Treat every number as a starting point, not a quote.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <strong style="font-size: 14px; line-height: 22px">Can you arrange my mortgage?</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">No. The site doesn't take applications, refer you to lenders or earn commission. Take your numbers to a bank or a licensed broker.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <strong style="font-size: 14px; line-height: 22px">Where do I confirm stamp duty?</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">With the Ministry of Finance (<a href="mailto:MOF@GOV.KY">MOF@GOV.KY</a>) and the forms on <a href="https://www.caymanlandinfo.ky" target="_blank" rel="noopener">caymanlandinfo.ky</a>. Our <a href="StampDuty.dc.html">stamp duty guide</a> links to both; the bands change with the budget cycle.</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      logoHeight: 56, twentyEight: 28,
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

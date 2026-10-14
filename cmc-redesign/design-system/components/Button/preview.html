@@ -1,0 +1,13 @@
+<!-- @dsCard group="Actions" height=72 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Button — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} </style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'row'}, h(C.Button,{variant:'primary',iconRight:'arrow-right'},'Calculate'), h(C.Button,{variant:'secondary'},'How it works'), h(C.Button,{variant:'ghost',iconLeft:'calculator'},'Open calculator'), h('span',{style:{background:'var(--navy-900)',padding:'12px',borderRadius:'8px'}}, h(C.Button,{variant:'onDark',size:'sm'},'List your property')), h(C.Button,{variant:'primary',disabled:true},'Disabled')));
+</script>
+</body>
+</html>

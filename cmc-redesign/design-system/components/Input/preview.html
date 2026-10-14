@@ -1,0 +1,13 @@
+<!-- @dsCard group="Forms" height=96 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Input — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} .cmc-field{min-width:140px}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'row',style:{alignItems:'flex-start'}}, h(C.Input,{label:'Purchase price',prefix:'CI$',type:'number',defaultValue:650000,style:{width:160}}), h(C.Input,{label:'Interest rate',suffix:'%',type:'number',defaultValue:6.5,style:{width:100}}), h(C.Select,{label:'Term',options:[{value:25,label:'25 years'},{value:30,label:'30 years'}],defaultValue:25}), h(C.Input,{label:'Deposit',suffix:'%',defaultValue:3,error:'Minimum deposit is 10%',style:{width:120}}), h(C.Input,{label:'Location',placeholder:'District or area',hint:'Grand Cayman only for now',style:{width:200}})));
+</script>
+</body>
+</html>

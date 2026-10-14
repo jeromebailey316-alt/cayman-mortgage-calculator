@@ -1,0 +1,13 @@
+<!-- @dsCard group="Content" height=360 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ListingCard — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} </style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{display:'grid',gridTemplateColumns:'repeat(3, 260px)',gap:24}}, h(C.ListingCard,{price:850000,address:'12 Seaview Drive',locality:'South Sound, Grand Cayman',beds:4,baths:3,sqft:2450,badge:'For sale',monthly:4830,agency:'[Agency]',href:'https://agency.example/listings/seaview-drive',onFavourite:function(){}}), h(C.ListingCard,{price:3200,period:'mo',address:'Unit 5B, Crystal Harbour',locality:'West Bay Road',beds:2,baths:2,sqft:1200,badge:'For rent',badgeTone:'teal',agency:'[Agency]',href:'https://agency.example/rentals/crystal-harbour-5b',favourited:true,onFavourite:function(){}}), h(C.ListingCard,{price:620000,address:'456 Hirst Road',locality:'Savannah',beds:3,baths:2,sqft:1890,badge:'New',badgeTone:'teal',monthly:3520,agency:'[Agency]',href:'https://agency.example/listings/hirst-road'})));
+</script>
+</body>
+</html>

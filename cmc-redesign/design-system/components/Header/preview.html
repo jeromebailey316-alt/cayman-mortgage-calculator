@@ -1,0 +1,13 @@
+<!-- @dsCard group="Layout" height=300 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Header — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} body{padding:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'stack'}, h(C.Header,{logo:'/_blob/f29815eb2cfbc61ba92335fcd8083f6b',logoReversed:'/_blob/bc8e2e8ca8bbbea6d2e62f287dba7002',utility:{items:[{icon:'shield-check',text:'Free to use'},{icon:'house',text:'Listings shown with agents\' permission'}],right:'Grand Cayman'},logoHeight:56,homeHref:'/',nav:[{label:'Home'},{label:'Calculators',active:true,open:true,menu:[{label:'Mortgage calculator',description:'Monthly payment, interest and stamp duty',icon:'calculator',active:true},{label:'Equity calculator',description:'What your home is worth minus what you owe',icon:'trending-up'}]},{label:'Listings'},{label:'Guides'},{label:'Agents'},{label:'About'}],cta:{label:'Run the numbers',icon:'arrow-right'}}), h(C.Header,{dark:true,logo:'/_blob/f29815eb2cfbc61ba92335fcd8083f6b',logoReversed:'/_blob/bc8e2e8ca8bbbea6d2e62f287dba7002',logoHeight:56,nav:[{label:'Calculators',menu:[{label:'Mortgage calculator',icon:'calculator'},{label:'Equity calculator',icon:'trending-up'}]},{label:'Listings',active:true},{label:'Guides'}],cta:{label:'Run the numbers'}})));
+</script>
+</body>
+</html>

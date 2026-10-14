@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Home</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero { padding-bottom: 96px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-hide { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" utility="{{utility}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Intro" class="r-hero r-pad" style="background: var(--navy-900); color: var(--on-dark); padding: 64px 24px 120px">
+    <div class="r-grid" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center">
+      <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+        <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Free · Cayman Islands · No sign-up</span>
+        <h1 class="r-h1" style="margin: 0; font-size: 56px; line-height: 60px; font-weight: 700; letter-spacing: -.02em">Plan your home.<br>Know your <span style="color: var(--teal-300)">numbers</span>.</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 28px; color: var(--on-dark-muted); max-width: 44ch">See what a Cayman mortgage really costs each month, with stamp duty, fees and closing costs included, before you make an offer.</p>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center">
+          <x-import component-from-global-scope="CMC.Button" variant="onDark" icon-right="arrow-right" href="Calculator.dc.html">Run the numbers</x-import>
+          <a href="#how" style="color: var(--on-dark-muted); font-size: 14px; font-weight: 600; text-decoration: none; display: none">How it works</a>
+        </div>
+      </div>
+      <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+        <li style="display: flex; gap: 16px; align-items: center; padding: 16px 20px; border: 1px solid rgba(255,255,255,.14); border-radius: 12px">
+          <span style="width: 40px; height: 40px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none">1</span>
+          <span style="display: flex; flex-direction: column"><strong style="font-size: 16px; line-height: 24px">Enter the price and your deposit</strong><span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Any property, any district.</span></span>
+        </li>
+        <li style="display: flex; gap: 16px; align-items: center; padding: 16px 20px; border: 1px solid rgba(255,255,255,.14); border-radius: 12px">
+          <span style="width: 40px; height: 40px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none">2</span>
+          <span style="display: flex; flex-direction: column"><strong style="font-size: 16px; line-height: 24px">Set a rate and term</strong><span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Try the figures lenders have quoted you.</span></span>
+        </li>
+        <li style="display: flex; gap: 16px; align-items: center; padding: 16px 20px; border: 1px solid rgba(255,255,255,.14); border-radius: 12px">
+          <span style="width: 40px; height: 40px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none">3</span>
+          <span style="display: flex; flex-direction: column"><strong style="font-size: 16px; line-height: 24px">See the full cost of buying</strong><span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Monthly payment, stamp duty and closing costs, side by side.</span></span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: -72px auto 0; padding: 0 24px; width: 100%; box-sizing: border-box; position: relative">
+    <x-import component-from-global-scope="CMC.CalculatorPanel" href="Calculator.dc.html" tab-links="{{tabLinks}}" cta-label="See full breakdown" note="Estimates use the standard amortising formula at KYD prime 7.00% + 0.75%. Your lender's rate, fees and insurance will differ."></x-import>
+  </div>
+
+  <section id="how" aria-label="Why use it" style="padding: 64px 24px 48px">
+    <div class="r-grid" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="shield-check"></x-import></span>
+        <span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px; line-height: 24px">Free, no account</strong><span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">No sign-up, no newsletter, nothing to unsubscribe from.</span></span>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-100); color: var(--teal-600); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="receipt"></x-import></span>
+        <span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px; line-height: 24px">Cayman costs built in</strong><span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">Stamp duty, legal fees and closing costs; not a generic US calculator.</span></span>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="house"></x-import></span>
+        <span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px; line-height: 24px">Real local listings</strong><span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">Shown with each agency's permission, linking back to the original listing.</span></span>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: flex-start">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="landmark"></x-import></span>
+        <span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 18px; line-height: 24px">Lender-ready figures</strong><span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">Walk into the bank knowing your deposit, payment and total cost.</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Featured properties" class="r-pad" style="padding: 24px 24px 64px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy-700)">Featured properties</span>
+          <h2 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Homes with the monthly already worked out</h2>
+        </div>
+        <x-import component-from-global-scope="CMC.Button" variant="ghost" icon-right="arrow-right" href="Listings.dc.html">View all listings</x-import>
+      </div>
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+        <x-import component-from-global-scope="CMC.ListingCard" price="{{l1.price}}" address="Canal-front family home" locality="South Sound" beds="{{l1.beds}}" baths="{{l1.baths}}" sqft="{{l1.sqft}}" badge="For sale" monthly="{{l1.monthly}}" agency="[Agency]" href="{{l1.url}}"></x-import>
+        <x-import component-from-global-scope="CMC.ListingCard" price="{{l2.price}}" address="Two-bedroom condo" locality="Seven Mile Beach corridor" beds="{{l2.beds}}" baths="{{l2.baths}}" sqft="{{l2.sqft}}" badge="For sale" monthly="{{l2.monthly}}" agency="[Agency]" href="{{l2.url}}"></x-import>
+        <x-import component-from-global-scope="CMC.ListingCard" price="{{l3.price}}" period="mo" address="Townhouse with garage" locality="Savannah" beds="{{l3.beds}}" baths="{{l3.baths}}" sqft="{{l3.sqft}}" badge="For rent" badge-tone="teal" agency="[Agency]" href="{{l3.url}}"></x-import>
+        <x-import component-from-global-scope="CMC.ListingCard" price="{{l4.price}}" address="Starter home on a corner lot" locality="West Bay" beds="{{l4.beds}}" baths="{{l4.baths}}" sqft="{{l4.sqft}}" badge="New" badge-tone="teal" monthly="{{l4.monthly}}" agency="[Agency]" href="{{l4.url}}"></x-import>
+      </div>
+      <p style="margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-500)">Monthly figures are this site's estimates at {{assume}}, not the agent's. Each tile opens the listing on the agent's own site. Photos appear once agencies confirm permission.</p>
+    </div>
+  </section>
+
+  <section aria-label="Guides" class="r-pad" style="background: var(--navy-900); color: var(--on-dark); padding: 64px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 60ch">
+        <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Know the full cost</span>
+        <h2 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">The monthly payment is only part of it</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--on-dark-muted)">Three short guides on the costs that surprise first-time buyers in Cayman.</p>
+      </div>
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+        <a href="StampDuty.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--on-dark); text-decoration: none">
+          <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="CMC.Icon" name="file-text"></x-import></span>
+          <strong style="font-size: 18px; line-height: 24px">Stamp duty explained</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">The standard rate, who qualifies for first-time Caymanian relief, and how it is paid.</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--teal-300)">Read the guide <x-import component-from-global-scope="CMC.Icon" name="arrow-right" size="{{sixteen}}"></x-import></span>
+        </a>
+        <a href="ClosingCosts.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--on-dark); text-decoration: none">
+          <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="CMC.Icon" name="receipt"></x-import></span>
+          <strong style="font-size: 18px; line-height: 24px">Closing costs checklist</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Legal fees, valuation, insurance and the other line items between offer and keys.</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--teal-300)">Read the guide <x-import component-from-global-scope="CMC.Icon" name="arrow-right" size="{{sixteen}}"></x-import></span>
+        </a>
+        <a href="Affordability.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--on-dark); text-decoration: none">
+          <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="CMC.Icon" name="percent"></x-import></span>
+          <strong style="font-size: 18px; line-height: 24px">How much can I afford?</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">Work back from your income and cash to a purchase price, the way a lender would.</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--teal-300)">Open the calculator <x-import component-from-global-scope="CMC.Icon" name="arrow-right" size="{{sixteen}}"></x-import></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2420}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = Object.assign({ inputsTick: 0 }, this.state || {}); CMC.inputs.subscribe(() => this.setState({ inputsTick: Date.now() })); }
+  monthly(price, depositPct, rate, years) {
+    const p = price * (1 - depositPct / 100), r = rate / 100 / 12, n = years * 12;
+    return Math.round(p * r / (1 - Math.pow(1 + r, -n)));
+  }
+  renderVals() {
+    const s = CMC.inputs.get();
+    const m = (price) => this.monthly(price, s.deposit, s.rate, s.term);
+    return {
+      sixteen: 16, logoHeight: 56, tabLinks: { refi: 'Refinancing.dc.html', afford: 'Affordability.dc.html' },
+      assume: s.deposit + '% deposit, ' + s.rate + '% over ' + s.term + ' years',
+      nav: [{ label: 'Home', href: 'Main.dc.html', active: true }, { label: 'Calculators', href: 'Calculator.dc.html', menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      utility: { items: [{ icon: 'shield-check', text: 'Free to use' }, { icon: 'house', text: 'Listings shown with agents’ permission' }], right: 'Grand Cayman, Cayman Islands' },
+      l1: { price: 850000, beds: 4, baths: 3, sqft: 2450, monthly: m(850000), url: 'https://agency.example/listings/south-sound-canal-front' },
+      l2: { price: 625000, beds: 2, baths: 2, sqft: 1240, monthly: m(625000), url: 'https://agency.example/listings/smb-two-bed-condo' },
+      l3: { price: 3200, beds: 3, baths: 2, sqft: 1600, url: 'https://agency.example/rentals/savannah-townhouse-garage' },
+      l4: { price: 495000, beds: 3, baths: 2, sqft: 1380, monthly: m(495000), url: 'https://agency.example/listings/west-bay-starter-home' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

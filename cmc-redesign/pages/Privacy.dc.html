@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Privacy</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+@media (max-width: 860px) { .r-pad { padding-left: 16px !important; padding-right: 16px !important; } }
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Privacy</nav>
+      <h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Privacy</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">The short version: the site has no accounts, no forms and no mailing list, so there is very little about you to collect. Here is what there is.</p>
+      <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Last updated 14 October 2026</span>
+    </div>
+  </section>
+  <article class="r-pad" style="max-width: 760px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px; font-size: 16px; line-height: 26px; color: var(--ink-700)">
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">What the site collects</h2>
+      <p style="margin: 0"><strong style="color: var(--ink-900)">Nothing you type into a calculator.</strong> The figures you enter are used in your browser to show a result and are not sent to us. Your browser keeps them locally so they carry across pages (see Cookies, below).</p>
+      <p style="margin: 0"><strong style="color: var(--ink-900)">Basic usage statistics.</strong> We use Google Analytics to count visits and see which pages are used. It sets cookies and records an anonymised IP address, the pages you view and the device and browser you use. We do not connect this to anything you type into a calculator.</p>
+      <p style="margin: 0"><strong style="color: var(--ink-900)">Emails you send us.</strong> If you write to caymanmortgagecalculator@gmail.com we keep the email to reply to it. We don’t add you to any list.</p>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">What the site does not do</h2>
+      <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px"><li>Sell, rent or share any information with lenders, agents or advertisers.</li><li>Ask for your email to show a result.</li><li>Track you across other websites.</li><li>Store the property details you look up.</li></ul>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">Cookies</h2>
+      <p style="margin: 0">The only cookies are those set by Google Analytics; you can block them in your browser without affecting the calculators. Separately, the site keeps your calculator inputs (price, deposit, rate, term, currency) and your compare selection in your browser's local storage so you don't have to retype them. That data never leaves your device; clearing your browser data removes it.</p>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">Links to other sites</h2>
+      <p style="margin: 0">Listings link to the agent’s own website, and guides link to Government documents. Those sites have their own privacy practices, which we don’t control.</p>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">Your rights</h2>
+      <p style="margin: 0">You can ask what, if anything, we hold about you and ask for it to be deleted by emailing <a href="mailto:caymanmortgagecalculator@gmail.com">caymanmortgagecalculator@gmail.com</a>. The Cayman Islands Data Protection Act applies; the Ombudsman is the supervisory authority.</p>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: var(--ink-900)">Changes</h2>
+      <p style="margin: 0">If this page changes, the date at the top changes with it.</p>
+    </section>
+  </article>
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      logoHeight: 56,
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

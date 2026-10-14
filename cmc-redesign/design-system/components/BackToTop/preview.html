@@ -1,0 +1,13 @@
+<!-- @dsCard group="Actions" height=120 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>BackToTop — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .cmc-totop{position:static;opacity:1;transform:none;pointer-events:auto}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{display:'flex',gap:16,alignItems:'center'}}, h(C.BackToTop,{after:0}), h('span',{style:{fontSize:14,color:'var(--ink-700)'}},'Appears bottom-right after a screen of scrolling; click returns to the top.')));
+</script>
+</body>
+</html>

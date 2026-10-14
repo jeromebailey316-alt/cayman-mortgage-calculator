@@ -1,0 +1,45 @@
+<!-- @dsCard height=336 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: var(--surface-0); }
+  .cover { position: relative; width: 960px; height: 336px; overflow: hidden; font-family: var(--font-sans); }
+  .cover svg { position: absolute; inset: 0; }
+  .name { position: absolute; left: 32px; top: 144px; margin: 0; font-size: 64px; line-height: .95; font-weight: 700; letter-spacing: -0.02em; color: var(--ink-900); width: 600px; }
+  .tag  { position: absolute; left: 34px; top: 280px; margin: 0; font-size: 13px; line-height: 16px; color: var(--ink-500); max-width: 440px; }
+  .ink  { fill: var(--ink-900); } .n700 { fill: var(--navy-700); } .n600 { fill: var(--navy-600); }
+  .n100 { fill: var(--navy-100); } .t600 { fill: var(--teal-600); } .tile { fill: var(--surface-0); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <!--
+    blocks: top band, full width — ink-900 slab 240×128 (the dark bar; ink-900 rather than navy-900 so it survives the navy dark ground), navy-700 368×112, navy-600 128×112, navy-100 192×112 bleeding right, teal-600 bar 240×16 along the ink slab's foot (the logo's roofline bar: the accent is a line, never a field)
+    arrangement: the top-band skeleton — the page composes as horizontal strips (utility bar, header, hero, bands, footer), and the name is too wide for the right-hand zone
+    pattern: geometric, modular, dense UI → tiles cut by the radius tokens, some merged two-wide; chosen because the page is a grid of rounded white listing cards and that grid is the brand's most specific shape
+    scales: gaps space-4 (16) and space-2 (8); corners radius-lg (16) on blocks, radius-sm (6) on tiles, radius-full on the pill; tiles 80×40, one merged to 176
+  -->
+  <svg width="960" height="336" viewBox="0 0 960 336" aria-hidden="true">
+    <rect class="ink"  x="0"   y="-16" width="240" height="128" rx="16"/>
+    <rect class="n700" x="256" y="0"   width="368" height="112" rx="16"/>
+    <rect class="n600" x="640" y="0"   width="128" height="112" rx="16"/>
+    <rect class="n100" x="784" y="0"   width="192" height="112" rx="16"/>
+
+    <rect class="t600" x="16" y="88" width="208" height="16" rx="8"/>
+
+    <rect class="tile" x="272" y="16" width="80"  height="40" rx="6"/>
+    <rect class="tile" x="368" y="16" width="80"  height="40" rx="6"/>
+    <rect class="tile" x="464" y="16" width="80"  height="40" rx="6"/>
+    <rect class="tile" x="272" y="64" width="176" height="32" rx="6"/>
+    <rect class="tile" x="464" y="64" width="80"  height="32" rx="6"/>
+
+    <rect class="tile" x="656" y="16" width="96"  height="40" rx="6"/>
+    <rect class="tile" x="656" y="64" width="96"  height="32" rx="6"/>
+  </svg>
+  <h1 class="name">Cayman Mortgage<br>Calculator</h1>
+  <p class="tag">Plan your home. Know your numbers.</p>
+</div>
+</body>
+</html>
