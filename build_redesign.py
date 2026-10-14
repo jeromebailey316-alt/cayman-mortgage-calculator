@@ -30,6 +30,17 @@ PAGES = {
         "build": lambda data: rd_pages.home(data),
         "active": "/",
     },
+    "listings": {
+        "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
+        "description": ("Every listing from the Cayman agencies, priced through your own "
+                        "deposit, rate and term, with stamp duty and the monthly worked out."),
+        "build": lambda data: rd_pages.listings(data),
+        "active": "/listings/",
+        # core.js supplies stamp duty in the comparison, the same engine the
+        # calculator uses, so the two figures cannot disagree.
+        "scripts": ["/assets/core.js", "/assets/rd-listings.js"],
+        "icons_for_js": True,
+    },
 }
 
 
@@ -44,7 +55,8 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    shutil.copy(ROOT / "web" / "rd-inputs.js", assets / "rd-inputs.js")
+    for js in ("rd-inputs.js", "rd-listings.js", "core.js"):
+        shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)
     for ico in ("favicon.svg", "favicon.ico"):
@@ -57,7 +69,8 @@ def build(data: dict, canonical: str = "") -> Path:
         body = meta["build"](data)
         html = rd.page(meta["title"], meta["description"], body,
                        active=meta["active"], canonical=base + path if base else "",
-                       css_href=href)
+                       css_href=href, scripts=meta.get("scripts", ()),
+                       icons_for_js=meta.get("icons_for_js", False))
         target = OUT / path / "index.html" if path else OUT / "index.html"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(html)

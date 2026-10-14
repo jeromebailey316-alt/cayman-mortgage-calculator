@@ -482,17 +482,29 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
           "</head><body>")
 
 
-TAIL = ('<script src="/assets/rd-inputs.js"></script>'
-        f"<script>{RD_JS}</script></body></html>")
+def tail(scripts=(), icons_for_js=False) -> str:
+    """Scripts are page-specific and load after the shared ones, in order."""
+    out = ""
+    if icons_for_js:
+        # Cards built on the client need the same Lucide paths the server uses.
+        out += f"<script>window.RD_ICON_PATHS={json.dumps(ICONS, separators=(',', ':'))};</script>"
+    out += '<script src="/assets/rd-inputs.js"></script>'
+    for src in scripts:
+        out += f'<script src="{e(src)}"></script>'
+    return out + f"<script>{RD_JS}</script></body></html>"
+
+
+TAIL = tail()
 
 
 def page(title: str, description: str, body: str, active: str = "",
-         canonical: str = "", css_href: str = "/assets/rd.css") -> str:
+         canonical: str = "", css_href: str = "/assets/rd.css",
+         scripts=(), icons_for_js: bool = False) -> str:
     return (head(title, description, canonical, css_href)
             + '<a class="rd-skip" href="#main">Skip to content</a>'
             + header(active=active)
             + f'<main id="main">{body}</main>'
-            + footer() + back_to_top() + TAIL)
+            + footer() + back_to_top() + tail(scripts, icons_for_js))
 
 
 def stylesheet() -> str:

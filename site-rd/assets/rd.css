@@ -339,3 +339,39 @@ h1, h2, h3, h4 { margin: 0; }
   .rd-skip, .cmc-footer { display: none; }
   body { background: #fff; color: #000; }
 }
+
+/* Comparison table. The bundle ships the swipe hint but not the table. */
+.rd-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rd-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.rd-table th, .rd-table td {
+  padding: var(--space-3); text-align: left; vertical-align: top;
+  border-bottom: 1px solid var(--line-100); white-space: nowrap;
+}
+.rd-table thead th { font-weight: 700; color: var(--ink-900); }
+.rd-table tbody th { font-weight: 500; color: var(--ink-500); }
+.rd-table td { font-variant-numeric: tabular-nums; }
+.rd-table .rd-best { color: var(--teal-600); font-weight: 700; }
+
+/* The compare bar: a centred pill on desktop, a full-width strip on phones. */
+.rd-cmpbar {
+  position: fixed; z-index: 36; left: 50%; transform: translateX(-50%);
+  bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-full);
+  background: var(--navy-900); color: var(--on-dark); box-shadow: var(--shadow-md);
+  font-size: 14px; font-weight: 600;
+}
+.rd-cmpbar__x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: 0; border-radius: var(--radius-full);
+  background: transparent; color: var(--on-dark-muted); cursor: pointer;
+}
+.rd-cmpbar__x:hover { background: rgba(255,255,255,.12); color: var(--on-dark); }
+@media (max-width: 860px) {
+  .rd-cmpbar {
+    left: 0; right: 0; transform: none; bottom: 0; border-radius: 0;
+    justify-content: space-between;
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  }
+  /* lift the back-to-top button above the strip */
+  body.rd-has-compare .cmc-totop { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}

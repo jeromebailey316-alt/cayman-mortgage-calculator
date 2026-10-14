@@ -193,3 +193,93 @@ def home(data: dict) -> str:
         + _guide_card("/affordability/", "percent", "What can you afford",
                       "Work back from your income and savings to the price you can carry.")
         + "</div></div></section>")
+
+
+DISTRICTS = ["George Town", "Seven Mile Beach", "West Bay", "Bodden Town",
+             "East End", "North Side", "Cayman Brac", "Little Cayman"]
+TYPES = [("", "Any type"), ("house", "House"), ("condo", "Condo or townhouse"), ("land", "Land")]
+SORTS = [("new", "Newest"), ("price-asc", "Price, low to high"),
+         ("price-desc", "Price, high to low"), ("size", "Largest")]
+
+
+def listings(data: dict) -> str:
+    """Ported from cmc-redesign/pages/Listings.dc.html.
+
+    The grid is rendered by rd-listings.js from listings.json: 873 listings is
+    far too much markup to ship, and the filters, sort, paging and compare all
+    need to work on the client anyway.
+    """
+    district_opts = [("", "Any district")] + [(d, d) for d in DISTRICTS]
+    bed_opts = [("", "Any")] + [(str(n), f"{n}+") for n in (1, 2, 3, 4, 5)]
+
+    filters = (
+        '<form id="rdFilters" aria-label="Filter listings" style="display:flex;'
+        'flex-direction:column;gap:16px;background:var(--surface-0);'
+        'border:1px solid var(--line-100);border-radius:12px;box-shadow:var(--shadow-sm);'
+        'padding:20px 24px">'
+        + rd.pill_tabs([("buy", "Buy", "/listings/")], value="buy")
+        + '<div class="r-grid-2" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));'
+          'gap:16px;align-items:end">'
+        + rd.select_field("District", district_opts, id="fDistrict")
+        + rd.select_field("Property type", TYPES, id="fType")
+        + rd.input_field("Min price", prefix="CI$", placeholder="No min", id="fMin", value=None)
+        + rd.input_field("Max price", prefix="CI$", placeholder="No max", id="fMax", value=None)
+        + rd.select_field("Beds", bed_opts, id="fBeds")
+        + rd.button("Search", icon_left="search", type="submit")
+        + "</div></form>")
+
+    return (
+        '<section aria-label="Search" class="r-pad" style="background:var(--navy-100);'
+        'padding:40px 24px">'
+        '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:24px">'
+        '<div style="display:flex;flex-direction:column;gap:12px">'
+        '<nav aria-label="Breadcrumb" style="font-size:12px;line-height:16px;font-weight:500;'
+        'color:var(--ink-500)"><a href="/" style="color:var(--ink-500);text-decoration:none">Home</a>'
+        ' › Listings</nav>'
+        '<h1 style="margin:0;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-.02em">'
+        "Homes for sale in the Cayman Islands</h1>"
+        '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
+        "Gathered from the agencies' own websites every four hours, each one priced through "
+        "your deposit, rate and term. Every tile opens the listing on the agent's own site.</p>"
+        "</div>" + filters + "</div></section>"
+
+        '<section aria-label="Results" class="r-pad" style="padding:40px 24px 64px">'
+        '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:24px">'
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;'
+        'flex-wrap:wrap">'
+        '<p id="rdCount" style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)" '
+        'role="status">Loading listings</p>'
+        '<div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">'
+        + rd.select_field("Sort by", SORTS, id="fSort")
+        + rd.button("Set my rate and deposit", href="/calculator/", variant="secondary",
+                    size="sm", icon_left="calculator")
+        + "</div></div>"
+        '<div id="rdGrid" class="r-grid" style="display:grid;'
+        'grid-template-columns:repeat(4,minmax(0,1fr));gap:24px"></div>'
+        '<div id="rdMoreWrap" style="display:flex;justify-content:center;padding-top:8px">'
+        + rd.button("Show more", id="rdMore", variant="secondary", icon_right="arrow-right")
+        + "</div>"
+        '<p style="margin:0;font-size:12px;line-height:16px;color:var(--ink-500)">'
+        "Monthly figures are this site's estimates from your deposit, rate and term, not the "
+        "agent's. Prices are what sellers are asking today, not what buyers paid.</p>"
+        '<section aria-label="Compare listings" id="compare" hidden style="flex-direction:column;'
+        'gap:16px;padding:24px;border:1px solid var(--line-100);border-radius:12px;'
+        'box-shadow:var(--shadow-md);background:var(--surface-0)">'
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;'
+        'flex-wrap:wrap"><h2 style="margin:0;font-size:24px;line-height:32px;font-weight:700">'
+        "Side by side</h2><div style=\"display:flex;gap:8px\">"
+        + rd.button("Change deposit, rate or term", href="/calculator/", variant="secondary",
+                    size="sm", icon_left="calculator")
+        + rd.button("Clear", id="rdCmpClear", variant="ghost", size="sm")
+        + "</div></div>"
+        # .cmc-swipe is the hint itself, shown only below 860px; the scrolling
+        # wrapper and the table are ours.
+        '<div class="rd-scroll"><table id="rdCmpTable" class="rd-table"></table></div>'
+        '<p class="cmc-swipe">Swipe sideways to see every column.</p>'
+        "</section></div></section>"
+
+        '<div id="rdCmpBar" class="rd-cmpbar" hidden role="status">'
+        '<span id="rdCmpCount">0 selected</span>'
+        + rd.button("Compare", href="#compare", variant="onDark", size="sm", icon_right="arrow-right")
+        + f'<button type="button" id="rdCmpClose" class="rd-cmpbar__x" aria-label="Clear comparison">'
+          f'{rd.icon("x", 16)}</button></div>')
