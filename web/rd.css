@@ -217,3 +217,43 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
   main table th:first-child, main table td:first-child { width: 40%; }
   main table th, main table td { word-break: normal; overflow-wrap: break-word; }
 }
+
+
+/* The bundle hands over to the drawer at 860px, but the desktop header does not
+   actually fit until about 960: at 900px the row overflowed by 22px even with
+   the original 40px logo, because six nav items, the logo and the CTA need more
+   width than that. The handover rules are repeated here for that band, so it
+   uses the phone header, which fits. */
+@media (min-width: 861px) and (max-width: 960px) {
+  .cmc-header__row { height: 60px; gap: var(--space-3); }
+  .cmc-header__logo img { height: 36px !important; max-width: 60vw; object-fit: contain; }
+  .cmc-header__nav { display: none; }
+  .cmc-header__cta { display: none; }
+  .cmc-header__menu { display: inline-flex; align-items: center; justify-content: center; }
+  .cmc-header__menu--open { background: var(--navy-100); color: var(--navy-700); }
+  .cmc-header__actions { margin-left: auto; }
+  .cmc-header__drawer { display: flex; flex-direction: column; gap: var(--space-2); position: absolute; left: 0; right: 0; top: 100%; max-height: calc(100vh - 60px); overflow-y: auto; padding: var(--space-3) var(--space-4) var(--space-5); background: var(--surface-0); border-bottom: 1px solid var(--line-100); box-shadow: var(--shadow-md); }
+  .cmc-header--dark .cmc-header__drawer { background: var(--navy-900); border-bottom-color: rgba(255,255,255,.12); }
+  .cmc-header__drawer-group { display: flex; flex-direction: column; }
+  .cmc-header__drawer-link { display: flex; align-items: center; min-height: 48px; padding: 0 var(--space-2); font-size: 16px; font-weight: 600; color: var(--ink-900); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-link--active { color: var(--navy-700); }
+  .cmc-header__drawer-sub { display: flex; flex-direction: column; padding-left: var(--space-2); }
+  .cmc-header__drawer-sublink { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-2); font-size: 15px; font-weight: 500; color: var(--ink-700); text-decoration: none; border-radius: var(--radius-sm); }
+  .cmc-header__drawer-sublink .cmc-icon { color: var(--navy-700); }
+  .cmc-header__drawer-sublink--active { color: var(--navy-700); background: var(--navy-100); }
+  .cmc-header--dark .cmc-header__drawer-link, .cmc-header--dark .cmc-header__drawer-sublink { color: var(--on-dark); }
+  .cmc-header__drawer-cta { margin-top: var(--space-3); }
+  .cmc-header__logo img { height: 44px !important; }
+}
+
+
+
+/* A more prominent lockup than the component's 40px default, sized here rather
+   than inline so these media queries can win.
+
+   56px on a full desktop: the contract allows up to 64 in the 72px row, and 56
+   leaves 8px of air above and below where 64 would all but touch the edges.
+   Below 1024px the nav and CTA need that width back, so it steps to 44, which
+   is still larger than the 36 the bundle would otherwise impose on a phone. */
+.cmc-header__logo img { height: 56px; }
+@media (max-width: 1023px) { .cmc-header__logo img { height: 44px !important; } }

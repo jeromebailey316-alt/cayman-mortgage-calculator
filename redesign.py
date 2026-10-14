@@ -308,8 +308,11 @@ UTILITY = [
 UTILITY_RIGHT = "Grand Cayman, Cayman Islands"
 
 
-def header(active: str = "", logo_height: int = 40, utility=True) -> str:
+def header(active: str = "", utility=True) -> str:
     """`active` is matched against each item's href.
+
+    The logo is sized in rd.css, not here: it has to step down between the
+    drawer handover and 1024px, where the nav and CTA need the width back.
 
     Emits the class names bundle.css actually defines: __toggle not __chevron,
     __dropdown not __menu (__menu is the burger), __actions around the burger,
@@ -379,7 +382,10 @@ def header(active: str = "", logo_height: int = 40, utility=True) -> str:
         '<header class="cmc-header">' + util +
         '<div class="cmc-container cmc-header__row">'
         f'<a class="cmc-header__logo" href="/" aria-label="{e(SITE_NAME)}: home">'
-        f'<img src="/assets/cmc-secondary-color.svg" alt="" style="height:{logo_height}px"></a>'
+        # No inline height: the lockup is sized in rd.css, which has to step it
+        # down between the drawer handover and 1024px. An inline declaration,
+        # even of a custom property, would beat those media queries.
+        '<img src="/assets/cmc-secondary-color.svg" alt=""></a>'
         f'<nav class="cmc-header__nav" aria-label="Main">{"".join(links)}</nav>'
         '<div class="cmc-header__cta">'
         + button("Run the numbers", href="/calculator/", icon_right="arrow-right") +
