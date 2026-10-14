@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Calculator</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+.card { border: 1px solid var(--line-100); border-radius: 12px; background: var(--surface-0); box-shadow: var(--shadow-sm); }
+.sec { display: flex; flex-direction: column; gap: 16px; padding: 20px; border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 700; }
+.sec .hint { font-size: 12px; line-height: 16px; color: var(--ink-500); margin: -8px 0 0; }
+.sec .opt { font-weight: 400; color: var(--ink-500); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.seg .cmc-pills { display: flex; width: 100%; box-sizing: border-box; } .seg .cmc-pill { flex: 1; text-align: center; }
+details.sec { padding: 0; } details.sec > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 20px; font-size: 18px; line-height: 24px; font-weight: 700; }
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary .plus { font-size: 22px; font-weight: 400; color: var(--ink-500); } details[open].sec > summary .plus { transform: rotate(45deg); }
+details.sec > .inner { display: flex; flex-direction: column; gap: 16px; padding: 0 20px 20px; }
+.chk { display: flex; gap: 10px; align-items: center; font-size: 14px; line-height: 22px; cursor: pointer; }
+.chk input { width: 18px; height: 18px; accent-color: #0f7c7e; margin: 0; }
+.stat { display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm); min-width: 0; }
+.stat .l { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-500); } .stat .v { font-size: 24px; line-height: 32px; font-weight: 700; } .stat .s { font-size: 12px; line-height: 16px; color: var(--ink-500); }
+.row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; line-height: 22px; color: var(--ink-700); } .row strong { color: var(--ink-900); }
+.row.total { border-top: 1px solid var(--line-100); padding-top: 8px; margin-top: 4px; font-weight: 700; color: var(--ink-900); }
+@media print {
+  body * { visibility: hidden; }
+  .summary, .summary * { visibility: visible; }
+  .summary { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: 0 !important; }
+  .summary .no-print { display: none !important; }
+}
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-hide { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Calculators › Mortgage</nav>
+      <h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Mortgage calculator</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">Change any figure and the breakdown updates. Price, deposit, rate and term are remembered across the site. Stamp duty follows your buyer status; nothing is assumed about your household until you enter it.</p>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+
+    <aside aria-label="Inputs" class="card" style="flex: 1 1 360px; max-width: 420px; min-width: 0; display: flex; flex-direction: column">
+
+      <section class="sec" aria-label="Currency" style="flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px; line-height: 22px">Show figures in</strong><span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{fxNote}}</span></div>
+        <x-import component-from-global-scope="CMC.PillTabs" items="{{currencies}}" value="{{currency}}" on-change="{{setCurrency}}"></x-import>
+      </section>
+
+      <section class="sec" aria-label="Property">
+        <h2>Property</h2>
+        <x-import component-from-global-scope="CMC.Input" label="Purchase price" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="1000" value="{{priceIn}}" on-change="{{setPrice}}" hint="Duty is charged on the price or Lands &amp; Survey's market valuation, whichever is higher."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Government valuation (if higher than the price)" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="1000" placeholder="Leave empty to use the price" value="{{valuation}}" on-change="{{setValuation}}" hint="Lands &amp; Survey values the property themselves. If their figure is higher than what you are paying, duty is charged on theirs."></x-import>
+        <x-import component-from-global-scope="CMC.Select" label="Where the property is" options="{{islands}}" value="{{island}}" on-change="{{setIsland}}"></x-import>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700)">Property type</span>
+          <div class="seg"><x-import component-from-global-scope="CMC.PillTabs" items="{{propTypes}}" value="{{propType}}" on-change="{{setPropType}}"></x-import></div>
+        </div>
+      </section>
+
+      <section class="sec" aria-label="Buyer">
+        <h2>Buyer</h2>
+        <x-import component-from-global-scope="CMC.Select" label="Stamp duty status" options="{{statuses}}" value="{{status}}" on-change="{{setStatus}}" hint="{{statusHint}}"></x-import>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700)">Buying as</span>
+          <div class="seg"><x-import component-from-global-scope="CMC.PillTabs" items="{{buyerModes}}" value="{{buyerMode}}" on-change="{{setBuyerMode}}"></x-import></div>
+        </div>
+      </section>
+
+      <section class="sec" aria-label="Mortgage">
+        <h2>Mortgage</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700)">Down payment</span>
+          <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px">
+            <x-import component-from-global-scope="CMC.Input" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="1000" value="{{depositAmt}}" on-change="{{setDepositAmt}}" aria-label="Down payment in dollars"></x-import>
+            <x-import component-from-global-scope="CMC.Input" suffix="%" type="number" input-mode="decimal" min="0" max="100" step="0.5" bind="deposit" aria-label="Down payment as a percentage"></x-import>
+          </div>
+          <span class="hint" style="margin-top: 0">Typical minimums: 10 to 15% on a primary home, 30 to 35% for non-residents or rentals.</span>
+        </div>
+        <div class="two">
+          <x-import component-from-global-scope="CMC.Input" label="Interest rate" suffix="%" type="number" input-mode="decimal" min="0" step="0.05" bind="rate"></x-import>
+          <x-import component-from-global-scope="CMC.Input" label="Term" suffix="yrs" type="number" input-mode="numeric" min="1" max="40" step="1" bind="term"></x-import>
+        </div>
+        <p class="hint">KYD prime is <strong>7.00%</strong>, raised from 6.75% on 18 September 2026 (<a href="https://www.caymannational.com/about/news/28-notices" target="_blank" rel="noopener">Cayman National notice</a>, checked 1 October 2026). A primary residence usually prices at prime plus 0.5-1%, so 7.75% is a planning figure, not a quote. <strong>Enter the rate your bank quoted.</strong></p>
+        <x-import component-from-global-scope="CMC.Input" label="Extra monthly payment" type="number" input-mode="decimal" min="0" step="50" prefix="{{sym}}" value="{{extra}}" on-change="{{setExtra}}" placeholder="0" hint="Paid on top of the regular payment every month. Shortens the term and cuts the interest."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Gross monthly household income" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="100" value="{{income}}" on-change="{{setIncome}}" placeholder="For an affordability check"></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Cash you have for the purchase" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="1000" value="{{cash}}" on-change="{{setCash}}" placeholder="Down payment plus closing costs" hint="Add income, cash or both and the page works out what you can take on. Nothing is assumed about your household until you enter it."></x-import>
+      </section>
+
+      <details class="sec" aria-label="Your household in detail" open>
+        <summary>Your household in detail <span class="plus">+</span></summary>
+        <div class="inner">
+          <strong style="font-size: 14px; line-height: 22px; color: var(--ink-700)">Monthly running costs</strong>
+          <div class="two">
+            <x-import component-from-global-scope="CMC.Input" label="Strata fees" prefix="{{sym}}" suffix="/mo" type="number" input-mode="decimal" min="0" step="10" value="{{strata}}" on-change="{{setStrata}}" placeholder="0"></x-import>
+            <x-import component-from-global-scope="CMC.Input" label="Life insurance" prefix="{{sym}}" suffix="/mo" type="number" input-mode="decimal" min="0" step="10" value="{{life}}" on-change="{{setLife}}" placeholder="0"></x-import>
+          </div>
+          <label class="chk"><input type="checkbox" checked="{{bldgInStrata}}" onChange="{{toggleBldgInStrata}}"> Building insurance is included in the strata fee</label>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700)">Building insurance</span>
+            <div class="seg"><x-import component-from-global-scope="CMC.PillTabs" items="{{bldgModes}}" value="{{bldgMode}}" on-change="{{setBldgMode}}"></x-import></div>
+            <x-import component-from-global-scope="CMC.Input" suffix="{{bldgSuffix}}" prefix="{{bldgPrefix}}" type="number" input-mode="decimal" min="0" step="{{bldgStep}}" value="{{bldgValue}}" on-change="{{setBldgValue}}" aria-label="Building insurance" hint="Banks require buildings cover including hurricane. Premiums are rated on the cost to rebuild, which on an expensive lot is well below the purchase price, so a percentage of price overstates it. Enter a real quote when you have one."></x-import>
+          </div>
+          <x-import component-from-global-scope="CMC.Input" label="Maintenance and repairs" suffix="% of price a year" type="number" input-mode="decimal" min="0" step="0.25" value="{{maint}}" on-change="{{setMaint}}" hint="A planning allowance, not a bill: roughly 1% a year for a house, 0.5% for a condo where strata covers the outside. There is no Cayman-specific published figure for this."></x-import>
+        </div>
+      </details>
+
+      <details class="sec" aria-label="Fee assumptions">
+        <summary>Fee assumptions <span class="plus">+</span></summary>
+        <div class="inner">
+          <p class="hint" style="margin: 0">Used for the cash-at-closing figure. Replace with real quotes when you have them.</p>
+          <div class="two">
+            <x-import component-from-global-scope="CMC.Input" label="Legal fees" suffix="% of price" type="number" input-mode="decimal" min="0" step="0.25" value="{{legalPct}}" on-change="{{setLegalPct}}" hint="Typically 0.5-1% of price, plus disbursements. Get a fixed quote."></x-import>
+            <x-import component-from-global-scope="CMC.Input" label="Bank arrangement fee" suffix="% of loan" type="number" input-mode="decimal" min="0" step="0.25" value="{{bankPct}}" on-change="{{setBankPct}}"></x-import>
+          </div>
+          <div class="two">
+            <x-import component-from-global-scope="CMC.Input" label="Valuation report" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="50" value="{{valuationFee}}" on-change="{{setValuationFee}}"></x-import>
+            <x-import component-from-global-scope="CMC.Input" label="Mortgage stamp duty" suffix="%" type="number" value="{{mortgageDutyPct}}" read-only="{{yes}}" hint="Set by the Stamp Duty Act: 1% up to CI$300,000, 1.5% above."></x-import>
+          </div>
+        </div>
+      </details>
+    </aside>
+
+    <section aria-label="Results" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+      <div class="r-pad" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; padding: 24px; border-radius: 12px; background: var(--navy-900); color: var(--on-dark)">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Estimated monthly payment</span>
+          <span class="r-big" style="font-size: 56px; line-height: 60px; font-weight: 700; letter-spacing: -.02em">{{monthly}}</span>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">on a {{loan}} loan at {{rate}} over {{term}} years{{extraNote}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 0; max-width: 100%">
+          <x-import component-from-global-scope="CMC.Button" variant="onDark" icon-left="house" icon-right="arrow-right" href="Listings.dc.html">See homes that fit these numbers</x-import>
+          <span style="font-size: 12px; line-height: 16px; color: var(--on-dark-muted); text-align: right">Listings up to {{price}} with an estimated monthly of {{monthly}} or less</span>
+        </div>
+      </div>
+
+      <div class="r-grid-2" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+        <div class="stat"><span class="l">Down payment</span><span class="v">{{deposit}}</span><span class="s">{{depositPct}} of price</span></div>
+        <div class="stat"><span class="l">Loan amount</span><span class="v">{{loan}}</span><span class="s">price less down payment</span></div>
+        <div class="stat"><span class="l">Total interest</span><span class="v">{{interest}}</span><span class="s">{{payoffNote}}</span></div>
+        <div class="stat"><span class="l">Total repaid</span><span class="v">{{total}}</span><span class="s">loan + interest</span></div>
+      </div>
+
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-size: 16px; line-height: 24px">Monthly cost of owning</strong><x-import component-from-global-scope="CMC.Badge" tone="tint">All-in</x-import></div>
+          <div class="row"><span>Mortgage payment</span><strong>{{monthly}}</strong></div>
+          <div class="row"><span>Strata fees</span><strong>{{strataOut}}</strong></div>
+          <div class="row"><span>Building insurance</span><strong>{{bldgMonthly}}</strong></div>
+          <div class="row"><span>Life insurance</span><strong>{{lifeOut}}</strong></div>
+          <div class="row"><span>Maintenance allowance</span><strong>{{maintMonthly}}</strong></div>
+          <div class="row total"><span>Total a month</span><strong>{{allIn}}</strong></div>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{allInNote}}</span>
+        </div>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-size: 16px; line-height: 24px">Cash you need at closing</strong><x-import component-from-global-scope="CMC.Badge" tone="{{cashTone}}">{{cashBadge}}</x-import></div>
+          <div class="row"><span>Down payment</span><strong>{{deposit}}</strong></div>
+          <div class="row"><span>Stamp duty on the transfer ({{dutyRate}})</span><strong>{{stampDuty}}</strong></div>
+          <div class="row"><span>Stamp duty on the mortgage ({{mortgageDutyPct}}%)</span><strong>{{mortgageDuty}}</strong></div>
+          <div class="row"><span>Legal fees (est.)</span><strong>{{legal}}</strong></div>
+          <div class="row"><span>Valuation + bank fee (est.)</span><strong>{{fees}}</strong></div>
+          <div class="row"><span>Building insurance, first year</span><strong>{{bldgYear}}</strong></div>
+          <div class="row total"><span>Total cash needed</span><strong>{{cashNeeded}}</strong></div>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{cashNote}} <a href="ClosingCosts.dc.html">Closing-costs checklist →</a></span>
+        </div>
+      </div>
+
+      <div class="r-pad" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 24px; border-radius: 12px; background: var(--teal-100); color: var(--ink-900)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="file-text"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0">
+          <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline">
+            <strong style="font-size: 18px; line-height: 24px">Stamp duty: {{stampDuty}}</strong>
+            <x-import component-from-global-scope="CMC.Badge" tone="tint">{{dutyLabel}}</x-import>
+          </div>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">{{dutyExplain}}</span>
+          <a href="StampDuty.dc.html" style="font-size: 14px; font-weight: 600; color: var(--teal-600); text-decoration: none">Bands, conditions and how to apply →</a>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="percent"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0">
+          <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline">
+            <strong style="font-size: 18px; line-height: 24px">Affordability check</strong>
+            <x-import component-from-global-scope="CMC.Badge" tone="{{affordTone}}">{{affordBadge}}</x-import>
+          </div>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">{{affordText}}</span>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Guideline only: Cayman lenders commonly cap total debt service (housing costs plus other loan payments) at about 40% of gross income. Each bank sets its own ratio. The <a href="Affordability.dc.html">affordability calculator</a> lets you change the ceiling and add other debts.</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap">
+          <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700">Year by year</h2>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">First five years of {{termOut}}</span>
+        </div>
+        <div style="overflow-x: auto; border: 1px solid var(--line-100); border-radius: 12px">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; min-width: 560px">
+            <thead>
+              <tr style="background: var(--surface-100); color: var(--ink-700); font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: .08em">
+                <th style="text-align: left; padding: 12px 16px; font-weight: 700">Year</th>
+                <th style="text-align: right; padding: 12px 16px; font-weight: 700">Paid</th>
+                <th style="text-align: right; padding: 12px 16px; font-weight: 700">Interest</th>
+                <th style="text-align: right; padding: 12px 16px; font-weight: 700">Principal</th>
+                <th style="text-align: right; padding: 12px 16px; font-weight: 700">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{years}}" as="y" hint-placeholder-count="5">
+                <tr style="border-top: 1px solid var(--line-100)">
+                  <td style="padding: 12px 16px; font-weight: 600">{{y.year}}</td>
+                  <td style="padding: 12px 16px; text-align: right">{{y.paid}}</td>
+                  <td style="padding: 12px 16px; text-align: right; color: var(--ink-700)">{{y.interest}}</td>
+                  <td style="padding: 12px 16px; text-align: right; color: var(--teal-600); font-weight: 600">{{y.principal}}</td>
+                  <td style="padding: 12px 16px; text-align: right">{{y.balance}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <span class="cmc-swipe">Swipe sideways to see every column.</span>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center">
+          <x-import component-from-global-scope="CMC.Button" variant="secondary" icon-left="file-text" on-click="{{download}}">Download full schedule (Excel)</x-import>
+          <x-import component-from-global-scope="CMC.Button" variant="ghost" icon-right="arrow-right" href="ClosingCosts.dc.html">Closing costs checklist</x-import>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">An .xlsx with every month's payment, interest, principal and balance, plus a summary sheet of your inputs.</span>
+        </div>
+      </div>
+
+      <section class="card" aria-label="Sources" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 22px; color: var(--ink-700)">
+        <strong style="font-size: 16px; line-height: 24px; color: var(--ink-900)">How the numbers are worked out, and the sources</strong>
+        <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px">
+          <li><strong>Monthly payment</strong>: standard amortising formula on the loan, rate and term entered; extra payments are applied to principal each month.</li>
+          <li><strong>Stamp duty on the transfer</strong>: 7.5% of the price or market value, whichever is higher; Caymanian concessions by buyer type and property type from the <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">Ministry of Finance concession form (v16.4.26)</a>. Detail and conditions in the <a href="StampDuty.dc.html">stamp duty guide</a>.</li>
+          <li><strong>Stamp duty on the mortgage</strong>: 1% of the sum secured up to CI$300,000; 1.5% of the whole sum above. <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener">Stamp Duty Act (2019 Revision), Schedule: Mortgage</a>.</li>
+          <li><strong>Interest rate default</strong>: KYD prime 7.00% (<a href="https://www.caymannational.com/about/news/28-notices" target="_blank" rel="noopener">Cayman National notices</a>, checked 1 October 2026) plus 0.75%.</li>
+          <li><strong>Lender ceiling</strong>: 40% total debt service, a common Cayman guideline; each bank sets its own.</li>
+          <li><strong>Legal, valuation, bank fee, insurance, maintenance</strong>: planning allowances (legal 0.5-1% of price plus disbursements; valuation about CI$600; bank fee about 1% of loan; building insurance about 1% of price a year; maintenance 0.5-1% a year), replaced by your quotes in "Fee assumptions" and "Your household in detail". No published Cayman tariff exists for these.</li>
+          <li><strong>Currency</strong>: CI$1 = US$1.20, the fixed peg.</li>
+        </ol>
+        <x-import component-from-global-scope="CMC.Byline" author="Jerome Bailey" reviewer="Janique Bailey" checked="14 October 2026" updated="14 October 2026" note="Estimates only; not a quote or financial advice. Your lender's offer letter decides."></x-import>
+      </section>
+
+      <section class="card summary" aria-label="Summary" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 20px">
+        <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-start">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy-700)">Summary</span>
+            <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700">{{price}} home in {{island}}: what it takes</h2>
+            <span style="font-size: 14px; line-height: 22px; color: var(--ink-500)">Prepared {{today}} on caymanmortgagecalculator.com · figures in {{currencyName}} · estimates, not a quote. "Save as PDF" downloads a one-page handout with these figures and the first five years.</span>
+          </div>
+          <div class="no-print" style="display: flex; gap: 12px; flex-wrap: wrap">
+            <x-import component-from-global-scope="CMC.Button" variant="primary" icon-left="file-text" on-click="{{savePdf}}">Save as PDF</x-import>
+            <x-import component-from-global-scope="CMC.Button" variant="secondary" on-click="{{printSummary}}">Print</x-import>
+          </div>
+        </div>
+        <div class="r-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-500)">Property and buyer</strong>
+            <div class="row"><span>Purchase price</span><strong>{{price}}</strong></div>
+            <div class="row"><span>Government valuation</span><strong>{{valuationOut}}</strong></div>
+            <div class="row"><span>Location</span><strong>{{island}}</strong></div>
+            <div class="row"><span>Property type</span><strong>{{propTypeLabel}}</strong></div>
+            <div class="row"><span>Stamp duty status</span><strong>{{statusLabel}}</strong></div>
+            <div class="row"><span>Buying as</span><strong>{{buyerModeLabel}}</strong></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-500)">Mortgage</strong>
+            <div class="row"><span>Down payment</span><strong>{{deposit}} ({{depositPct}})</strong></div>
+            <div class="row"><span>Loan amount</span><strong>{{loan}}</strong></div>
+            <div class="row"><span>Interest rate</span><strong>{{rate}}</strong></div>
+            <div class="row"><span>Term</span><strong>{{term}} years</strong></div>
+            <div class="row"><span>Extra monthly payment</span><strong>{{extraOut}}</strong></div>
+            <div class="row total"><span>Monthly payment</span><strong>{{monthly}}</strong></div>
+            <div class="row"><span>Paid off in</span><strong>{{termOut}}</strong></div>
+            <div class="row"><span>Total interest</span><strong>{{interest}}</strong></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-500)">Cash and running costs</strong>
+            <div class="row"><span>Stamp duty ({{dutyRate}})</span><strong>{{stampDuty}}</strong></div>
+            <div class="row"><span>Mortgage stamp duty</span><strong>{{mortgageDuty}}</strong></div>
+            <div class="row"><span>Legal, valuation, bank fee (est.)</span><strong>{{legalFees}}</strong></div>
+            <div class="row"><span>Building insurance, first year</span><strong>{{bldgYear}}</strong></div>
+            <div class="row total"><span>Cash needed at closing</span><strong>{{cashNeeded}}</strong></div>
+            <div class="row"><span>Cash available</span><strong>{{cashOut}}</strong></div>
+            <div class="row total"><span>All-in monthly cost</span><strong>{{allIn}}</strong></div>
+            <div class="row"><span>Share of gross income</span><strong>{{ratioOut}}</strong></div>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-500)">Estimates from the figures entered above. Stamp duty concessions need an approved application; legal, valuation, bank and insurance figures are planning assumptions until replaced with quotes. Not financial advice. {{fxNote}}</p>
+      </section>
+
+    </section>
+  </div>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":3500}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = Object.assign({
+      inputsTick: 0,
+      valuation: '', island: 'Grand Cayman', propType: 'developed', status: 'first', buyerMode: 'single',
+      extra: '', income: '', cash: '',
+      strata: '', life: '', bldgInStrata: false, bldgMode: 'estimate', bldgPct: '1', bldgQuote: '', maint: '1',
+      legalPct: '1', bankPct: '1', valuationFee: '600'
+    }, this.state || {});
+    CMC.inputs.subscribe(() => this.setState({ inputsTick: Date.now() }));
+  }
+  num(k, fb) { const v = parseFloat(this.state[k]); return isNaN(v) ? (fb || 0) : v; }
+  setter(k) { return (e) => this.setState({ [k]: e && e.target ? e.target.value : e }); }
+
+  // Caymanian concession bands (Ministry of Finance form v16.4.26); see the stamp duty guide for sources
+  // Returns { rate, amount, threshold }: first property pays 3.75% only on the part above the 0% threshold ("on the difference above ... only"); second property pays a flat 3.75% up to its cap; above the band, 7.5% of the whole value
+  duty(base, status, group, land) {
+    if (status === 'standard') return { rate: 7.5, amount: base * 0.075, threshold: 0 };
+    if (status === 'first') {
+      const t = land ? (group ? [450000, 550000] : [250000, 350000]) : (group ? [600000, 700000] : [550000, 650000]);
+      if (base <= t[0]) return { rate: 0, amount: 0, threshold: t[0] };
+      if (base <= t[1]) return { rate: 3.75, amount: (base - t[0]) * 0.0375, threshold: t[0] };
+      return { rate: 7.5, amount: base * 0.075, threshold: t[0] };
+    }
+    const cap = land ? (group ? 550000 : 300000) : (group ? 700000 : 600000);
+    return base <= cap ? { rate: 3.75, amount: base * 0.0375, threshold: 0 } : { rate: 7.5, amount: base * 0.075, threshold: 0 };
+  }
+
+  schedule(loan, rate, term, extra) {
+    const r = rate / 100 / 12, n = Math.max(1, Math.round(term * 12));
+    const m = r === 0 ? loan / n : loan * r / (1 - Math.pow(1 + r, -n));
+    const rows = []; let bal = loan, month = 0, totalInt = 0;
+    while (bal > 0.005 && month < n + 1200) {
+      month++;
+      const i = bal * r;
+      let pay = Math.min(m + extra, bal + i);
+      const p = pay - i;
+      bal -= p; totalInt += i;
+      rows.push({ month, payment: pay, interest: i, principal: p, extra: Math.max(0, pay - m), balance: Math.max(0, bal) });
+    }
+    return { m, rows, totalInt, months: rows.length, baseInt: m * n - loan };
+  }
+
+  renderVals() {
+    const s = CMC.inputs.get();
+    const price = s.price, depositPct = s.deposit, rate = s.rate, term = s.term;
+    const fx = s.fx, sym = s.symbol; // all maths in CI$; display and entry in the chosen currency
+    const money = (n) => sym + Math.round(n * fx).toLocaleString('en-US');
+    const pct = (n) => (Math.round(n * 100) / 100) + '%';
+    const st = this.state;
+    const disp = (k) => st[k] === '' ? '' : Math.round(this.num(k) * fx);
+    const setMoney = (k) => (e) => { const v = parseFloat(e.target.value); this.setState({ [k]: isNaN(v) ? '' : String(v / fx) }); };
+
+    const deposit = price * depositPct / 100;
+    const loan = Math.max(0, price - deposit);
+    const extra = this.num('extra');
+    const sch = this.schedule(loan, rate, term, extra);
+    const m = sch.m;
+    const payoffYrs = Math.floor(sch.months / 12), payoffMo = sch.months % 12;
+    const saved = sch.baseInt - sch.totalInt;
+
+    // Stamp duty on the transfer
+    const base = Math.max(price, this.num('valuation'));
+    const group = st.buyerMode === 'group', land = st.propType === 'land';
+    const dd = this.duty(base, st.status, group, land);
+    const dRate = dd.rate, stamp = dd.amount;
+    const statusLabel = { standard: 'Standard rate', first: 'Caymanian, first property', second: 'Caymanian, second property' }[st.status];
+    const dutyLabel = dRate === 0 ? 'Waived' : dRate === 3.75 ? 'Reduced rate' : 'Standard rate';
+    const baseNote = base > price ? ' (the Government valuation, which is higher than the price)' : '';
+    let dutyExplain = (st.status === 'first' && dRate === 3.75) ? '3.75% on the part of ' + money(base) + baseNote + ' above ' + money(dd.threshold) + ', which is ' + money(base - dd.threshold) + '. ' : pct(dRate) + ' of ' + money(base) + baseNote + '. ';
+    if (st.status === 'standard') dutyExplain += 'Paid in cash when the transfer is registered; it is not covered by the mortgage.';
+    else if (dRate === 7.5) dutyExplain += 'Above the concession band for a ' + (group ? 'group of Caymanians' : 'single Caymanian') + ' buying ' + (land ? 'raw land' : 'a house or condo') + ', so the standard rate applies.';
+    else dutyExplain += 'Concession for a ' + (group ? 'group of 2-10 Caymanians' : 'Caymanian') + ' buying ' + (land ? 'raw land' : 'a house or condo') + ' as a ' + (st.status === 'first' ? 'first' : 'second') + ' property. Needs an approved application before completion.';
+    if (st.island !== 'Grand Cayman') dutyExplain += ' On ' + st.island + ', a separate duty waiver may apply if you build within two years; see the guide.';
+    const statusHint = { standard: 'Non-Caymanians, companies and Caymanians who have used both concessions pay 7.5%.', first: 'Needs an approved concession application. A five-year restriction is placed on the register.', second: 'Flat 3.75% up to the band for your property type; 7.5% above it.' }[st.status];
+
+    // Mortgage duty and fees
+    const mdPct = loan > 300000 ? 1.5 : 1;
+    const mduty = loan * mdPct / 100;
+    const legal = price * this.num('legalPct') / 100;
+    const fees = this.num('valuationFee') + loan * this.num('bankPct') / 100;
+
+    // Running costs
+    const strata = this.num('strata'), life = this.num('life');
+    const bldgYear = st.bldgInStrata ? 0 : (st.bldgMode === 'estimate' ? price * this.num('bldgPct') / 100 : this.num('bldgQuote'));
+    const maintYear = price * this.num('maint') / 100;
+    const allIn = m + strata + life + bldgYear / 12 + maintYear / 12;
+
+    // Cash and affordability
+    const cashNeeded = deposit + stamp + mduty + legal + fees + bldgYear;
+    const cash = this.num('cash');
+    const hasCash = st.cash !== '' && !isNaN(parseFloat(st.cash));
+    const income = this.num('income');
+    const hasIncome = st.income !== '' && income > 0;
+    const ratio = hasIncome ? allIn / income * 100 : 0;
+    const r = rate / 100 / 12, n = term * 12;
+    const budget = hasIncome ? Math.max(0, income * 0.40 - (strata + life + bldgYear / 12 + maintYear / 12)) : 0;
+    const maxLoan = r === 0 ? budget * n : budget * (1 - Math.pow(1 + r, -n)) / r;
+    const maxPrice = depositPct < 100 ? maxLoan / (1 - depositPct / 100) : 0;
+    let affordTone = 'neutral', affordBadge = 'Add your income', affordText = 'Enter your gross monthly household income and the page compares the all-in monthly cost with a common lender guideline, and works out the price you could stretch to at these terms.';
+    if (hasIncome) {
+      affordText = 'All-in housing costs of ' + money(allIn) + ' a month are ' + pct(ratio) + ' of ' + money(income) + ' gross income. ';
+      if (ratio <= 35) { affordTone = 'teal'; affordBadge = 'Comfortable'; affordText += 'Well inside the guideline.'; }
+      else if (ratio <= 40) { affordTone = 'tint'; affordBadge = 'Within guideline'; affordText += 'Inside the guideline, with little slack.'; }
+      else { affordTone = 'navy'; affordBadge = 'Over guideline'; affordText += 'Above what most lenders accept; a bigger down payment, longer term or lower price would bring it back.'; }
+      affordText += ' At a ' + depositPct + '% down payment, ' + rate + '% over ' + term + ' years, a 40% ceiling supports a price of about ' + money(maxPrice) + '.';
+    }
+    let cashTone = 'neutral', cashBadge = 'Add your cash', cashNote = 'Enter the cash you have for the purchase to see whether it covers this.';
+    if (hasCash) {
+      if (cash >= cashNeeded) { cashTone = 'teal'; cashBadge = 'Covered'; cashNote = money(cash) + ' covers it with ' + money(cash - cashNeeded) + ' to spare.'; }
+      else { cashTone = 'navy'; cashBadge = money(cashNeeded - cash) + ' short'; cashNote = money(cash) + ' leaves a gap of ' + money(cashNeeded - cash) + '. A smaller down payment reduces the cash needed but raises the loan and the monthly payment.'; }
+    }
+
+    // Year-by-year (first five years)
+    const years = [];
+    for (let y = 1; y <= Math.min(5, Math.ceil(sch.months / 12)); y++) {
+      const rows = sch.rows.slice((y - 1) * 12, y * 12);
+      const sum = (k) => rows.reduce((a, x) => a + x[k], 0);
+      years.push({ year: y, paid: money(sum('payment')), interest: money(sum('interest')), principal: money(sum('principal')), balance: money(rows[rows.length - 1].balance) });
+    }
+
+    const download = () => {
+      const header = ['Month', 'Payment', 'Principal', 'Interest', 'Extra payment', 'Balance'];
+      const c2 = (n) => +(n * fx).toFixed(2);
+      const body = sch.rows.map(x => [x.month, c2(x.payment), c2(x.principal), c2(x.interest), c2(x.extra), c2(x.balance)]);
+      const summary = [
+        ['Cayman Mortgage Calculator: amortisation schedule'], ['Generated', new Date().toISOString().slice(0, 10)], ['Currency', s.currency === 'USD' ? 'US$ (CI$1 = US$1.20)' : 'CI$'], [],
+        ['Purchase price', c2(price)], ['Down payment', c2(deposit)], ['Down payment %', depositPct], ['Loan amount', c2(loan)], ['Interest rate %', rate], ['Term (years)', term], ['Extra monthly payment', c2(extra)], [],
+        ['Monthly payment', c2(m)], ['Paid off in (months)', sch.months], ['Total interest', c2(sch.totalInt)], ['Total repaid', c2(loan + sch.totalInt)], [],
+        ['Stamp duty status', statusLabel], ['Stamp duty rate %', dRate], ['Stamp duty on transfer', c2(stamp)], ['Stamp duty on mortgage', c2(mduty)], ['Cash needed at closing (est.)', c2(cashNeeded)], [],
+        ['Estimates only; not a quote or financial advice. caymanmortgagecalculator.com']
+      ];
+      const name = 'cayman-mortgage-schedule-' + Math.round(price * fx) + '-' + s.currency + '.xlsx';
+      if (window.XLSX) {
+        const wb = XLSX.utils.book_new();
+        const ws1 = XLSX.utils.aoa_to_sheet(summary); ws1['!cols'] = [{ wch: 32 }, { wch: 18 }];
+        const ws2 = XLSX.utils.aoa_to_sheet([header].concat(body)); ws2['!cols'] = header.map(() => ({ wch: 14 }));
+        XLSX.utils.book_append_sheet(wb, ws1, 'Summary'); XLSX.utils.book_append_sheet(wb, ws2, 'Schedule');
+        XLSX.writeFile(wb, name);
+      } else {
+        const csv = [header].concat(body).map(r => r.join(',')).join('\n');
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name.replace('.xlsx', '.csv'); a.click();
+      }
+    };
+
+    return {
+      yes: true, logoHeight: 56,
+      // inputs
+      currencies: [{ value: 'KYD', label: 'CI$ (KYD)' }, { value: 'USD', label: 'US$' }], currency: s.currency, setCurrency: (v) => CMC.inputs.set({ currency: v }),
+      sym, fxNote: s.currency === 'USD' ? 'Converted at the fixed peg CI$1 = US$1.20. Stamp duty bands are set in CI$.' : 'Cayman Islands dollars. Switch to US$ to see the same figures converted at the fixed peg (CI$1 = US$1.20).',
+      currencyName: s.currency === 'USD' ? 'US dollars (CI$1 = US$1.20)' : 'Cayman Islands dollars',
+      priceIn: Math.round(price * fx), setPrice: (e) => { const v = parseFloat(e.target.value); CMC.inputs.set({ price: isNaN(v) ? 0 : v / fx }); },
+      today: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+      valuationOut: this.num('valuation') > 0 ? money(this.num('valuation')) : 'Not entered', propTypeLabel: land ? 'Raw land' : 'House or condo', statusLabel, buyerModeLabel: group ? '2-10 Caymanians jointly' : 'One buyer',
+      extraOut: extra > 0 ? money(extra) + ' a month' : 'None', legalFees: money(legal + fees), cashOut: hasCash ? money(cash) : 'Not entered', ratioOut: hasIncome ? pct(ratio) + ' of ' + money(income) : 'Income not entered',
+      printSummary: () => { try { window.print(); } catch (e) {} },
+      savePdf: () => {
+        // One-page PDF built in the browser (jsPDF); falls back to the print dialog if the library did not load
+        if (!window.jspdf || !window.jspdf.jsPDF) { try { window.print(); } catch (e) {} return; }
+        const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+        const W = 595, M = 48; let y = M;
+        const navy = [1, 21, 51], teal = [15, 124, 126], ink = [31, 41, 55], muted = [107, 114, 128];
+        const txt = (t, x, yy, size, color, style) => { doc.setFont('helvetica', style || 'normal'); doc.setFontSize(size); doc.setTextColor(color[0], color[1], color[2]); doc.text(String(t), x, yy); };
+        doc.setFillColor(navy[0], navy[1], navy[2]); doc.rect(0, 0, W, 86, 'F');
+        txt('CAYMAN MORTGAGE CALCULATOR', M, 34, 9, [95, 212, 203], 'bold');
+        txt(money(price) + ' home in ' + st.island + ': what it takes', M, 58, 17, [255, 255, 255], 'bold');
+        txt('Prepared ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' on caymanmortgagecalculator.com. Figures in ' + (s.currency === 'USD' ? 'US dollars (CI$1 = US$1.20)' : 'Cayman Islands dollars') + '. Estimates, not a quote.', M, 76, 8.5, [166, 183, 213]);
+        y = 118;
+        const section = (title, rows) => {
+          txt(title.toUpperCase(), M, y, 8.5, teal, 'bold'); y += 6;
+          doc.setDrawColor(229, 231, 235); doc.line(M, y, W - M, y); y += 14;
+          rows.forEach(r => {
+            const bold = r[2] === true;
+            txt(r[0], M, y, 10, bold ? ink : muted, bold ? 'bold' : 'normal');
+            doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.setFontSize(10); doc.setTextColor(ink[0], ink[1], ink[2]);
+            doc.text(String(r[1]), W - M, y, { align: 'right' });
+            y += 15;
+          });
+          y += 10;
+        };
+        const yrs = Math.floor(sch.months / 12), mo = sch.months % 12;
+        section('Property and buyer', [
+          ['Purchase price', money(price)], ['Government valuation', this.num('valuation') > 0 ? money(this.num('valuation')) : 'Not entered'],
+          ['Location', st.island], ['Property type', land ? 'Raw land' : 'House or condo'], ['Stamp duty status', statusLabel], ['Buying as', group ? '2-10 Caymanians jointly' : 'One buyer']]);
+        section('Mortgage', [
+          ['Down payment', money(deposit) + ' (' + depositPct + '%)'], ['Loan amount', money(loan)], ['Interest rate', rate + '%'], ['Term', term + ' years'],
+          ['Extra monthly payment', extra > 0 ? money(extra) + ' a month' : 'None'], ['Monthly payment', money(m), true],
+          ['Paid off in', yrs + (mo ? ' yrs ' + mo + ' mo' : ' years')], ['Total interest', money(sch.totalInt)]]);
+        section('Cash and running costs', [
+          ['Stamp duty on the transfer (' + (st.status === 'first' && dRate === 3.75 ? '3.75% above ' + money(dd.threshold) : pct(dRate)) + ')', money(stamp)], ['Stamp duty on the mortgage (' + mdPct + '%)', money(mduty)],
+          ['Legal, valuation, bank fee (est.)', money(legal + fees)], ['Building insurance, first year', money(bldgYear)],
+          ['Cash needed at closing', money(cashNeeded), true], ['Cash available', hasCash ? money(cash) : 'Not entered'],
+          ['All-in monthly cost', money(allIn), true], ['Share of gross income', hasIncome ? pct(ratio) + ' of ' + money(income) : 'Income not entered']]);
+        // First five years
+        txt('YEAR BY YEAR (FIRST FIVE YEARS)', M, y, 8.5, teal, 'bold'); y += 6; doc.setDrawColor(229, 231, 235); doc.line(M, y, W - M, y); y += 14;
+        const cols = [M, 170, 290, 410, W - M], heads = ['Year', 'Paid', 'Interest', 'Principal', 'Balance'];
+        heads.forEach((hd, i) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(muted[0], muted[1], muted[2]); doc.text(hd, cols[i], y, i ? { align: 'right' } : undefined); });
+        y += 14;
+        years.forEach(yr => { [yr.year, yr.paid, yr.interest, yr.principal, yr.balance].forEach((cell, i) => { doc.setFont('helvetica', i === 3 ? 'bold' : 'normal'); doc.setFontSize(10); const col = i === 3 ? teal : ink; doc.setTextColor(col[0], col[1], col[2]); doc.text(String(cell), cols[i], y, i ? { align: 'right' } : undefined); }); y += 15; });
+        y += 10;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(muted[0], muted[1], muted[2]);
+        const note = doc.splitTextToSize('Estimates from the figures entered on caymanmortgagecalculator.com. Stamp duty concessions need an approved application; legal, valuation, bank and insurance figures are planning assumptions until replaced with quotes. Not financial advice.' + (s.currency === 'USD' ? ' Converted at the fixed peg CI$1 = US$1.20; stamp duty bands are set in CI$.' : ''), W - 2 * M);
+        doc.text(note, M, Math.max(y + 6, 780));
+        doc.save('cayman-mortgage-summary-' + Math.round(price * fx) + '-' + s.currency + '.pdf');
+      },
+      islands: ['Grand Cayman', 'Cayman Brac', 'Little Cayman'], island: st.island, setIsland: this.setter('island'),
+      propTypes: [{ value: 'developed', label: 'House or condo' }, { value: 'land', label: 'Raw land' }], propType: st.propType, setPropType: this.setter('propType'),
+      statuses: [{ value: 'first', label: 'Caymanian, first property' }, { value: 'second', label: 'Caymanian, second property' }, { value: 'standard', label: 'Standard rate (7.5%)' }], status: st.status, setStatus: this.setter('status'), statusHint,
+      buyerModes: [{ value: 'single', label: 'One buyer' }, { value: 'group', label: '2-10 Caymanians jointly' }], buyerMode: st.buyerMode, setBuyerMode: this.setter('buyerMode'),
+      valuation: disp('valuation'), setValuation: setMoney('valuation'),
+      depositAmt: Math.round(deposit * fx), setDepositAmt: (e) => { const v = parseFloat(e.target.value) / fx; if (!isNaN(v) && price > 0) CMC.inputs.set({ deposit: Math.round(v / price * 10000) / 100 }); },
+      extra: disp('extra'), setExtra: setMoney('extra'), income: disp('income'), setIncome: setMoney('income'), cash: disp('cash'), setCash: setMoney('cash'),
+      strata: disp('strata'), setStrata: setMoney('strata'), life: disp('life'), setLife: setMoney('life'),
+      bldgInStrata: st.bldgInStrata, toggleBldgInStrata: () => this.setState({ bldgInStrata: !st.bldgInStrata }),
+      bldgModes: [{ value: 'estimate', label: 'Estimate' }, { value: 'quote', label: 'My quote' }], bldgMode: st.bldgMode, setBldgMode: this.setter('bldgMode'),
+      bldgPrefix: st.bldgMode === 'quote' ? 'CI$' : undefined, bldgSuffix: st.bldgMode === 'quote' ? '/yr' : '% of price a year', bldgStep: st.bldgMode === 'quote' ? 100 : 0.1,
+      bldgValue: st.bldgMode === 'quote' ? disp('bldgQuote') : st.bldgPct, setBldgValue: st.bldgMode === 'quote' ? setMoney('bldgQuote') : this.setter('bldgPct'),
+      maint: st.maint, setMaint: this.setter('maint'),
+      legalPct: st.legalPct, setLegalPct: this.setter('legalPct'), bankPct: st.bankPct, setBankPct: this.setter('bankPct'), valuationFee: disp('valuationFee'), setValuationFee: setMoney('valuationFee'),
+      mortgageDutyPct: mdPct,
+      // results
+      price: money(price), deposit: money(deposit), depositPct: depositPct + '%',
+      loan: money(loan), rate: rate + '%', term: term, termOut: payoffYrs + (payoffMo ? ' yrs ' + payoffMo + ' mo' : ' years'),
+      monthly: money(m), interest: money(sch.totalInt), total: money(loan + sch.totalInt),
+      extraNote: extra > 0 ? ', plus ' + money(extra) + ' extra a month' : '',
+      payoffNote: extra > 0 ? 'paid off in ' + payoffYrs + ' yrs ' + payoffMo + ' mo, saving ' + money(saved) : 'over ' + term + ' years',
+      strataOut: money(strata), lifeOut: money(life), bldgMonthly: money(bldgYear / 12), maintMonthly: money(maintYear / 12), allIn: money(allIn),
+      allInNote: st.bldgInStrata ? 'Building insurance is inside the strata fee.' : (st.bldgMode === 'estimate' ? 'Building insurance estimated at ' + this.num('bldgPct') + '% of price a year.' : 'Building insurance from your quote.'),
+      stampDuty: money(stamp), dutyRate: (st.status === 'first' && dRate === 3.75 ? '3.75% above ' + money(dd.threshold) : pct(dRate)), dutyLabel, dutyExplain, mortgageDuty: money(mduty), legal: money(legal), fees: money(fees), bldgYear: money(bldgYear),
+      cashNeeded: money(cashNeeded), cashTone, cashBadge, cashNote,
+      affordTone, affordBadge, affordText,
+      years, download,
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', active: true, open: true, menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing', active: true },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

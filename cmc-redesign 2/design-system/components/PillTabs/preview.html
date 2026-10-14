@@ -1,0 +1,13 @@
+<!-- @dsCard group="Forms" height=56 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>PillTabs — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} </style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(function(){ var s=React.useState('buy'); return h(C.PillTabs,{items:[{value:'buy',label:'Buying'},{value:'refi',label:'Refinancing'},{value:'afford',label:'What can I afford?'}],value:s[0],onChange:s[1]}); }));
+</script>
+</body>
+</html>

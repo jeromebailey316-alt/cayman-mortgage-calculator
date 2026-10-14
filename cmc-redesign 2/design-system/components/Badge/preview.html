@@ -1,0 +1,13 @@
+<!-- @dsCard group="Status" height=48 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Badge — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} </style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'row'}, h(C.Badge,null,'For sale'), h(C.Badge,{tone:'teal'},'For rent'), h(C.Badge,{tone:'neutral'},'Pending'), h(C.Badge,{tone:'tint'},'Stamp duty exempt')));
+</script>
+</body>
+</html>

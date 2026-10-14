@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Equity calculator</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero { padding-bottom: 96px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-hide { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Calculators › Equity</nav>
+      <h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">Equity calculator</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">Your equity is what your home is worth minus what you still owe. See it, your loan-to-value, and roughly how much a lender might let you borrow against it.</p>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+
+    <aside aria-label="Inputs" style="flex: 1 1 360px; max-width: 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <section aria-label="Your home" class="r-pad" style="background: var(--surface-0); border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-md); padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <x-import component-from-global-scope="CMC.Input" label="Current home value" prefix="CI$" type="number" input-mode="decimal" default-value="{{valueRaw}}" hint="Use a recent valuation or a realistic sale price."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Outstanding mortgage balance" prefix="CI$" type="number" input-mode="decimal" default-value="{{balanceRaw}}" hint="From your latest statement."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Other loans secured on the home" prefix="CI$" type="number" input-mode="decimal" default-value="{{otherRaw}}" hint="Second mortgage or home-equity line, if any."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Lender's maximum loan-to-value" suffix="%" type="number" input-mode="decimal" default-value="{{maxLtvRaw}}" hint="Most Cayman lenders cap borrowing at a share of the home's value."></x-import>
+        <x-import component-from-global-scope="CMC.Button" variant="primary" icon-right="arrow-right" block="{{yes}}">Recalculate</x-import>
+      </section>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid var(--line-100); border-radius: 12px; font-size: 14px; line-height: 22px; color: var(--ink-700)">
+        <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy-700)">Assumptions</strong>
+        <span>Equity = home value − mortgage balance − other secured loans.</span>
+        <span>Available to borrow = (value × maximum LTV) − everything already secured. Lenders also test affordability, so treat it as a ceiling.</span>
+        <span>Valuation, legal and stamp duty costs on a new facility are not included; see the <a href="Refinancing.dc.html">refinancing guide</a>. A new charge is stamped at 1% / 1.5% of the sum secured under the <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener">Stamp Duty Act (2019 Revision)</a>.</span>
+        <span>The 80% maximum loan-to-value is a typical Cayman lender cap for a primary residence, not a rule; change it to match your bank.</span>
+        <x-import component-from-global-scope="CMC.Byline" author="Jerome Bailey" reviewer="Janique Bailey" checked="14 October 2026" updated="14 October 2026" note="Estimates only; not financial advice. Your lender's valuation and policy decide."></x-import>
+      </div>
+    </aside>
+
+    <section aria-label="Results" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+      <div class="r-pad" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; padding: 24px; border-radius: 12px; background: var(--navy-900); color: var(--on-dark)">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Your equity</span>
+          <span class="r-big" style="font-size: 56px; line-height: 60px; font-weight: 700; letter-spacing: -.02em">{{equity}}</span>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">{{equityPct}} of a {{value}} home · loan-to-value {{ltv}}</span>
+        </div>
+        <x-import component-from-global-scope="CMC.Button" variant="onDark" icon-right="arrow-right" href="Calculator.dc.html">Model a new mortgage</x-import>
+      </div>
+
+      <div class="r-pad" style="display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm)">
+        <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline">
+          <strong style="font-size: 18px; line-height: 24px">Where the value sits</strong>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Share of home value</span>
+        </div>
+        <div role="img" aria-label="{{barLabel}}" style="display: flex; height: 24px; border-radius: 999px; overflow: hidden; background: var(--surface-100)">
+          <div style="background: var(--navy-700); width: {{mortgageW}}"></div>
+          <div style="background: var(--navy-300); width: {{otherW}}"></div>
+          <div style="background: var(--teal-600); width: {{equityW}}"></div>
+        </div>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; line-height: 22px; color: var(--ink-700)">
+          <span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 999px; background: var(--navy-700); display: inline-block"></span>Mortgage {{balance}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 999px; background: var(--navy-300); display: inline-block"></span>Other secured {{other}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 999px; background: var(--teal-600); display: inline-block"></span>Equity {{equity}}</span>
+        </div>
+      </div>
+
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm)">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-500)">Loan-to-value</span>
+          <span style="font-size: 24px; line-height: 32px; font-weight: 700">{{ltv}}</span>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">all secured debt ÷ value</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-sm)">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-500)">Lender's ceiling at {{maxLtv}}</span>
+          <span style="font-size: 24px; line-height: 32px; font-weight: 700">{{ceiling}}</span>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">maximum total secured borrowing</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid var(--teal-600); border-radius: 12px; background: var(--teal-100)">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--teal-600)">Available to borrow</span>
+          <span style="font-size: 24px; line-height: 32px; font-weight: 700">{{available}}</span>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-700)">ceiling less what you already owe</span>
+        </div>
+      </div>
+
+      <div class="r-pad" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 24px; border-radius: 12px; border: 1px solid var(--line-100)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--navy-100); color: var(--navy-700); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="trending-up"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0">
+          <strong style="font-size: 18px; line-height: 24px">What moves your equity</strong>
+          <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 22px; color: var(--ink-700); display: flex; flex-direction: column; gap: 4px">
+            <li>Every repayment: the principal part of each month's payment lowers the balance. Early in a term that part is small; it grows every year.</li>
+            <li>The market: a higher valuation lifts equity without you paying a dollar; a lower one erodes it.</li>
+            <li>Overpayments: a lump sum off the balance converts straight into equity.</li>
+            <li>Borrowing against it: a home-equity loan turns equity back into debt; the bar above moves left.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px; flex-wrap: wrap">
+        <x-import component-from-global-scope="CMC.Button" variant="secondary" icon-left="calculator" href="Calculator.dc.html">Mortgage calculator</x-import>
+        <x-import component-from-global-scope="CMC.Button" variant="ghost" icon-right="arrow-right" href="Refinancing.dc.html">Refinancing guide</x-import>
+      </div>
+
+    </section>
+  </div>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"value":{"editor":"int","default":820000,"min":50000,"max":10000000,"step":5000,"unit":"CI$","section":"Example figures"},"balance":{"editor":"int","default":430000,"min":0,"max":10000000,"step":5000,"unit":"CI$","section":"Example figures"},"other":{"editor":"int","default":0,"min":0,"max":5000000,"step":5000,"unit":"CI$","section":"Example figures"},"maxLtv":{"editor":"float","default":80,"min":0,"max":100,"step":1,"unit":"%","section":"Example figures"},"$preview":{"width":1280,"height":1560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const value = Number(this.props.value ?? 820000);
+    const balance = Number(this.props.balance ?? 430000);
+    const other = Number(this.props.other ?? 0);
+    const maxLtv = Number(this.props.maxLtv ?? 80);
+    const money = (n) => 'CI$' + Math.round(n).toLocaleString('en-US');
+    const pct = (n) => (Math.round(n * 10) / 10) + '%';
+    const secured = balance + other;
+    const equity = Math.max(0, value - secured);
+    const ltv = value > 0 ? secured / value * 100 : 0;
+    const ceiling = value * maxLtv / 100;
+    const available = Math.max(0, ceiling - secured);
+    const w = (n) => value > 0 ? Math.max(0, Math.min(100, n / value * 100)) + '%' : '0%';
+    return {
+      yes: true, logoHeight: 56,
+      valueRaw: value, balanceRaw: balance, otherRaw: other, maxLtvRaw: maxLtv,
+      value: money(value), balance: money(balance), other: money(other),
+      equity: money(equity), equityPct: pct(value > 0 ? equity / value * 100 : 0), ltv: pct(ltv),
+      maxLtv: pct(maxLtv), ceiling: money(ceiling), available: money(available),
+      mortgageW: w(balance), otherW: w(other), equityW: w(equity),
+      barLabel: 'Mortgage ' + money(balance) + ', other secured ' + money(other) + ', equity ' + money(equity),
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', active: true, open: true, menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe', active: true },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

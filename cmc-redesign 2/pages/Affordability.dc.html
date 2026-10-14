@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Affordability</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+.card { border: 1px solid var(--line-100); border-radius: 12px; background: var(--surface-0); box-shadow: var(--shadow-sm); }
+.sec { display: flex; flex-direction: column; gap: 16px; padding: 20px; border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 700; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.seg .cmc-pills { display: flex; width: 100%; box-sizing: border-box; } .seg .cmc-pill { flex: 1; text-align: center; }
+.row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; line-height: 22px; color: var(--ink-700); } .row strong { color: var(--ink-900); }
+.row.total { border-top: 1px solid var(--line-100); padding-top: 8px; margin-top: 4px; font-weight: 700; color: var(--ink-900); }
+.bar { height: 10px; border-radius: 999px; background: var(--surface-100); overflow: hidden; display: flex; }
+.refs { font-size: 14px; line-height: 22px; color: var(--ink-700); } .refs ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-100); padding: 40px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-500)"><a href="Main.dc.html" style="color: var(--ink-500); text-decoration: none">Home</a> › Calculators › Affordability</nav>
+      <h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.01em">How much can I afford?</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-700); max-width: 64ch">Work back from your income and the cash you have to the price a lender is likely to support. Two limits are tested: what you can pay each month, and what you can put down on the day. The lower one wins.</p>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+
+    <aside aria-label="Inputs" class="card" style="flex: 1 1 360px; max-width: 420px; min-width: 0; display: flex; flex-direction: column">
+      <section class="sec" aria-label="Currency" style="flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 14px; line-height: 22px">Show figures in</strong><span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{fxNote}}</span></div>
+        <x-import component-from-global-scope="CMC.PillTabs" items="{{currencies}}" value="{{currency}}" on-change="{{setCurrency}}"></x-import>
+      </section>
+
+      <section class="sec" aria-label="Income">
+        <h2>Your household</h2>
+        <x-import component-from-global-scope="CMC.Input" label="Gross monthly household income" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="100" value="{{income}}" on-change="{{setIncome}}" hint="Before tax and deductions; all applicants together."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Other monthly debt payments" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="50" value="{{debts}}" on-change="{{setDebts}}" placeholder="0" hint="Car loan, credit cards, personal loans. Lenders count these against the same ceiling."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Cash available for the purchase" prefix="{{sym}}" type="number" input-mode="decimal" min="0" step="1000" value="{{cash}}" on-change="{{setCash}}" hint="Must cover the down payment and closing costs; stamp duty is paid in cash."></x-import>
+        <x-import component-from-global-scope="CMC.Input" label="Running-cost allowance" prefix="{{sym}}" suffix="/mo" type="number" input-mode="decimal" min="0" step="50" value="{{running}}" on-change="{{setRunning}}" hint="Strata, insurance and upkeep. A condo with strata is often 400-800 a month; set 0 to test the mortgage alone."></x-import>
+      </section>
+
+      <section class="sec" aria-label="Mortgage terms">
+        <h2>Mortgage terms</h2>
+        <div class="two">
+          <x-import component-from-global-scope="CMC.Input" label="Down payment" suffix="%" type="number" input-mode="decimal" min="0" max="100" step="0.5" bind="deposit"></x-import>
+          <x-import component-from-global-scope="CMC.Input" label="Term" suffix="yrs" type="number" input-mode="numeric" min="1" max="40" step="1" bind="term"></x-import>
+        </div>
+        <x-import component-from-global-scope="CMC.Input" label="Interest rate" suffix="%" type="number" input-mode="decimal" min="0" step="0.05" bind="rate" hint="Shared with the mortgage calculator. KYD prime is 7.00%; a primary residence usually prices at prime plus 0.5-1%."></x-import>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-700)">Stamp duty status</span>
+          <div class="seg"><x-import component-from-global-scope="CMC.PillTabs" items="{{statuses}}" value="{{status}}" on-change="{{setStatus}}"></x-import></div>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{statusHint}}</span>
+        </div>
+        <x-import component-from-global-scope="CMC.Input" label="Lender ceiling" suffix="% of income" type="number" input-mode="decimal" min="10" max="60" step="1" value="{{ratio}}" on-change="{{setRatio}}" hint="Total debt service: housing costs plus other debts. 40% is a common Cayman lender guideline; each bank sets its own."></x-import>
+      </section>
+    </aside>
+
+    <section aria-label="Results" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+      <div class="r-pad" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; padding: 24px; border-radius: 12px; background: var(--navy-900); color: var(--on-dark)">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">You could look at homes up to</span>
+          <span class="r-big" style="font-size: 56px; line-height: 60px; font-weight: 700; letter-spacing: -.02em">{{maxPrice}}</span>
+          <span style="font-size: 14px; line-height: 22px; color: var(--on-dark-muted)">{{binding}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 0; max-width: 100%">
+          <x-import component-from-global-scope="CMC.Button" variant="onDark" icon-left="calculator" icon-right="arrow-right" on-click="{{runPrice}}">Run this price in the mortgage calculator</x-import>
+          <span style="font-size: 12px; line-height: 16px; color: var(--on-dark-muted); text-align: right">Sets the price; your deposit, rate and term are already shared</span>
+        </div>
+      </div>
+
+      <div class="r-grid" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-size: 16px; line-height: 24px">Limit 1: what you can pay monthly</strong><x-import component-from-global-scope="CMC.Badge" tone="{{incomeTone}}">{{incomeBadge}}</x-import></div>
+          <div class="row"><span>Gross monthly income</span><strong>{{incomeOut}}</strong></div>
+          <div class="row"><span>{{ratioOut}} ceiling for all debt</span><strong>{{ceiling}}</strong></div>
+          <div class="row"><span>Less other debt payments</span><strong>− {{debtsOut}}</strong></div>
+          <div class="row"><span>Less running costs</span><strong>− {{runningOut}}</strong></div>
+          <div class="row total"><span>Room for a mortgage payment</span><strong>{{roomPay}}</strong></div>
+          <div class="row"><span>Supports a loan of</span><strong>{{loanByIncome}}</strong></div>
+          <div class="row"><span>At {{depositPct}} down, a price of</span><strong>{{priceByIncome}}</strong></div>
+        </div>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-size: 16px; line-height: 24px">Limit 2: what your cash covers</strong><x-import component-from-global-scope="CMC.Badge" tone="{{cashTone}}">{{cashBadge}}</x-import></div>
+          <div class="row"><span>Cash available</span><strong>{{cashOut}}</strong></div>
+          <div class="row"><span>Down payment ({{depositPct}}) at that price</span><strong>{{cashDeposit}}</strong></div>
+          <div class="row"><span>Stamp duty on the transfer ({{dutyRate}})</span><strong>{{cashDuty}}</strong></div>
+          <div class="row"><span>Mortgage stamp duty, legal, valuation, bank fee (est.)</span><strong>{{cashFees}}</strong></div>
+          <div class="row total"><span>Cash stretches to a price of</span><strong>{{priceByCash}}</strong></div>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">Fees estimated at legal 1% of price, valuation CI$600, bank fee 1% of loan, mortgage duty 1%/1.5% of loan. Replace with quotes in the <a href="ClosingCosts.dc.html">closing-costs checklist</a>.</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap"><strong style="font-size: 16px; line-height: 24px">At {{maxPrice}}, your month would look like</strong><span style="font-size: 12px; line-height: 16px; color: var(--ink-500)">{{shareOut}} of gross income</span></div>
+        <div class="bar" aria-label="{{barLabel}}">
+          <span style="width: {{wMort}}; background: var(--navy-700)"></span>
+          <span style="width: {{wRun}}; background: var(--teal-600)"></span>
+          <span style="width: {{wDebt}}; background: var(--navy-300)"></span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; line-height: 16px; color: var(--ink-700)">
+          <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--navy-700); vertical-align: -1px"></span> Mortgage {{payAtMax}}</span>
+          <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--teal-600); vertical-align: -1px"></span> Running costs {{runningOut}}</span>
+          <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--navy-300); vertical-align: -1px"></span> Other debts {{debtsOut}}</span>
+          <span><span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--surface-100); border: 1px solid var(--line-300); vertical-align: -1px"></span> Left of income {{leftOut}}</span>
+        </div>
+        <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">{{advice}}</span>
+      </div>
+
+      <div class="r-pad" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 24px; border-radius: 12px; background: var(--teal-100)">
+        <span style="width: 48px; height: 48px; border-radius: 999px; background: var(--teal-600); color: var(--on-teal); display: flex; align-items: center; justify-content: center; flex: none"><x-import component-from-global-scope="CMC.Icon" name="house"></x-import></span>
+        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0">
+          <strong style="font-size: 18px; line-height: 24px">Three ways to raise the number</strong>
+          <span style="font-size: 14px; line-height: 22px; color: var(--ink-700)">{{levers}}</span>
+          <a href="Listings.dc.html" style="font-size: 14px; font-weight: 600; color: var(--teal-600); text-decoration: none">See listings up to {{maxPrice}} →</a>
+        </div>
+      </div>
+
+      <section class="card refs" aria-label="How this is worked out" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 12px">
+        <strong style="font-size: 16px; line-height: 24px; color: var(--ink-900)">How this is worked out, and the sources</strong>
+        <ol>
+          <li><strong>Lender ceiling.</strong> Cayman lenders test a total debt-service ratio: all loan payments, including the new mortgage and the home's running costs, as a share of gross income. 40% is a common guideline; banks set their own figure and may use a different one for non-residents. The ceiling is an input above so you can match your bank's.</li>
+          <li><strong>Loan from payment.</strong> The room left for a mortgage payment is converted to a loan with the standard amortising formula at the shared rate and term, the same arithmetic as the <a href="Calculator.dc.html">mortgage calculator</a>.</li>
+          <li><strong>Stamp duty on the transfer.</strong> 7.5% of the price (or market value, if higher); Caymanian first-property buyers may qualify for 0% or 3.75% within the bands set out in the Ministry of Finance concession form; detail in the <a href="StampDuty.dc.html">stamp duty guide</a>. Source: <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">Application for Stamp Duty Concession, Caymanian property buyers (v16.4.26)</a>.</li>
+          <li><strong>Stamp duty on the mortgage.</strong> 1% of the sum secured up to CI$300,000; 1.5% of the whole sum above that. Source: <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener">Stamp Duty Act (2019 Revision), Schedule: Mortgage</a>.</li>
+          <li><strong>Interest rate default.</strong> KYD prime 7.00%, raised from 6.75% on 18 September 2026 (<a href="https://www.caymannational.com/about/news/28-notices" target="_blank" rel="noopener">Cayman National notices</a>, checked 1 October 2026); the default of 7.75% assumes prime plus 0.75%. Enter the rate your bank quoted.</li>
+          <li><strong>Fee estimates</strong> (legal, valuation, bank fee) are planning allowances, not quotes.</li>
+        </ol>
+        <x-import component-from-global-scope="CMC.Byline" author="Jerome Bailey" reviewer="Janique Bailey" checked="14 October 2026" updated="14 October 2026" note="Estimates only; not financial advice. Your lender's own assessment decides."></x-import>
+      </section>
+
+    </section>
+  </div>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = Object.assign({ inputsTick: 0, income: '9000', debts: '', cash: '120000', running: '500', status: 'first', ratio: '40' }, this.state || {});
+    CMC.inputs.subscribe(() => this.setState({ inputsTick: Date.now() }));
+  }
+  num(k, fb) { const v = parseFloat(this.state[k]); return isNaN(v) ? (fb || 0) : v; }
+  setter(k) { return (e) => this.setState({ [k]: e && e.target ? e.target.value : e }); }
+  // Single Caymanian, developed property: 0% to CI$550,000, then 3.75% on the part above it up to CI$650,000, then 7.5% of the whole value
+  dutyAmount(base, status) {
+    if (status !== 'first') return base * 0.075;
+    return base <= 550000 ? 0 : base <= 650000 ? (base - 550000) * 0.0375 : base * 0.075;
+  }
+  dutyRate(base, status) {
+    if (status !== 'first') return 7.5;
+    return base <= 550000 ? 0 : base <= 650000 ? 3.75 : 7.5;
+  }
+  renderVals() {
+    const s = CMC.inputs.get();
+    const fx = s.fx, sym = s.symbol;
+    const money = (n) => sym + Math.round(Math.max(0, n) * fx).toLocaleString('en-US');
+    const pct = (n) => (Math.round(n * 10) / 10) + '%';
+    const st = this.state;
+    const disp = (k) => st[k] === '' ? '' : Math.round(this.num(k) * fx);
+    const setMoney = (k) => (e) => { const v = parseFloat(e.target.value); this.setState({ [k]: isNaN(v) ? '' : String(v / fx) }); };
+
+    const income = this.num('income'), debts = this.num('debts'), cash = this.num('cash'), running = this.num('running');
+    const ratio = this.num('ratio', 40), dep = s.deposit, rate = s.rate, term = s.term;
+    const r = rate / 100 / 12, n = term * 12;
+    const pv = (pay) => r === 0 ? pay * n : pay * (1 - Math.pow(1 + r, -n)) / r;
+    const pmt = (loan) => r === 0 ? loan / n : loan * r / (1 - Math.pow(1 + r, -n));
+
+    // Limit 1: income
+    const ceiling = income * ratio / 100;
+    const roomPay = Math.max(0, ceiling - debts - running);
+    const loanByIncome = pv(roomPay);
+    const priceByIncome = dep < 100 ? loanByIncome / (1 - dep / 100) : 0;
+
+    // Limit 2: cash; bisect because duty bands and mortgage-duty tiers depend on the price
+    const fees = (p) => { const loan = p * (1 - dep / 100); const md = loan > 300000 ? 0.015 : 0.01; return { duty: this.dutyAmount(p, st.status), other: p * 0.01 + 600 + loan * 0.01 + loan * md }; };
+    // cash needed rises with price (duty bands step up, never down), so bisect for the highest price the cash covers
+    const need = (p) => { const f = fees(p); return p * dep / 100 + f.duty + f.other; };
+    let priceByCash = 0;
+    if (cash > 600) { let lo = 0, hi = 20000000; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (need(mid) <= cash) lo = mid; else hi = mid; } priceByCash = lo; }
+    const fc = fees(priceByCash);
+
+    const hasIncome = income > 0, hasCash = cash > 0;
+    let maxPrice = 0, binding = 'Enter your income and your cash to see both limits.';
+    if (hasIncome && hasCash) { maxPrice = Math.min(priceByIncome, priceByCash); binding = priceByCash <= priceByIncome ? 'Your cash is the limit; income would support ' + money(priceByIncome) + '.' : 'Your monthly budget is the limit; cash would stretch to ' + money(priceByCash) + '.'; }
+    else if (hasIncome) { maxPrice = priceByIncome; binding = 'From income alone, at ' + dep + '% down, ' + rate + '% over ' + term + ' years. Add your cash to test the down payment and closing costs.'; }
+    else if (hasCash) { maxPrice = priceByCash; binding = 'From cash alone. Add your income to test the monthly payment.'; }
+
+    const payAtMax = pmt(maxPrice * (1 - dep / 100));
+    const share = income > 0 ? (payAtMax + running + debts) / income * 100 : 0;
+    const w = (v) => income > 0 ? Math.max(0, Math.min(100, v / income * 100)) + '%' : '0%';
+    const left = Math.max(0, income - payAtMax - running - debts);
+    let advice = 'Enter your income to see how the month splits.';
+    if (hasIncome && maxPrice > 0) advice = 'A ' + money(payAtMax) + ' mortgage payment plus ' + money(running + debts) + ' of running costs and other debts leaves ' + money(left) + ' a month for everything else: food, school, transport, savings. If that feels tight, the lender\'s ceiling is not your ceiling.';
+
+    const dRate = this.dutyRate(priceByCash, st.status);
+    const levers = [];
+    if (dep > 10) levers.push('a ' + (dep - 5) + '% down payment instead of ' + dep + '% (raises the monthly payment)');
+    if (term < 30) levers.push('a ' + Math.min(30, term + 5) + '-year term instead of ' + term + ' (more interest overall)');
+    if (debts > 0) levers.push('clearing the ' + money(debts) + ' of other monthly debt before applying');
+    if (st.status !== 'first') levers.push('checking whether you qualify for the Caymanian first-property concession');
+    if (levers.length < 3) levers.push('a Caymanian co-buyer or joint application, which can widen the concession band');
+    const leversOut = 'Try ' + levers.slice(0, 3).join('; ') + '. Each one moves the figure above instantly.';
+
+    return {
+      logoHeight: 56,
+      currencies: [{ value: 'KYD', label: 'CI$ (KYD)' }, { value: 'USD', label: 'US$' }], currency: s.currency, setCurrency: (v) => CMC.inputs.set({ currency: v }),
+      sym, fxNote: s.currency === 'USD' ? 'Converted at the fixed peg CI$1 = US$1.20.' : 'Cayman Islands dollars; switch to US$ to convert at the fixed peg.',
+      income: disp('income'), setIncome: setMoney('income'), debts: disp('debts'), setDebts: setMoney('debts'), cash: disp('cash'), setCash: setMoney('cash'), running: disp('running'), setRunning: setMoney('running'),
+      statuses: [{ value: 'first', label: 'Caymanian, first property' }, { value: 'standard', label: 'Standard 7.5%' }], status: st.status, setStatus: this.setter('status'),
+      statusHint: st.status === 'first' ? 'Single Caymanian buying a house or condo: 0% up to CI$550,000, 3.75% on the part above that up to CI$650,000, then 7.5% of the whole value. Other bands in the guide.' : 'Non-Caymanians, companies and Caymanians who have used both concessions.',
+      ratio: st.ratio, setRatio: this.setter('ratio'),
+      maxPrice: money(maxPrice), binding,
+      runPrice: () => { if (maxPrice > 0) CMC.inputs.set({ price: Math.round(maxPrice / 1000) * 1000 }); try { window.location.assign('Calculator.dc.html'); } catch (e) {} },
+      incomeTone: hasIncome ? 'teal' : 'neutral', incomeBadge: hasIncome ? money(priceByIncome) : 'Add income',
+      incomeOut: money(income), ratioOut: ratio + '%', ceiling: money(ceiling), debtsOut: money(debts), runningOut: money(running), roomPay: money(roomPay), loanByIncome: money(loanByIncome), depositPct: dep + '%', priceByIncome: money(priceByIncome),
+      cashTone: hasCash ? 'teal' : 'neutral', cashBadge: hasCash ? money(priceByCash) : 'Add cash',
+      cashOut: money(cash), cashDeposit: money(priceByCash * dep / 100), dutyRate: (st.status === 'first' && dRate === 3.75 ? '3.75% above CI$550,000' : pct(dRate)), cashDuty: money(fc.duty), cashFees: money(fc.other), priceByCash: money(priceByCash),
+      shareOut: pct(share), barLabel: 'Mortgage ' + money(payAtMax) + ', running costs ' + money(running) + ', other debts ' + money(debts), wMort: w(payAtMax), wRun: w(running), wDebt: w(debts), payAtMax: money(payAtMax), leftOut: money(left), advice,
+      levers: leversOut,
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', active: true, open: true, menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price', active: true }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply' },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

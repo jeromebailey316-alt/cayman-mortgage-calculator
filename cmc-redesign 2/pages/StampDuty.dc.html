@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cayman Mortgage Calculator: Stamp duty guide</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/cmc/tokens.css">
+<link rel="stylesheet" href="ds/cmc/components/bundle.css">
+<script src="ds/cmc/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: var(--surface-0); color: var(--ink-900); font-family: var(--font-sans); }
+a { color: var(--navy-700); } a:hover { color: var(--navy-600); }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1 { font-size: 36px !important; line-height: 42px !important; }
+  .r-big { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero { padding-bottom: 96px !important; }
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-hide { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; min-width: 0; font-family: var(--font-sans); background: var(--surface-0); color: var(--ink-900)">
+
+  <x-import component-from-global-scope="CMC.Header" home-href="Main.dc.html" logo="/_blob/3abd7386e93b1deaca8bb90d9dcd1590" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" nav="{{nav}}" cta="{{cta}}" logo-height="{{logoHeight}}"></x-import>
+
+  <section aria-label="Page title" class="r-pad" style="background: var(--navy-900); color: var(--on-dark); padding: 56px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px">
+      <nav aria-label="Breadcrumb" style="font-size: 12px; line-height: 16px; font-weight: 500; color: var(--on-dark-muted)"><a href="Main.dc.html" style="color: var(--on-dark-muted); text-decoration: none">Home</a> › Guides › Stamp duty</nav>
+      <span style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-300)">Guide · 6 min read</span>
+      <h1 class="r-h1" style="margin: 0; font-size: 44px; line-height: 50px; font-weight: 700; letter-spacing: -.02em; max-width: 20ch">Stamp duty on Cayman property, explained</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 28px; color: var(--on-dark-muted); max-width: 60ch">The one cost that is not in your mortgage and must be paid in cash at closing. What it is, who pays less, and how to budget for it.</p>
+      <span style="font-size: 12px; line-height: 16px; color: var(--on-dark-muted)">Last reviewed October 2026 · Figures from the Ministry of Finance concession forms linked below; bands change with the budget cycle, so confirm before you commit.</span>
+    </div>
+  </section>
+
+  <div class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 64px; width: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+
+    <article style="flex: 999 1 560px; min-width: 0; max-width: 720px; display: flex; flex-direction: column; gap: 32px; font-size: 16px; line-height: 26px; color: var(--ink-700)">
+
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 id="what" style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--ink-900)">What stamp duty is</h2>
+        <p style="margin: 0">Stamp duty is a government charge on the transfer of land and property in the Cayman Islands. It is calculated on the purchase price (or the market value, if higher) and paid when the transfer is registered at the Lands &amp; Survey Department. Your lender will not finance it: it comes out of the cash you bring to closing, alongside your deposit.</p>
+        <p style="margin: 0">The standard rate is <strong style="color: var(--ink-900)">7.5%</strong> of the consideration, or the market value, whichever is higher (<a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener">Stamp Duty Act (2019 Revision)</a>, Schedule, Conveyance or Transfer). On a CI$650,000 home that is CI$48,750; for most buyers the single largest cost after the deposit itself.</p>
+        <p style="margin: 0">If you are borrowing, a second, smaller duty applies to the <strong style="color: var(--ink-900)">mortgage</strong> itself when the lender’s charge is registered: 1% of the sum secured up to CI$300,000, or 1.5% of the whole sum when it is more than CI$300,000. It is in the <a href="ClosingCosts.dc.html">closing costs checklist</a>.</p>
+      </section>
+
+      <section id="relief" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--ink-900)">Who pays less: Caymanian buyers</h2>
+        <p style="margin: 0">A Caymanian gets <strong style="color: var(--ink-900)">two opportunities</strong> to claim a stamp duty concession: one on a first property and one on a second. The concession is worked out on the higher of the purchase price and the market value, and the bands differ for raw land and developed residential property, and for a single buyer versus a group of two to ten Caymanians buying together.</p>
+        <h3 style="margin: 8px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900)">First property</h3>
+        <div style="overflow-x: auto; border: 1px solid var(--line-100); border-radius: 12px"><table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; min-width: 560px"><thead><tr style="background: var(--surface-100); color: var(--ink-700); font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: .08em"><th style="text-align: left; padding: 12px 16px; font-weight: 700">Buyer</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">Property</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">0% duty up to</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">3.75% on the part between</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">7.5% above</th></tr></thead><tbody><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Single Caymanian</td><td style="padding: 12px 16px">Raw land</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$250,000</td><td style="padding: 12px 16px">CI$250,000 to CI$350,000</td><td style="padding: 12px 16px">CI$350,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Single Caymanian</td><td style="padding: 12px 16px">Developed residential</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$550,000</td><td style="padding: 12px 16px">CI$550,000 to CI$650,000</td><td style="padding: 12px 16px">CI$650,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Group of 2-10 Caymanians</td><td style="padding: 12px 16px">Raw land</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$450,000</td><td style="padding: 12px 16px">CI$450,000 to CI$550,000</td><td style="padding: 12px 16px">CI$550,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Group of 2-10 Caymanians</td><td style="padding: 12px 16px">Developed residential</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$600,000</td><td style="padding: 12px 16px">CI$600,000 to CI$700,000</td><td style="padding: 12px 16px">CI$700,000</td></tr></tbody></table></div><span class="cmc-swipe">Swipe sideways to see every column.</span>
+        <h3 style="margin: 8px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900)">Second property</h3>
+        <p style="margin: 0">On a second property the reduced rate of <strong style="color: var(--ink-900)">3.75%</strong> applies to the whole value, up to a limit; above it the full 7.5% is payable with no concession.</p>
+        <div style="overflow-x: auto; border: 1px solid var(--line-100); border-radius: 12px"><table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; min-width: 560px"><thead><tr style="background: var(--surface-100); color: var(--ink-700); font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: .08em"><th style="text-align: left; padding: 12px 16px; font-weight: 700">Buyer</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">Property</th><th style="text-align: left; padding: 12px 16px; font-weight: 700">3.75% on the whole value up to</th></tr></thead><tbody><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Single Caymanian</td><td style="padding: 12px 16px">Raw land</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$300,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Single Caymanian</td><td style="padding: 12px 16px">Developed residential</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$600,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Group of 2-10 Caymanians</td><td style="padding: 12px 16px">Raw land</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$550,000</td></tr><tr style="border-top: 1px solid var(--line-100)"><td style="padding: 12px 16px; font-weight: 600; color: var(--ink-900)">Group of 2-10 Caymanians</td><td style="padding: 12px 16px">Developed residential</td><td style="padding: 12px 16px; color: var(--teal-600); font-weight: 600">CI$700,000</td></tr></tbody></table></div><span class="cmc-swipe">Swipe sideways to see every column.</span>
+        <p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-500)">Source: Ministry of Finance, <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">Application for Stamp Duty Concession: Caymanian Property Purchasers</a> (form v16.4.26). The bands printed in the Act’s 2019 Revision (CI$400,000 / CI$500,000 for a single buyer of developed property) have since been raised; the current form prevails. Bands change with the budget cycle; check the current form before you rely on a figure.</p>
+        <h3 style="margin: 8px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900)">The conditions</h3>
+        <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px">
+          <li>A single applicant qualifies if one spouse is Caymanian and has not already used that opportunity; a group of two to ten qualifies only if both spouses in any marriage are Caymanian.</li>
+          <li>You are not eligible if you have already bought two or more properties in the Cayman Islands, or owned more than half of a company that has.</li>
+          <li>Bought one property before gaining Caymanian status? You can still claim on a second one. Bought two or more before? No concession.</li>
+          <li>A <strong style="color: var(--ink-900)">five-year restriction</strong> is entered on the Land Register. Selling or transferring within five years needs the Minister for Finance's permission, and a prorated share of the duty you saved becomes payable.</li>
+        </ul>
+        <h3 style="margin: 8px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900)">How to apply</h3>
+        <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px">
+          <li>Every applicant completes their own <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">application form</a> and a separate sworn affidavit, signed before a Notary Public or Justice of the Peace.</li>
+          <li>Attach proof of Caymanian status (birth certificate or passport page for those born here; a certified certificate of status for everyone else), a certified marriage or civil-partnership certificate if applying together, the certified offer or purchase agreement, and a valuation report less than six months old from an approved surveyor (or a developer's letter for an unbuilt property).</li>
+          <li>Email everything to <a href="mailto:MOF@GOV.KY">MOF@GOV.KY</a>; no hard copies needed. Processing normally takes 10-15 business days, so apply as soon as your offer is accepted, not at closing.</li>
+        </ol>
+      </section>
+
+      <section id="brac" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--ink-900)">Buying in Cayman Brac: the development concession</h2>
+        <p style="margin: 0">A separate scheme applies on Cayman Brac. Stamp duty on the transfer is <strong style="color: var(--ink-900)">waived entirely</strong> if you develop the property to the Minister's satisfaction (homes, apartments, or a building a business can legally operate from) with construction completed and a Certificate of Occupancy issued within <strong style="color: var(--ink-900)">two years</strong> of purchase. It is open to individuals and companies, Caymanian or not, with no price limit.</p>
+        <p style="margin: 0">The catch: if you do not finish in time, the duty becomes payable in full plus a <strong style="color: var(--ink-900)">10% penalty</strong>. To apply you email the <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/cayman-brac-stamp-duty-concessions.pdf?sfvrsn=ea25d4ad_1" target="_blank" rel="noopener">Cayman Brac concession form</a>, a certified copy of the transfer and a notarised declaration of intent to develop to <a href="mailto:MOF@GOV.KY">MOF@GOV.KY</a>; if approved, the approval letter and certificate go to the Registrar of Lands with your transfer documents.</p>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 id="budget" style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--ink-900)">How to budget for it</h2>
+        <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px">
+          <li><strong style="color: var(--ink-900)">Start from the price, not the loan.</strong> Duty is on the full purchase price, so a bigger deposit does not reduce it.</li>
+          <li><strong style="color: var(--ink-900)">Add it to your cash-at-closing.</strong> Deposit + stamp duty + legal and valuation fees is the figure you need in the bank on the day.</li>
+          <li><strong style="color: var(--ink-900)">Check the concession early.</strong> If you are a first-time Caymanian buyer, the saving can be tens of thousands; it changes which homes are within reach.</li>
+          <li><strong style="color: var(--ink-900)">Ask about the valuation.</strong> If the Government values the property above the price you paid, duty is charged on the higher figure.</li>
+        </ol>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 id="faq" style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--ink-900)">Common questions</h2>
+        <details style="border: 1px solid var(--line-100); border-radius: 12px; padding: 16px 20px"><summary style="font-weight: 600; color: var(--ink-900); cursor: pointer">Can I add stamp duty to my mortgage?</summary><p style="margin: 12px 0 0">Not in the normal course. Lenders advance against the property's value; duty is a transfer cost, paid in cash at registration. Some buyers fund it from a separate personal loan, which carries its own rate and term.</p></details>
+        <details style="border: 1px solid var(--line-100); border-radius: 12px; padding: 16px 20px"><summary style="font-weight: 600; color: var(--ink-900); cursor: pointer">I used the concession once. Can I use it again?</summary><p style="margin: 12px 0 0">Yes: a Caymanian has two opportunities, one on a first property and one on a second. The second-property concession is the flat 3.75% up to the limits in the table above; there is no 0% band the second time.</p></details>
+        <details style="border: 1px solid var(--line-100); border-radius: 12px; padding: 16px 20px"><summary style="font-weight: 600; color: var(--ink-900); cursor: pointer">What happens if I sell within five years?</summary><p style="margin: 12px 0 0">The Land Register carries a five-year restriction from the date of transfer. You need the Minister for Finance's permission to transfer during that period, and a prorated share of the duty you were excused becomes payable.</p></details>
+        <details style="border: 1px solid var(--line-100); border-radius: 12px; padding: 16px 20px"><summary style="font-weight: 600; color: var(--ink-900); cursor: pointer">The valuation came in higher than my price. Which one counts?</summary><p style="margin: 12px 0 0">The higher of the two. Both the standard duty and the concession bands are assessed on the greater of market value and purchase price, which is why a valuation report less than six months old is part of the application.</p></details>
+      </section>
+
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; padding-top: 8px">
+        <x-import component-from-global-scope="CMC.Button" variant="primary" icon-right="arrow-right" href="Calculator.dc.html">Run your numbers</x-import>
+        <x-import component-from-global-scope="CMC.Button" variant="secondary" icon-left="receipt" href="ClosingCosts.dc.html">Closing costs checklist</x-import>
+      </div>
+    </article>
+
+    <aside style="flex: 1 1 320px; max-width: 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <section aria-label="Quick estimate" class="r-pad" style="background: var(--surface-0); border: 1px solid var(--line-100); border-radius: 12px; box-shadow: var(--shadow-md); padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <strong style="font-size: 18px; line-height: 24px">Quick estimate</strong>
+        <x-import component-from-global-scope="CMC.Input" label="Purchase price" prefix="CI$" type="number" input-mode="decimal" bind="price" hint="Synced with the calculator"></x-import>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 12px; background: var(--teal-100)">
+          <span style="font-size: 12px; line-height: 16px; font-weight: 600; color: var(--teal-600)">Standard rate · 7.5%</span>
+          <span style="font-size: 32px; line-height: 40px; font-weight: 700">{{duty}}</span>
+          <span style="font-size: 12px; line-height: 16px; color: var(--ink-700)">due in cash at closing, on top of your deposit</span>
+        </div>
+        <x-import component-from-global-scope="CMC.Badge" tone="tint">First-time Caymanian? Could be less</x-import>
+        <x-import component-from-global-scope="CMC.Button" variant="primary" icon-right="arrow-right" href="Calculator.dc.html" block="{{yes}}">Full cost breakdown</x-import>
+      </section>
+      <nav aria-label="Official forms" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; border: 1px solid var(--teal-600); border-radius: 12px; background: var(--teal-100); font-size: 14px; line-height: 22px">
+        <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-600)">Official forms (PDF)</strong>
+        <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener" style="display: flex; gap: 12px; align-items: flex-start; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--teal-600); display: inline-flex; flex: none"><x-import component-from-global-scope="CMC.Icon" name="file-text" size="{{twenty}}"></x-import></span><span style="display: flex; flex-direction: column; gap: 2px"><span>Caymanian property buyer concession: application form</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ink-700)">Ministry of Finance · one per applicant, with affidavit</span></span></a>
+        <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/cayman-brac-stamp-duty-concessions.pdf?sfvrsn=ea25d4ad_1" target="_blank" rel="noopener" style="display: flex; gap: 12px; align-items: flex-start; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--teal-600); display: inline-flex; flex: none"><x-import component-from-global-scope="CMC.Icon" name="file-text" size="{{twenty}}"></x-import></span><span style="display: flex; flex-direction: column; gap: 2px"><span>Cayman Brac stamp duty concession: application</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ink-700)">Development waiver · declaration of intent required</span></span></a>
+        <a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener" style="display: flex; gap: 12px; align-items: flex-start; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--teal-600); display: inline-flex; flex: none"><x-import component-from-global-scope="CMC.Icon" name="landmark" size="{{twenty}}"></x-import></span><span style="display: flex; flex-direction: column; gap: 2px"><span>Stamp Duty Act (2019 Revision)</span><span style="font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ink-700)">The law itself: rates for transfers and mortgages</span></span></a>
+        <span style="font-size: 12px; line-height: 16px; color: var(--ink-700)">Hosted by the Lands &amp; Survey Department (caymanlandinfo.ky).</span>
+      </nav>
+      <nav aria-label="In this guide" style="display: flex; flex-direction: column; gap: 8px; padding: 16px 20px; border: 1px solid var(--line-100); border-radius: 12px; font-size: 14px; line-height: 22px">
+        <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy-700)">In this guide</strong>
+        <a href="#what" style="text-decoration: none; color: var(--ink-700)">What stamp duty is</a>
+        <a href="#relief" style="text-decoration: none; color: var(--ink-700)">Caymanian buyer concessions</a>
+        <a href="#brac" style="text-decoration: none; color: var(--ink-700)">Cayman Brac development concession</a>
+        <a href="#budget" style="text-decoration: none; color: var(--ink-700)">How to budget for it</a>
+        <a href="#faq" style="text-decoration: none; color: var(--ink-700)">Common questions</a>
+      </nav>
+      <nav aria-label="Related guides" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; border: 1px solid var(--line-100); border-radius: 12px; font-size: 14px; line-height: 22px">
+        <strong style="font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy-700)">Related guides</strong>
+        <a href="ClosingCosts.dc.html" style="display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--navy-700); display: inline-flex"><x-import component-from-global-scope="CMC.Icon" name="receipt" size="{{twenty}}"></x-import></span>Closing costs checklist</a>
+        <a href="Affordability.dc.html" style="display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--navy-700); display: inline-flex"><x-import component-from-global-scope="CMC.Icon" name="percent" size="{{twenty}}"></x-import></span>How much can I afford?</a>
+        <a href="Equity.dc.html" style="display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--ink-900); font-weight: 600"><span style="color: var(--navy-700); display: inline-flex"><x-import component-from-global-scope="CMC.Icon" name="trending-up" size="{{twenty}}"></x-import></span>Understanding your equity</a>
+      </nav>
+    </aside>
+  </div>
+
+  <section aria-label="Sources" class="r-pad" style="max-width: 1200px; margin: 0 auto; padding: 0 24px 64px; width: 100%; box-sizing: border-box">
+    <div style="padding: 20px 24px; border: 1px solid var(--line-100); border-radius: 12px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 22px; color: var(--ink-700)">
+      <strong style="font-size: 16px; line-height: 24px; color: var(--ink-900)">Sources</strong>
+      <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px">
+        <li><a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1" target="_blank" rel="noopener">Application for Stamp Duty Concession: Caymanian property buyers (form v16.4.26)</a>, Ministry of Finance &amp; Economic Development: eligibility, the first- and second-property bands for single buyers and groups, land and developed property, required documents and the five-year restriction.</li>
+        <li><a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/cayman-brac-stamp-duty-concessions.pdf?sfvrsn=ea25d4ad_1" target="_blank" rel="noopener">Cayman Brac stamp duty concessions</a>, Cayman Islands Government: the development waiver, the two-year build condition and the 10% penalty.</li>
+        <li><a href="https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5" target="_blank" rel="noopener">Stamp Duty Act (2019 Revision)</a>, Lands &amp; Survey Department: the standard 7.5% rate on the higher of price and market value, and the mortgage schedule (1% / 1.5%). The Act's 2019 concession thresholds have since been raised; the form above carries the current bands.</li>
+        <li>Applications go to the Ministry of Finance (MOF@GOV.KY); processing time of 10-15 business days is the Ministry's stated service standard on the form.</li>
+      </ol>
+      <x-import component-from-global-scope="CMC.Byline" author="Jerome Bailey" reviewer="Janique Bailey" checked="14 October 2026" updated="14 October 2026" note="General information, not legal advice. Your attorney files the concession application and confirms your eligibility."></x-import>
+    </div>
+  </section>
+
+  <x-import component-from-global-scope="CMC.BackToTop"></x-import>
+
+  <x-import component-from-global-scope="CMC.Footer" logo-reversed="/_blob/c8bdb95aa36670eb38580872c9cb28be" blurb="Free mortgage, stamp duty and closing-cost calculators for buying a home in the Cayman Islands." columns="{{footerCols}}" legal-links="{{legalLinks}}"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = Object.assign({ inputsTick: 0 }, this.state || {}); CMC.inputs.subscribe(() => this.setState({ inputsTick: Date.now() })); }
+  renderVals() {
+    const price = CMC.inputs.get().price; // shared with the calculator
+    const money = (n) => 'CI$' + Math.round(n).toLocaleString('en-US');
+    return {
+      yes: true, twenty: 20, logoHeight: 56,
+      priceRaw: price, duty: money(price * 0.075),
+      nav: [{ label: 'Home', href: 'Main.dc.html' }, { label: 'Calculators', href: 'Calculator.dc.html', menu: [
+        { label: 'Mortgage calculator', href: 'Calculator.dc.html', icon: 'calculator', description: 'Monthly payment, stamp duty and cash at closing' },
+        { label: 'Equity calculator', href: 'Equity.dc.html', icon: 'trending-up', description: 'What your home is worth minus what you owe' },
+        { label: 'Affordability calculator', href: 'Affordability.dc.html', icon: 'percent', description: 'Work back from income and cash to a price' }
+      ] }, { label: 'Listings', href: 'Listings.dc.html' }, { label: 'Guides', href: 'StampDuty.dc.html', active: true, open: true, menu: [
+        { label: 'Stamp duty guide', href: 'StampDuty.dc.html', icon: 'file-text', description: 'Rates, Caymanian concessions, how to apply', active: true },
+        { label: 'Closing costs checklist', href: 'ClosingCosts.dc.html', icon: 'receipt', description: 'Every cost between offer and keys' },
+        { label: 'Refinancing guide', href: 'Refinancing.dc.html', icon: 'landmark', description: 'When a new rate pays for itself' }
+      ] }, { label: 'Agents', href: 'Agents.dc.html' }, { label: 'About', href: 'About.dc.html' }],
+      cta: { label: 'Run the numbers', href: 'Calculator.dc.html', icon: 'arrow-right' },
+      footerCols: [
+        { title: 'Calculators', links: [{ label: 'Mortgage', href: 'Calculator.dc.html' }, { label: 'Equity', href: 'Equity.dc.html' }, { label: 'Affordability', href: 'Affordability.dc.html' }] },
+        { title: 'Guides', links: [{ label: 'Stamp duty', href: 'StampDuty.dc.html' }, { label: 'Closing costs', href: 'ClosingCosts.dc.html' }, { label: 'Refinancing', href: 'Refinancing.dc.html' }] },
+        { title: 'Listings', links: [{ label: 'Buy', href: 'Listings.dc.html' }, { label: 'Rent', href: 'Listings.dc.html' }, { label: 'For agents', href: 'Agents.dc.html' }] },
+        { title: 'About', links: [{ label: 'About the site', href: 'About.dc.html' }, { label: 'Contact', href: 'Contact.dc.html' }, { label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }] }
+      ],
+      legalLinks: [{ label: 'Privacy', href: 'Privacy.dc.html' }, { label: 'Terms', href: 'Terms.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

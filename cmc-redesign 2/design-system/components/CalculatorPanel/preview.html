@@ -1,0 +1,13 @@
+<!-- @dsCard group="Content" height=220 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>CalculatorPanel — preview</title>
+<style>body{margin:0;padding:16px;background:var(--surface-0);font-family:var(--font-sans)} .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center} .stack{display:flex;flex-direction:column;gap:16px} .cmc-calc{max-width:1100px}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var C = window.CMC, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(C.CalculatorPanel,{note:'Estimates use the amortising formula; your lender\'s rate and fees will differ.'}));
+</script>
+</body>
+</html>
