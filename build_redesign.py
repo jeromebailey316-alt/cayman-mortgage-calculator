@@ -221,6 +221,9 @@ def sitemap(base: str, lastmod: str) -> str:
     return "\n".join(rows) + "\n"
 
 
+DOMAIN = "caymanmortgagecalculator.com"
+
+
 def build(data: dict, canonical: str = "") -> Path:
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -259,6 +262,14 @@ def build(data: dict, canonical: str = "") -> Path:
 
     (OUT / "listings.json").write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     (OUT / ".nojekyll").write_text("")
+    # Without this GitHub Pages drops the custom domain on the next deploy.
+    (OUT / "CNAME").write_text(DOMAIN + "\n")
+    # Served for any address that does not exist, at any depth.
+    (OUT / "404.html").write_text(rd.page(
+        "Page not found: " + rd.SITE_NAME,
+        "That page is not here. The calculators and the current listings are all still available.",
+        rd_pages.not_found(data), active="", canonical="", css_href=href,
+        jsonld=[rd.SITE_JSONLD, rd.ORG_JSONLD]))
     lastmod = (data.get("generated_at") or "")[:10]
     (OUT / "sitemap.xml").write_text(sitemap(SITE + "/", lastmod))
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")

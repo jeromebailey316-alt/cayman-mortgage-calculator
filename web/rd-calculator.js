@@ -205,6 +205,12 @@
 
   function start() {
     if (!el('rdCalc')) return;
+    // The old site kept the listings on this page at #listings. Anyone arriving
+    // on that link should land where the listings actually are now.
+    if (location.hash === '#listings') {
+      location.replace('/listings/');
+      return;
+    }
     ['cValuation', 'cIsland', 'cPtype', 'cStatus', 'cBuyer', 'cExtra', 'cIncome', 'cCash',
      'cStrata', 'cLife', 'cBldg', 'cMaint', 'cLegal', 'cBank', 'cValFee', 'cBldgInStrata']
       .forEach(function (id) {

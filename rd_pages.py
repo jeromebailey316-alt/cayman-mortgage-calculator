@@ -889,3 +889,44 @@ def rent_vs_buy(data: dict) -> str:
                        "year the two cross over, for the length of time you actually plan "
                        "to stay.")
             + _two_col(form, results) + sources_block())
+
+
+def not_found(data: dict) -> str:
+    """Served by GitHub Pages for any address that does not exist, at any depth,
+    so every link here is absolute."""
+    cards = [
+        ("/calculator/", "calculator", "Mortgage calculator",
+         "Your monthly payment and the cash you need on the day."),
+        ("/listings/", "house", "Listings",
+         "Every home and lot for sale, priced through your own numbers."),
+        ("/affordability/", "percent", "What can you afford",
+         "Work back from your income and savings to a price."),
+        ("/guides/stamp-duty/", "receipt", "Stamp duty",
+         "Rates, bands and the Caymanian concession."),
+    ]
+    tiles = "".join(
+        f'<a href="{e(href)}" style="display:flex;flex-direction:column;gap:12px;padding:24px;'
+        'border:1px solid var(--line-100);border-radius:12px;text-decoration:none;'
+        'color:var(--ink-900);background:var(--surface-0)">'
+        '<span style="width:40px;height:40px;border-radius:999px;background:var(--navy-100);'
+        f'color:var(--navy-700);display:flex;align-items:center;justify-content:center">'
+        f"{rd.icon(ic, 20)}</span>"
+        f'<strong style="font-size:16px;line-height:24px">{e(title)}</strong>'
+        f'<span style="font-size:14px;line-height:22px;color:var(--ink-500)">{e(sub)}</span></a>'
+        for href, ic, title, sub in cards)
+
+    return (
+        _page_head("Page not found", "That page is not here",
+                   "The address may have a typo in it, or the page may have moved. "
+                   "Everything below still works.")
+        + '<section aria-label="Where to go" class="r-pad" style="padding:40px 24px 64px">'
+          '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:24px">'
+          '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
+          "If you followed a link to a property: listings are read from the agencies' own "
+          "websites every four hours, and one that has sold or been withdrawn drops off this "
+          "site with it. The listing itself lives on the agent's website, and this site only "
+          "ever links to it, so a saved link that has stopped working usually means the place "
+          "has gone.</p>"
+          '<div class="r-grid" style="display:grid;'
+          'grid-template-columns:repeat(4,minmax(0,1fr));gap:24px">'
+        + tiles + "</div></div></section>")
