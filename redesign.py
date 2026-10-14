@@ -561,9 +561,8 @@ RD_JS = """
 """
 
 
-# Supplied by the owner when the property is verified; the Privacy page already
-# describes what it measures.
-GA_MEASUREMENT_ID = ""
+# The Privacy page describes what this measures.
+GA_MEASUREMENT_ID = "G-B7WJ51P8MN"
 
 ORG_JSONLD = {
     "@context": "https://schema.org",
@@ -658,10 +657,12 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
         "font-src 'self' https://fonts.gstatic.com; "
         "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
         "https://www.googletagmanager.com; "
-        "connect-src 'self' https://www.google-analytics.com; "
+        "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com "
+        "https://*.googletagmanager.com; "
         "object-src 'none'; base-uri 'self'; form-action 'none'"
         '">'
-        '<meta name="color-scheme" content="light dark">'
+        + ga
+        + '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#011533">'
         + (f'<link rel="canonical" href="{e(canonical)}">' if canonical else "")
         + f'<meta property="og:title" content="{e(title)}">'
@@ -674,7 +675,7 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
           f'<link rel="stylesheet" href="{FONT_HREF}">'
           f'<link rel="stylesheet" href="{e(css_href)}">'
-        + blocks + ga
+        + blocks
         + "</head><body>")
 
 
