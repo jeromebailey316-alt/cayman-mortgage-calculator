@@ -464,7 +464,49 @@ def calculator(data: dict) -> str:
         'grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start">'
         f'<form id="rdCalc" style="display:flex;flex-direction:column;gap:24px">{inputs}</form>'
         '<div aria-label="Results" style="display:flex;flex-direction:column;gap:24px">'
-        f"{results}</div></div></section>")
+        f"{results}</div></div></section>" + sources_block())
+
+
+SOURCES = [
+    ("Stamp Duty Act (2019 Revision)",
+     "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
+     "stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5",
+     "The transfer and mortgage duty rates, and the 45 day deadline"),
+    ("Ministry of Finance: Caymanian concession application",
+     "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
+     "application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1",
+     "The first property and second property bands, single and joint"),
+    ("Cayman Islands Government: 10% duty at CI$2M and over",
+     "https://gov.ky/w/legislation-passed-to-increase-stamp-duty-on-properties-worth-2m-and-over",
+     "The rate on the whole value once the price reaches CI$2,000,000"),
+    ("Lands and Survey: registry fees",
+     "https://www.caymanlandinfo.ky/services/land-registry/registry-fees",
+     "The CI$50 to register a transfer and CI$50 for a charge"),
+]
+
+BYLINE = {"author": "Jerome Bailey", "reviewer": "Janique Bailey",
+          "checked": "14 October 2026", "updated": "14 October 2026"}
+
+
+def sources_block(note: str = "") -> str:
+    """The numbered Sources block and Byline that HANDOFF 5.7 asks every guide
+    and calculator to end with."""
+    items = "".join(
+        f'<li style="margin-bottom:8px"><a href="{e(url)}" target="_blank" rel="noopener">'
+        f"{e(title)}</a><br>"
+        f'<span style="font-size:12px;line-height:16px;color:var(--ink-500)">{e(what)}</span>'
+        "</li>"
+        for title, url, what in SOURCES)
+    return (
+        '<section aria-label="Sources" class="r-pad" style="padding:0 24px 64px">'
+        '<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;'
+        'gap:16px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
+        '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">Sources</h2>'
+        f'<ol style="margin:0;padding-left:20px;font-size:14px;line-height:22px">{items}</ol>'
+        + rd_board.byline(note=note or "Estimates only, not financial or legal advice. "
+                          "Confirm every figure with your attorney and lender before you commit.",
+                          **BYLINE)
+        + "</div></section>")
 
 
 def _page_head(crumb: str, title: str, lede: str) -> str:
@@ -552,7 +594,7 @@ def affordability(data: dict) -> str:
                        "Two things decide it: what your income will carry each month, and what "
                        "your cash will cover on the day. This works out both and tells you "
                        "which one is binding.")
-            + _two_col(form, results))
+            + _two_col(form, results) + sources_block())
 
 
 def equity(data: dict) -> str:
@@ -587,7 +629,7 @@ def equity(data: dict) -> str:
     return (_page_head("Equity", "How much equity do you have?",
                        "What your property is worth, less what is secured against it, and how "
                        "much of that a lender would let you borrow.")
-            + _two_col(form, results))
+            + _two_col(form, results) + sources_block())
 
 
 # ---------------------------------------------------------------------------
@@ -834,4 +876,4 @@ def rent_vs_buy(data: dict) -> str:
                        "Buying costs more at the start and less later. This works out the "
                        "year the two cross over, for the length of time you actually plan "
                        "to stay.")
-            + _two_col(form, results))
+            + _two_col(form, results) + sources_block())

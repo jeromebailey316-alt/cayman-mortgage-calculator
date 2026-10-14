@@ -116,3 +116,11 @@ h1, h2, h3, h4 { margin: 0; }
   /* lift the back-to-top button above the strip */
   body.rd-has-compare .cmc-totop { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* --ink-500 on --surface-100 is 4.38:1, just under AA for 12px text, and the
+   byline sets both its key and its note in it. Darkened to --ink-700, which is
+   the next step down the same ramp rather than a new colour. Section 8 says not
+   to lighten text; this darkens it. Overridden here rather than in the
+   delivered bundle, so the design system stays as shipped. */
+.cmc-byline__k,
+.cmc-byline__note { color: var(--ink-700); }
