@@ -161,11 +161,20 @@ def byline(author=None, reviewer=None, checked=None, updated=None, note=None) ->
             + "</div>")
 
 
+def translate_source(src: str, vals: dict | None = None) -> str:
+    """translate(), for a board already read into memory (so a section can be
+    held back before translation)."""
+    return _translate(src, vals)
+
+
 def translate(path, vals: dict | None = None) -> str:
     """Board file -> page body."""
-    vals = dict(DEFAULT_VALS, **(vals or {}))
     src = path.read_text() if hasattr(path, "read_text") else open(path).read()
+    return _translate(src, vals)
 
+
+def _translate(src: str, vals: dict | None = None) -> str:
+    vals = dict(DEFAULT_VALS, **(vals or {}))
     body = src[src.index("<x-dc>") + len("<x-dc>"): src.index("</x-dc>")]
     # the helmet's styles are in web/rd.css already
     body = re.sub(r"<helmet>.*?</helmet>", "", body, flags=re.S)

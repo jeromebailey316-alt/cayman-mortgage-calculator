@@ -589,3 +589,33 @@ def from_board(name: str, vals: dict | None = None):
 # The agents page shows one illustrative card captioned "Your agency": it
 # demonstrates the format to an agency rather than listing a real property.
 AGENT_SAMPLE = {"price": 850000, "beds": 3, "baths": 2, "sqft": 2100, "monthly": 4800}
+
+
+def stamp_duty_guide(data: dict) -> str:
+    """Ported from StampDuty.dc.html.
+
+    The Cayman Brac section is held back. The board describes the concession as
+    waiving duty entirely on any value, conditional on completing development
+    within two years; core.js charges 3% on developed property and nothing on
+    undeveloped land, capped at CI$2,000,000 and expiring at the end of 2030.
+    The two agree on undeveloped land and disagree on developed property, and
+    publishing a guide that contradicts this site's own calculator would be
+    worse than publishing neither. See REDESIGN-PLAN.md section 4.1.
+    """
+    src = (_BOARDS / "StampDuty.dc.html").read_text()
+    i = src.find("Buying in Cayman Brac")
+    if i > 0:
+        start = src.rfind("<section", 0, i)
+        end = src.find("</section>", i) + len("</section>")
+        src = src[:start] + src[end:]
+
+    # the standard-rate figure the quick estimate opens with; rd-guides.js keeps
+    # it live, including the step to 10% at CI$2,000,000
+    body = rd_board.translate_source(src, {"duty": "CI$48,750"})
+    # the board hard-codes the rate label, which is only true below CI$2M
+    body = body.replace("Standard rate · 7.5%",
+                        '<span id="gdRateLabel">Standard rate · 7.5%</span>')
+    body = body.replace('<span style="font-size: 32px; line-height: 40px; font-weight: 700">CI$48,750</span>',
+                        '<span id="gdDuty" style="font-size: 32px; line-height: 40px; '
+                        'font-weight: 700">CI$48,750</span>')
+    return body

@@ -81,6 +81,14 @@ PAGES = {
         "description": "The terms on which this free Cayman mortgage calculator is offered.",
         "build": rd_pages.from_board("Terms"), "active": "/terms/",
     },
+    "guides/stamp-duty": {
+        "title": "Cayman Islands stamp duty: rates, bands and concessions",
+        "description": ("What stamp duty costs when you buy in the Cayman Islands, who "
+                        "qualifies for the Caymanian concession, and when it is paid."),
+        "build": lambda data: rd_pages.stamp_duty_guide(data),
+        "active": "/guides/stamp-duty/",
+        "scripts": ["/assets/core.js", "/assets/rd-guides.js"],
+    },
     "listings": {
         "title": "Homes for sale in the Cayman Islands: priced for your mortgage",
         "description": ("Every listing from the Cayman agencies, priced through your own "
@@ -106,7 +114,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)

@@ -74,7 +74,25 @@ bands, which match the live site exactly. It does **not** contain:
   duty function ignores the island, so a Brac property would be charged Grand Cayman
   duty. This is the exact defect I fixed on 12 October; it affects 117 listings.
 
-**There is also a factual conflict about what the Brac scheme is.** The live site
+**The Brac conflict, narrowed (14 Oct).** Reading both sources closely, they agree
+on more than first appeared. Both say undeveloped Brac land attracts no duty if you
+build within two years: that is exactly what `core.js` already tells a visitor. The
+disagreement is narrower and precise:
+
+| | Developed property on Brac | Price cap | Expiry |
+| --- | --- | --- | --- |
+| `core.js`, from the Lands & Survey 2025 rates PDF | **3%** | CI$2,000,000 | 31 Dec 2030 |
+| The StampDuty board, from the concession form | **Waived entirely**, if built within two years | none | not stated |
+
+These may be two separate programmes that coexist rather than one of them being
+wrong. **The question for the owner or their attorney: what does a buyer of
+*developed* property on Cayman Brac actually pay, and is there a CI$2M cap?**
+
+Until that is answered the guide ships without its Cayman Brac section. The
+calculator keeps applying the `core.js` rule. Publishing a guide that contradicts
+this site's own calculator would be worse than publishing neither.
+
+**The original wording of this conflict:** The live site
 implements 3% on developed property and 0% on undeveloped, capped at CI$2M, expiring
 31 December 2030, from the Lands & Survey 2025 rates PDF. The `StampDuty` board
 describes something different: a full waiver on any value, for anyone, conditional on
