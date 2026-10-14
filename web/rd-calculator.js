@@ -164,9 +164,20 @@
     var basis = money(m.dutiableBasis);
     switch (td.rule) {
       case 'brac-land':
-        return 'Nothing to pay under the Cayman Brac concession, if you build within two years.';
+        // The 0% is a waiver with real obligations attached, so say them.
+        return 'Nothing to pay under the Cayman Brac concession, which applies to ' +
+          'undeveloped land under CI$2,000,000. It is conditional: the property must be ' +
+          'developed within two years of the waiver, with planning approval and a ' +
+          'Certificate of Occupancy. The Minister may extend that by up to two further ' +
+          'years. If it is not developed the duty becomes payable in full plus a 10% ' +
+          'penalty, and a restriction bars transfer until the conditions are met.';
       case 'brac-developed':
-        return '3% of ' + basis + ' under the Cayman Brac concession.';
+        return '3% of ' + basis + ' under the Cayman Brac concession, which applies to ' +
+          'developed property under CI$2,000,000.';
+      case 'brac-over':
+        return '10% of ' + basis + ': on Cayman Brac the concession stops at ' +
+          'CI$2,000,000, and at or above it the rate is 10% whether the land is ' +
+          'developed or not.';
       case 'luxury':
         return '10% of ' + basis + ': the rate rises to 10% of the whole value at CI$2,000,000.';
       case 'first-free':

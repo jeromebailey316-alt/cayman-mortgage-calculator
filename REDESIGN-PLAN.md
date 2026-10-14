@@ -74,7 +74,42 @@ bands, which match the live site exactly. It does **not** contain:
   duty function ignores the island, so a Brac property would be charged Grand Cayman
   duty. This is the exact defect I fixed on 12 October; it affects 117 listings.
 
-**The Brac conflict, narrowed (14 Oct).** Reading both sources closely, they agree
+**RESOLVED 14 October, from the published sheet.** The owner supplied the Lands &
+Survey document, *Stamp Duty Concessions in Cayman Brac*, effective 1 January 2026
+(sheet updated 14 January 2026). It settles it, and neither earlier reading was quite
+right. The rates turn on the consideration, meaning the purchase price or the market
+value, whichever is higher:
+
+| Rate | Applies to |
+| --- | --- |
+| 0% | Undeveloped land under CI$2,000,000, conditional on development |
+| 3% | Developed property under CI$2,000,000 |
+| 10% | Anything at CI$2,000,000 or more, developed or not |
+
+The 0% is a waiver with obligations: develop within two years of the waiver with
+planning approval and a Certificate of Occupancy; the Minister may extend by up to two
+further years; otherwise the duty is payable in full plus a 10% penalty, and a
+restriction bars transfer until the conditions are met.
+
+So the board was wrong to say the waiver applies at any value and to developed
+property. The engine's rates were right, but it carried two defects of its own, now
+fixed:
+
+- **An invented expiry.** `RULES.brac.expires` was set to 31 December 2030. The sheet
+  publishes no end date. On 1 January 2031 the calculator would have quietly reverted
+  Brac buyers to 7.5%. The expiry is now null and a test asserts the concession still
+  applies in 2031.
+- **`from` was never enforced.** The 1 January 2026 start date sat in the rules and was
+  never read, so a date before it still got the concession. It is checked now.
+
+The 10% at and above CI$2,000,000 is also stated in the Brac rules themselves rather
+than inherited from the Grand Cayman luxury band. The two happen to be the same figure
+today; if one moves, the other should not follow it silently.
+
+The guide's Cayman Brac section is restored, written from the sheet, and the sheet is
+cited in the Sources block on every calculator.
+
+**The earlier framing of this conflict, for the record.** Reading both sources closely, they agree
 on more than first appeared. Both say undeveloped Brac land attracts no duty if you
 build within two years: that is exactly what `core.js` already tells a visitor. The
 disagreement is narrower and precise:

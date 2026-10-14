@@ -487,6 +487,11 @@ SOURCES = [
      "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
      "application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1",
      "The first property and second property bands, single and joint"),
+    ("Lands and Survey: stamp duty concessions in Cayman Brac",
+     "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
+     "stamp-duty-rates-cayman-brac-(2025).pdf",
+     "0% on undeveloped land and 3% on developed property under CI$2,000,000, "
+     "and 10% at or above it"),
     ("Cayman Islands Government: 10% duty at CI$2M and over",
      "https://gov.ky/w/legislation-passed-to-increase-stamp-duty-on-properties-worth-2m-and-over",
      "The rate on the whole value once the price reaches CI$2,000,000"),
@@ -664,16 +669,48 @@ def from_board(name: str, vals: dict | None = None):
 AGENT_SAMPLE = {"price": 850000, "beds": 3, "baths": 2, "sqft": 2100, "monthly": 4800}
 
 
+BRAC_SECTION = """
+<section aria-label="Cayman Brac" class="r-pad" style="padding:0 24px 40px">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font-size:24px;line-height:32px;font-weight:700;color:var(--ink-900)">
+      Buying on Cayman Brac: a separate set of rates</h2>
+    <p style="margin:0">Cayman Brac has its own rates, in force since 1 January 2026. They turn
+      on the consideration, meaning the purchase price or the market value, whichever is higher,
+      and on whether the property is developed. They are open to anyone, Caymanian or not.</p>
+    <div class="rd-scroll"><table class="rd-table">
+      <thead><tr><th>Rate</th><th>Applies to</th></tr></thead>
+      <tbody>
+        <tr><th>0%</th><td>Undeveloped land under CI$2,000,000, subject to the conditions
+          below</td></tr>
+        <tr><th>3%</th><td>Developed property under CI$2,000,000</td></tr>
+        <tr><th>10%</th><td>Anything at CI$2,000,000 or more, developed or not</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin:0"><strong style="color:var(--ink-900)">The 0% is a waiver with conditions
+      attached, not a simple exemption.</strong> The property must be developed within two years
+      of the waiver being granted, with a building that requires planning approval and a
+      Certificate of Occupancy to occupy. If that is not done, the applicant may ask the Minister
+      for Finance and Economic Development for an extension of up to two further years. If it is
+      still not developed, the duty that was waived becomes payable in full plus a penalty of 10%.
+      A restriction is placed on the property prohibiting transfer until every condition is met.
+      Developed means certified fit to occupy, evidenced by a Certificate of Occupancy from the
+      Department of Planning.</p>
+    <p style="margin:0">The calculator applies these rates automatically when you choose Cayman
+      Brac. Little Cayman is not part of this scheme and follows the ordinary rates.</p>
+  </div>
+</section>
+"""
+
+
 def stamp_duty_guide(data: dict) -> str:
     """Ported from StampDuty.dc.html.
 
-    The Cayman Brac section is held back. The board describes the concession as
-    waiving duty entirely on any value, conditional on completing development
-    within two years; core.js charges 3% on developed property and nothing on
-    undeveloped land, capped at CI$2,000,000 and expiring at the end of 2030.
-    The two agree on undeveloped land and disagree on developed property, and
-    publishing a guide that contradicts this site's own calculator would be
-    worse than publishing neither. See REDESIGN-PLAN.md section 4.1.
+    The board's own Cayman Brac section described the concession as waiving duty
+    entirely on any value. The published sheet (Lands & Survey, effective
+    1 January 2026) does not: the waiver is for undeveloped land under
+    CI$2,000,000 only, developed property under that figure pays 3%, and anything
+    at CI$2,000,000 or more pays 10%. The board's section is replaced with one
+    written from the sheet, which is also what core.js applies.
     """
     src = (_BOARDS / "StampDuty.dc.html").read_text()
     i = src.find("Buying in Cayman Brac")
@@ -691,7 +728,10 @@ def stamp_duty_guide(data: dict) -> str:
     body = body.replace('<span style="font-size: 32px; line-height: 40px; font-weight: 700">CI$48,750</span>',
                         '<span id="gdDuty" style="font-size: 32px; line-height: 40px; '
                         'font-weight: 700">CI$48,750</span>')
-    return body
+    # the Brac section, written from the published sheet, before the sources
+    marker = '<section aria-label="Sources"'
+    i = body.find(marker)
+    return body[:i] + BRAC_SECTION + body[i:] if i > 0 else body + BRAC_SECTION
 
 
 def _panel(title: str, inner: str, aria: str) -> str:
