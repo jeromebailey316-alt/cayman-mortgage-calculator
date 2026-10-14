@@ -1,0 +1,73 @@
+/* Page-level styles for the redesign.
+
+   Everything structural comes from the delivered tokens.css and
+   components/bundle.css. This file holds only what those two do not: the base
+   document styles, the responsive helpers the page boards use, and the handful
+   of classes the boards reference that the component bundle does not define.
+   Nothing here introduces a colour; every value is a token. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--surface-0);
+  color: var(--ink-900);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+a { color: var(--navy-700); }
+a:hover { color: var(--navy-600); }
+
+:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+h1, h2, h3, h4 { margin: 0; }
+
+/* The first tab stop on every page. */
+.rd-skip {
+  position: absolute; left: var(--space-2); top: -60px; z-index: 100;
+  background: var(--teal-600); color: var(--on-teal);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-weight: 600; text-decoration: none; transition: top .12s;
+}
+.rd-skip:focus { top: 0; color: var(--on-teal); }
+
+/* Footer contact lines: the bundle styles the columns but not these. */
+.rd-footer-contact {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin: 0; font-size: 14px; line-height: 20px; color: var(--on-dark-muted);
+}
+.rd-footer-contact a { color: var(--on-dark); text-decoration: none; }
+.rd-footer-contact a:hover { text-decoration: underline; }
+.rd-footer-contact .cmc-icon { color: var(--teal-300); flex: none; }
+
+/* Responsive helpers used by the page boards, lifted from their <helmet> blocks
+   so every page shares one definition instead of repeating them inline. */
+@media (max-width: 860px) {
+  .r-grid    { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-grid-2  { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .r-h1      { font-size: 36px !important; line-height: 42px !important; }
+  .r-big     { font-size: 40px !important; line-height: 44px !important; }
+  .r-hero    { padding-bottom: var(--space-9) !important; }
+  .r-pad     { padding-left: var(--space-4) !important; padding-right: var(--space-4) !important; }
+  .r-hide    { display: none !important; }
+}
+@media (max-width: 600px) {
+  .r-grid    { grid-template-columns: 1fr !important; }
+  .r-grid-2  { grid-template-columns: 1fr !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-skip { transition: none; }
+  .cmc-totop { transition: none; }
+}
+
+@media print {
+  .rd-skip, .cmc-footer { display: none; }
+  body { background: #fff; color: #000; }
+}
