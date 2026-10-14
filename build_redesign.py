@@ -36,7 +36,14 @@ PAGES = {
                         "your buyer status, and the cash you need on the day you buy."),
         "build": lambda data: rd_pages.calculator(data),
         "active": "/calculator/",
-        "scripts": ["/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js"],
+        "scripts": [
+            # As the board loads them, so window.XLSX and window.jspdf are present
+            # rather than appearing only after the first click. They sit at the end
+            # of the body, so they do not block the first paint.
+            "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+            "/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js",
+        ],
     },
     "affordability": {
         "title": "What can you afford? A Cayman affordability calculator",

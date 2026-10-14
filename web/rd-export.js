@@ -16,6 +16,10 @@
 
   var loaded = {};
   function load(src) {
+    // Already on the page: the calculator loads both up front, as the board does.
+    // This stays as a safety net for a blocked or slow CDN.
+    if (src === XLSX_SRC && w.XLSX) return Promise.resolve();
+    if (src === JSPDF_SRC && w.jspdf) return Promise.resolve();
     if (loaded[src]) return loaded[src];
     loaded[src] = new Promise(function (resolve, reject) {
       var s = d.createElement('script');

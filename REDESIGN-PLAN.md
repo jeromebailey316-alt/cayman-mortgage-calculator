@@ -178,6 +178,32 @@ prop on the card, though the live site surfaces all of them. The new card loses 
 MLS number, the land area, the "also listed with" cross-reference and the
 "checked at" provenance line unless the component is extended.
 
+## 5a. Follow-up 1, and the one thing I could not do as written
+
+`cmc-redesign/FOLLOWUP-1.md`. Every symptom it reports was real and every one is
+fixed, but its first instruction rests on something that did not arrive.
+
+**The updated `bundle.css` was not delivered.** Point 1 asks me to rebuild `rd.css`
+from an updated bundle with base page styles, `color-scheme: light`, and rules for a
+bare `input`, `select` or `textarea` sitting directly inside `.cmc-field__control`.
+The copy in this repo and the copy in `~/Documents/cmc-redesign` are byte identical,
+20,536 bytes each, and neither contains any of those three things: there is no
+`color-scheme` anywhere in it, no `html`, `body` or `*` rule, and the only field rules
+are for `.cmc-field__input`.
+
+So the unstyled controls were my fault, not a missing stylesheet. The fix is point 2,
+which I have done: every control now carries `cmc-field__input`, and selects carry
+`cmc-field__input--select`. That is the better fix anyway, since it keeps the delivered
+CSS untouched. `color-scheme: light` and the page base styles are in section 3 of the
+stylesheet, which is ours.
+
+If an updated `bundle.css` does exist somewhere, send it and I will drop it into
+section 2 and remove whatever it makes redundant from section 3.
+
+**`rd.css` is now in three marked sections**, as asked: tokens as delivered, the
+component bundle as delivered, then our overrides under a banner saying so. Nothing in
+the first two sections is edited.
+
 ## 6. What is built
 
 All fourteen routes exist and pass the same sweep: one `h1`, no horizontal scroll at

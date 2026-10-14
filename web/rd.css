@@ -6,6 +6,11 @@
    of classes the boards reference that the component bundle does not define.
    Nothing here introduces a colour; every value is a token. */
 
+/* The delivered bundle styles components only: no page base and no
+   colour-scheme, so the browser renders form controls and scrollbars to the
+   operating system's preference. The design is a light one, so say so. */
+:root { color-scheme: light; }
+
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -124,3 +129,37 @@ h1, h2, h3, h4 { margin: 0; }
    delivered bundle, so the design system stays as shipped. */
 .cmc-byline__k,
 .cmc-byline__note { color: var(--ink-700); }
+
+/* Form sections on the calculator, from the board's own helmet block. The two
+   detail-heavy groups are <details>, so the page opens at a readable length. */
+.sec { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5);
+  border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec > h2, .sec > legend { margin: 0; padding: 0; font-size: 18px; line-height: 24px;
+  font-weight: 700; color: var(--ink-900); }
+.sec .hint { font-size: 12px; line-height: 16px; color: var(--ink-500); margin: -8px 0 0; }
+
+details.sec > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  justify-content: space-between; gap: var(--space-3);
+  font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900);
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after {
+  content: "+"; font-weight: 400; font-size: 22px; line-height: 1; color: var(--ink-500);
+}
+details.sec[open] > summary::after { content: "\2212"; }
+details.sec > summary:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px;
+  border-radius: var(--radius-sm); }
+
+/* The form is one panel with hairline-separated sections, as on the board. */
+.rd-form-panel { background: var(--surface-0); border: 1px solid var(--line-100);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+
+/* The four result figures. A fixed four-column row clipped every one of them at
+   1024px, where each card got 126px for a 140px number. Auto-fit lets the row
+   decide how many fit, and the value shrinks a little on the way down. */
+.rd-stats { display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); }
+.rd-stats > div { padding: var(--space-4); min-width: 0; }
+.rd-stat__v { font-size: clamp(18px, 1.7vw, 22px); overflow-wrap: anywhere; }

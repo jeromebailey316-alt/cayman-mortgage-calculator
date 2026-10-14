@@ -285,11 +285,15 @@ def listings(data: dict) -> str:
           f'{rd.icon("x", 16)}</button></div>')
 
 
-def _fieldset(legend: str, body: str, aria: str) -> str:
-    return (f'<fieldset aria-label="{e(aria)}" style="border:0;margin:0;padding:0;'
-            'display:flex;flex-direction:column;gap:16px">'
-            f'<legend style="padding:0;font-size:18px;line-height:24px;font-weight:700;'
-            f'color:var(--ink-900)">{e(legend)}</legend>{body}</fieldset>')
+def _fieldset(legend: str, body: str, aria: str, collapsible: bool = False,
+              open_: bool = True) -> str:
+    """A form section. The board makes the two detail-heavy groups <details>, so
+    the page opens at a readable length rather than as one long wall."""
+    if collapsible:
+        return (f'<details class="sec" aria-label="{e(aria)}"{" open" if open_ else ""}>'
+                f"<summary>{e(legend)}</summary>{body}</details>")
+    return (f'<fieldset class="sec" aria-label="{e(aria)}" style="border:0;margin:0">'
+            f"<legend>{e(legend)}</legend>{body}</fieldset>")
 
 
 def _grid(*cells, cols: int = 2) -> str:
@@ -303,8 +307,8 @@ def _stat(label: str, el_id: str, sub_id: str = "") -> str:
             'border:1px solid var(--line-100);border-radius:12px;background:var(--surface-0)">'
             f'<span style="font-size:12px;line-height:16px;font-weight:700;letter-spacing:.06em;'
             f'text-transform:uppercase;color:var(--ink-500)">{e(label)}</span>'
-            f'<span id="{e(el_id)}" style="font-size:24px;line-height:32px;font-weight:700;'
-            'font-variant-numeric:tabular-nums;color:var(--ink-900)">CI$0</span>'
+            f'<span id="{e(el_id)}" class="rd-stat__v" style="line-height:32px;'
+            'font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-900)">CI$0</span>'
             + (f'<span id="{e(sub_id)}" style="font-size:12px;line-height:16px;'
                'color:var(--ink-500)"></span>' if sub_id else "")
             + "</div>")
@@ -357,17 +361,18 @@ def calculator(data: dict) -> str:
                            hint="of the purchase price", value=1, step=0.1, min_=0),
             rd.input_field("Maintenance allowance", id="cMaint", suffix="%/yr",
                            hint="of the purchase price", value=1, step=0.1, min_=0),
-        ), "Your household in detail")
-        + '<label style="display:flex;gap:12px;align-items:center;font-size:14px;'
-          'line-height:22px;color:var(--ink-700)">'
-          '<input type="checkbox" id="cBldgInStrata"> The strata covers building insurance</label>'
+        ) + '<label style="display:flex;gap:12px;align-items:center;font-size:14px;'
+            'line-height:22px;color:var(--ink-700)">'
+            '<input type="checkbox" id="cBldgInStrata"> '
+            "The strata covers building insurance</label>",
+          "Your household in detail", collapsible=True, open_=True)
         + _fieldset("Fee assumptions", _grid(
             rd.input_field("Legal fees", id="cLegal", suffix="%", hint="of the price", value=1, step=0.1, min_=0),
             rd.input_field("Bank fee", id="cBank", suffix="%", hint="of the loan", value=1, step=0.1, min_=0),
             rd.input_field("Valuation", id="cValFee", prefix="CI$", value=600, step=50, min_=0),
             rd.input_field("Mortgage stamp duty", id="cMortDuty", prefix="CI$", value=None,
                            readonly=True, inputmode=None, type_="text"),
-        ), "Fee assumptions")
+        ), "Fee assumptions", collapsible=True, open_=False)
     )
 
     results = (
@@ -384,9 +389,10 @@ def calculator(data: dict) -> str:
                     size="sm", icon_right="arrow-right", id="rFitLink")
         + "</div></div>"
 
-        + _grid(_stat("Loan amount", "rLoan"), _stat("Deposit", "rDown", "rDownSub"),
-                _stat("Total interest", "rInterest", "rInterestSub"),
-                _stat("Cash to close", "rCash", "rCashSub"), cols=4)
+        + ('<div class="rd-stats">'
+           + _stat("Loan amount", "rLoan") + _stat("Deposit", "rDown", "rDownSub")
+           + _stat("Total interest", "rInterest", "rInterestSub")
+           + _stat("Cash to close", "rCash", "rCashSub") + "</div>")
 
         + '<section aria-label="Monthly cost of owning" style="display:flex;flex-direction:column;'
           'gap:12px;padding:24px;border:1px solid var(--line-100);border-radius:12px">'
@@ -453,7 +459,7 @@ def calculator(data: dict) -> str:
         '<nav aria-label="Breadcrumb" style="font-size:12px;line-height:16px;font-weight:500;'
         'color:var(--ink-500)"><a href="/" style="color:var(--ink-500);text-decoration:none">Home</a>'
         ' › Mortgage calculator</nav>'
-        '<h1 style="margin:0;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-.02em">'
+        '<h1 style="margin:0;font-size:32px;line-height:40px;font-weight:700;letter-spacing:-.02em">'
         "Cayman mortgage calculator</h1>"
         '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
         "Your monthly payment and the cash you need on the day, with Cayman stamp duty, "
@@ -462,7 +468,7 @@ def calculator(data: dict) -> str:
         '<section aria-label="Inputs" class="r-pad" style="padding:40px 24px 64px">'
         '<div class="r-grid" style="max-width:1200px;margin:0 auto;display:grid;'
         'grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start">'
-        f'<form id="rdCalc" style="display:flex;flex-direction:column;gap:24px">{inputs}</form>'
+        f'<form id="rdCalc" class="rd-form-panel">{inputs}</form>'
         '<div aria-label="Results" style="display:flex;flex-direction:column;gap:24px">'
         f"{results}</div></div></section>" + sources_block())
 
@@ -516,7 +522,7 @@ def _page_head(crumb: str, title: str, lede: str) -> str:
             '<nav aria-label="Breadcrumb" style="font-size:12px;line-height:16px;font-weight:500;'
             'color:var(--ink-500)"><a href="/" style="color:var(--ink-500);text-decoration:none">'
             f"Home</a> › {e(crumb)}</nav>"
-            '<h1 style="margin:0;font-size:40px;line-height:48px;font-weight:700;'
+            '<h1 style="margin:0;font-size:32px;line-height:40px;font-weight:700;'
             f'letter-spacing:-.02em">{e(title)}</h1>'
             '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
             f"{e(lede)}</p></div></section>")

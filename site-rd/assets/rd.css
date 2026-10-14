@@ -1,4 +1,6 @@
-/* tokens.css, as delivered */
+/* ========================================================================== */
+/* 1. tokens.css, as delivered. Do not edit here. */
+/* ========================================================================== */
 :root,[data-theme="light"]{--navy-900:#011533;
 --navy-700:#002767;
 --navy-600:#013484;
@@ -43,7 +45,9 @@
 --shadow-md:0 8px 24px rgba(0, 0, 0, 0.55);}
 :root{--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;--radius-sm:6px;--radius-md:12px;--radius-lg:16px;--radius-full:999px;--font-sans:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 
-/* components/bundle.css, as delivered */
+/* ========================================================================== */
+/* 2. components/bundle.css, as delivered. Do not edit here. */
+/* ========================================================================== */
 /* Cayman Mortgage Calculator — component styles. Every colour, length and face is a token from tokens.css. */
 
 .cmc-container { max-width: 1248px; margin: 0 auto; padding: 0 var(--space-5); }
@@ -265,7 +269,10 @@ a.cmc-listing:hover { box-shadow: var(--shadow-md); }
 @media (max-width: 860px) { .cmc-footer__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .cmc-footer__grid { grid-template-columns: 1fr; } }
 
-/* page-level styles for the redesign */
+/* ========================================================================== */
+/* 3. Site overrides and page-level styles, added by this repo.
+      Everything below is ours; the two sections above are not. */
+/* ========================================================================== */
 /* Page-level styles for the redesign.
 
    Everything structural comes from the delivered tokens.css and
@@ -273,6 +280,11 @@ a.cmc-listing:hover { box-shadow: var(--shadow-md); }
    document styles, the responsive helpers the page boards use, and the handful
    of classes the boards reference that the component bundle does not define.
    Nothing here introduces a colour; every value is a token. */
+
+/* The delivered bundle styles components only: no page base and no
+   colour-scheme, so the browser renders form controls and scrollbars to the
+   operating system's preference. The design is a light one, so say so. */
+:root { color-scheme: light; }
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -392,3 +404,37 @@ h1, h2, h3, h4 { margin: 0; }
    delivered bundle, so the design system stays as shipped. */
 .cmc-byline__k,
 .cmc-byline__note { color: var(--ink-700); }
+
+/* Form sections on the calculator, from the board's own helmet block. The two
+   detail-heavy groups are <details>, so the page opens at a readable length. */
+.sec { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5);
+  border-top: 1px solid var(--line-100); }
+.sec:first-child { border-top: 0; }
+.sec > h2, .sec > legend { margin: 0; padding: 0; font-size: 18px; line-height: 24px;
+  font-weight: 700; color: var(--ink-900); }
+.sec .hint { font-size: 12px; line-height: 16px; color: var(--ink-500); margin: -8px 0 0; }
+
+details.sec > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  justify-content: space-between; gap: var(--space-3);
+  font-size: 18px; line-height: 24px; font-weight: 700; color: var(--ink-900);
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after {
+  content: "+"; font-weight: 400; font-size: 22px; line-height: 1; color: var(--ink-500);
+}
+details.sec[open] > summary::after { content: "\2212"; }
+details.sec > summary:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 2px;
+  border-radius: var(--radius-sm); }
+
+/* The form is one panel with hairline-separated sections, as on the board. */
+.rd-form-panel { background: var(--surface-0); border: 1px solid var(--line-100);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+
+/* The four result figures. A fixed four-column row clipped every one of them at
+   1024px, where each card got 126px for a 140px number. Auto-fit lets the row
+   decide how many fit, and the value shrinks a little on the way down. */
+.rd-stats { display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); }
+.rd-stats > div { padding: var(--space-4); min-width: 0; }
+.rd-stat__v { font-size: clamp(18px, 1.7vw, 22px); overflow-wrap: anywhere; }

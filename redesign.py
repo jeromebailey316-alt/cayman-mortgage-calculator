@@ -167,8 +167,11 @@ def field(control: str, label=None, prefix=None, suffix=None, hint=None,
 
 def input_field(label, bind=None, value=None, type_="number", prefix=None, suffix=None,
                 hint=None, step=None, min_=None, max_=None, inputmode="decimal", **kw) -> str:
-    control = "<input" + attrs(type=type_, value=value, step=step, min=min_, max=max_,
-                               inputmode=inputmode, data_cmc_bind=bind, **kw) + ">"
+    # bundle.css styles .cmc-field__input, not a bare input: without the class a
+    # control falls back to the browser's own box.
+    control = "<input" + attrs(class_="cmc-field__input", type=type_, value=value, step=step,
+                               min=min_, max=max_, inputmode=inputmode,
+                               data_cmc_bind=bind, **kw) + ">"
     return field(control, label=label, prefix=prefix, suffix=suffix, hint=hint)
 
 
@@ -176,7 +179,8 @@ def select_field(label, options, value=None, bind=None, hint=None, **kw) -> str:
     opts = "".join(
         f"<option{attrs(value=v, selected=(str(v) == str(value)) or None)}>{e(t)}</option>"
         for v, t in options)
-    control = "<select" + attrs(data_cmc_bind=bind, **kw) + f">{opts}</select>"
+    control = ("<select" + attrs(class_="cmc-field__input cmc-field__input--select",
+                                 data_cmc_bind=bind, **kw) + f">{opts}</select>")
     return field(control, label=label, hint=hint, chevron=True)
 
 
@@ -185,7 +189,7 @@ def pill_tabs(items, value=None, cls="") -> str:
     out = []
     for v, label, href in items:
         on = v == value
-        out.append(f'<a class="{cx("cmc-pill", "cmc-pill--on" if on else "")}"'
+        out.append(f'<a class="{cx("cmc-pill", "cmc-pill--active" if on else "")}"'
                    f'{attrs(href=href, aria_current="page" if on else None)}>{e(label)}</a>')
     return f'<div class="{cx("cmc-pills", cls)}" role="tablist">' + "".join(out) + "</div>"
 
@@ -281,9 +285,10 @@ def header(active: str = "", logo_height: int = 40, utility=True) -> str:
         on = is_on(it)
         link_cls = cx("cmc-header__link", "cmc-header__link--active" if on else "")
         if not it.get("menu"):
-            links.append(f'<a class="{link_cls}"'
+            links.append('<div class="cmc-header__item">'
+                         f'<a class="{link_cls}"'
                          f'{attrs(href=it["href"], aria_current="page" if on else None)}>'
-                         f'{e(it["label"])}</a>')
+                         f'{e(it["label"])}</a></div>')
             continue
         did = f"navmenu{n}"
         rows = "".join(
@@ -299,14 +304,14 @@ def header(active: str = "", logo_height: int = 40, utility=True) -> str:
         # The label links to the section's first page; the toggle beside it is a
         # separate button, so the section is reachable without opening the menu.
         links.append(
-            '<span class="cmc-header__item cmc-header__item--menu">'
+            '<div class="cmc-header__item cmc-header__item--menu">'
             '<span class="cmc-header__link-group">'
             f'<a class="{link_cls}"{attrs(href=it["href"], aria_current="page" if on else None)}>'
             f'{e(it["label"])}</a>'
             f'<button class="cmc-header__toggle" type="button" aria-expanded="false"'
             f' aria-controls="{did}" aria-label="Show {e(it["label"])} menu">'
             f'{icon("chevron-down", 16)}</button></span>'
-            f'<ul class="cmc-header__dropdown" id="{did}">{rows}</ul></span>')
+            f'<ul class="cmc-header__dropdown" id="{did}">{rows}</ul></div>')
 
     drawer = []
     for it in NAV:
@@ -609,10 +614,17 @@ def page(title: str, description: str, body: str, active: str = "",
 
 
 def stylesheet() -> str:
-    """tokens, then the component bundle as delivered, then page-level styles."""
-    parts = [
-        "/* tokens.css, as delivered */", TOKENS.read_text(),
-        "/* components/bundle.css, as delivered */", BUNDLE_CSS.read_text(),
-        "/* page-level styles for the redesign */", (ROOT / "web" / "rd.css").read_text(),
-    ]
-    return "\n".join(parts)
+    """One stylesheet, in three clearly separated sections.
+
+    Sections 1 and 2 are the delivered design system, byte for byte. Nothing in
+    them is edited; anything missing is added as an override in section 3.
+    """
+    bar = "/* " + "=" * 74 + " */\n"
+    return (
+        bar + "/* 1. tokens.css, as delivered. Do not edit here. */\n" + bar
+        + TOKENS.read_text().rstrip() + "\n\n"
+        + bar + "/* 2. components/bundle.css, as delivered. Do not edit here. */\n" + bar
+        + BUNDLE_CSS.read_text().rstrip() + "\n\n"
+        + bar + "/* 3. Site overrides and page-level styles, added by this repo.\n"
+                "      Everything below is ours; the two sections above are not. */\n" + bar
+        + (ROOT / "web" / "rd.css").read_text().rstrip() + "\n")
