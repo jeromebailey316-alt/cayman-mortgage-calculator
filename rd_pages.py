@@ -532,7 +532,14 @@ def calculator(data: dict) -> str:
         f"{results}</div></div></section>" + sources_block())
 
 
+REG_URL = ("https://gov.ky/documents/43485/45951/"
+           "StampDuty%28RatesofDuty%29%28No.2%29Regulations2025_MADE.pdf/"
+           "aa7c21ed-fc6c-61e0-e439-a3c8cf7f840c")
+
 SOURCES = [
+    ("Stamp Duty (Rates of Duty) (No. 2) Regulations, 2025", REG_URL,
+     "SL 63 of 2025, in force 1 January 2026: the current rates, the "
+     "concession bands, and linked transactions in a development scheme"),
     ("Stamp Duty Act (2019 Revision)",
      "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
      "stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5",
@@ -723,6 +730,38 @@ def from_board(name: str, vals: dict | None = None):
 AGENT_SAMPLE = {"price": 850000, "beds": 3, "baths": 2, "sqft": 2100, "monthly": 4800}
 
 
+LINKED_SECTION = """
+<section aria-label="Linked transactions" class="r-pad" style="padding:0 24px 40px">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font-size:24px;line-height:32px;font-weight:700;color:var(--ink-900)">
+      Buying in two parts: a lot now, a house later</h2>
+    <p style="margin:0">Inside a development scheme a purchase often completes as two separate
+      documents: an agreement for the bare land, then a conveyance once the house is built. The
+      2025 regulations charge both on the <strong style="color:var(--ink-900)">combined value of
+      the two</strong>, at half the ordinary rate each, so the pair comes to the same total a
+      single purchase would attract.</p>
+    <div class="rd-scroll"><table class="rd-table">
+      <thead><tr><th>The instrument</th><th>Combined value under CI$2M</th>
+        <th>CI$2M or more</th></tr></thead>
+      <tbody>
+        <tr><th>Agreement for the bare land</th><td>3.75%</td><td>5%</td></tr>
+        <tr><th>Conveyance of the finished property</th><td>3.75%</td><td>5%</td></tr>
+        <tr><th>Both together</th><td>7.5%</td><td>10%</td></tr>
+        <tr><th>A single conveyance within the scheme</th><td>7.5%</td><td>10%</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin:0">Two things catch people out. The percentage is taken on the value of
+      both parts, not on the part being signed, so the duty on the land agreement reflects the
+      finished house as well. And each document carries its own
+      <strong style="color:var(--ink-900)">45 day deadline, running from the day you first sign
+      that document</strong>, not from completion. The published rates start above CI$300,000.</p>
+    <p style="margin:0">Anything signed before 1 January 2026 keeps the rate that applied when it
+      was executed, under the transitional provision in the same regulations.</p>
+  </div>
+</section>
+"""
+
+
 BRAC_SECTION = """
 <section aria-label="Cayman Brac" class="r-pad" style="padding:0 24px 40px">
   <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
@@ -782,10 +821,25 @@ def stamp_duty_guide(data: dict) -> str:
     body = body.replace('<span style="font-size: 32px; line-height: 40px; font-weight: 700">CI$48,750</span>',
                         '<span id="gdDuty" style="font-size: 32px; line-height: 40px; '
                         'font-weight: 700">CI$48,750</span>')
+    # The regulation that actually sets the current rates, first in the guide's
+    # own Sources list. The board predates it and cites the Act, whose 2019
+    # thresholds the regulation has since replaced.
+    first_li = body.find("<li>")
+    if first_li > 0:
+        body = (body[:first_li]
+                + f'<li><a href="{e(REG_URL)}" target="_blank" rel="noopener">'
+                  "Stamp Duty (Rates of Duty) (No. 2) Regulations, 2025</a>, "
+                  "SL 63 of 2025, in force 1 January 2026: the 7.5% and 10% rates and the "
+                  "CI$2,000,000 line, the concession bands in paragraphs 10, 11, 11A and 11B, "
+                  "and the rates for a linked transaction in a development scheme. Anything "
+                  "executed before that date keeps the rate that applied then.</li>"
+                + body[first_li:])
+
     # the Brac section, written from the published sheet, before the sources
     marker = '<section aria-label="Sources"'
     i = body.find(marker)
-    return body[:i] + BRAC_SECTION + body[i:] if i > 0 else body + BRAC_SECTION
+    extra = LINKED_SECTION + BRAC_SECTION
+    return body[:i] + extra + body[i:] if i > 0 else body + extra
 
 
 def _panel(title: str, inner: str, aria: str) -> str:

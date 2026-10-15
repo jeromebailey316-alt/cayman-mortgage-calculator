@@ -115,6 +115,41 @@ ok('brac: the duty basis follows the higher of price and valuation',
                        status: 'standard', location: 'brac' }).transferDuty.rule === 'brac-over');
 ok('brac: a developed property keeps the 3% with no build condition',
    Core.transferDuty(400000, 'home', 'standard', false, 'brac').conditional === false);
+/* Stamp Duty (Rates of Duty) (No. 2) Regulations 2025, SL 63 of 2025, in force
+   1 January 2026. The thresholds below are read off the regulation itself. */
+near('reg: standard rate below CI$2M is 7.5% of the consideration',
+     Core.transferDuty(1999999, 'home', 'standard', false, 'grand').amount, 149999.925, 0.1);
+near('reg: standard rate at CI$2M is 10% of the whole consideration',
+     Core.transferDuty(2000000, 'home', 'standard', false, 'grand').amount, 200000);
+// paragraphs 10, 11, 11A and 11B: above each concession band, 7.5% under CI$2M
+near('reg para 10: first, single, home above CI$650,000',
+     Core.transferDuty(650001, 'home', 'first', false, 'grand').amount, 48750.075, 0.1);
+near('reg para 10: first, single, land above CI$350,000',
+     Core.transferDuty(350001, 'land', 'first', false, 'grand').amount, 26250.075, 0.1);
+near('reg para 11: first, joint, home above CI$700,000',
+     Core.transferDuty(700001, 'home', 'first', true, 'grand').amount, 52500.075, 0.1);
+near('reg para 11A: second, single, home above CI$600,000',
+     Core.transferDuty(600001, 'home', 'second', false, 'grand').amount, 45000.075, 0.1);
+near('reg para 11B: second, joint, land above CI$550,000',
+     Core.transferDuty(550001, 'land', 'second', true, 'grand').amount, 41250.075, 0.1);
+ok('reg: a concession buyer at CI$2M pays 10%, not 7.5%',
+   Core.transferDuty(2000000, 'home', 'first', false, 'grand').amount === 200000);
+
+// linked property transactions in a development scheme, paragraphs 2 to 4
+near('linked: the first part is 3.75% of the combined value',
+     Core.linkedDuty(800000, 'first').amount, 30000);
+near('linked: the second part is 3.75% of the combined value',
+     Core.linkedDuty(800000, 'second').amount, 30000);
+ok('linked: the two parts together equal a single conveyance',
+   Math.round(Core.linkedDuty(800000, 'first').amount + Core.linkedDuty(800000, 'second').amount)
+   === Math.round(Core.linkedDuty(800000, 'whole').amount));
+near('linked: each part is 5% once the combined value reaches CI$2M',
+     Core.linkedDuty(2500000, 'first').amount, 125000);
+ok('linked: no rate is invented below CI$300,000, where the regulation gives none',
+   Core.linkedDuty(250000, 'first') === null);
+ok('linked: each instrument runs its own 45 day clock',
+   Core.linkedDuty(800000, 'first').days === 45);
+
 ok('brac: a Brac purchase is cheaper than the same house on Grand Cayman',
    Core.transferDuty(400000, 'home', 'standard', false, 'brac').amount
    < Core.transferDuty(400000, 'home', 'standard', false, 'grand').amount);

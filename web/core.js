@@ -17,6 +17,14 @@ var Core = (function () {
   var RULES = {
     verified: '2026-10-01',
     sources: {
+      /* The rates themselves: Stamp Duty (Rates of Duty) (No. 2) Regulations,
+         2025, SL 63 of 2025, made 11 December 2025, gazetted 15 December 2025,
+         in force 1 January 2026. It replaces paragraph (2) of the Schedule and
+         amends the concession paragraphs (10), (11), (11A) and (11B) so each
+         carries the 10% band at CI$2,000,000, and replaces paragraphs (2) to
+         (4) for linked property transactions in a development scheme.
+         Anything executed before 1 January 2026 keeps the former rate. */
+      rates: 'https://gov.ky/documents/43485/45951/StampDuty%28RatesofDuty%29%28No.2%29Regulations2025_MADE.pdf/aa7c21ed-fc6c-61e0-e439-a3c8cf7f840c',
       duty: 'https://www.caymanlandinfo.ky/services/valuation/stamp-duty',
       luxury: 'https://gov.ky/w/legislation-passed-to-increase-stamp-duty-on-properties-worth-2m-and-over',
       concession: 'https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/application-concession-form-for-caymanian-property-buyers.pdf',
@@ -51,6 +59,18 @@ var Core = (function () {
          3%   developed property under CI$2,000,000
          10%  anything, developed or not, at CI$2,000,000 or more
        The sheet states no end date, so none is assumed here. */
+    /* Linked property transactions in a development scheme, SL 63 of 2025,
+       replacing paragraphs (2) to (4). Each part is charged on the combined
+       value of both parts. */
+    linked: {
+      floor: 300000,       // the published rates start above this
+      lux: 2000000,
+      whole: 0.075,        // a single conveyance forming part of the transaction
+      wholeLux: 0.10,
+      part: 0.0375,        // each of the two parts, on the total value
+      partLux: 0.05,
+      days: 45             // from the day the buyer first signs that instrument
+    },
     brac: {
       from: '2026-01-01',
       expires: null,         // the published sheet gives no expiry; do not invent one
@@ -150,6 +170,35 @@ var Core = (function () {
       if (brac) out.bracWorse = brac.amount;       // the island rate exists but is dearer
     }
     return out;
+  }
+
+  /* Duty on a purchase inside a development scheme that completes in two
+     instruments: an agreement for the bare land, then the conveyance once it is
+     built. SL 63 of 2025 charges each part on the TOTAL value of both, at half
+     the ordinary rate, so the two together come to the same 7.5% or 10% a
+     single conveyance would attract.
+
+     `part`: 'first' for the agreement over bare land, 'second' for the later
+     conveyance, or 'whole' for a single conveyance that is part of a linked
+     transaction. Each instrument is payable within 45 days of the day the buyer
+     first signs it, not 45 days from completion.
+
+     The published paragraphs set rates above CI$300,000 only; below that this
+     returns null rather than guessing at a figure the regulation does not give. */
+  function linkedDuty(totalValue, part) {
+    var v = pos(totalValue);
+    var L = RULES.linked;
+    if (v <= L.floor) return null;
+    var big = v >= L.lux;
+    var rate = part === 'whole'
+      ? (big ? L.wholeLux : L.whole)
+      : (big ? L.partLux : L.part);
+    return {
+      amount: v * rate, rate: rate, total: v,
+      part: part === 'whole' ? 'whole' : (part === 'second' ? 'second' : 'first'),
+      rule: big ? 'linked-over' : 'linked',
+      days: L.days, source: RULES.sources.rates
+    };
   }
 
   /* Duty when borrowing more against a property that already has a charge.
@@ -428,6 +477,7 @@ var Core = (function () {
     standardDuty: standardDuty, transferDuty: transferDuty, mortgageDuty: mortgageDuty,
     bracDuty: bracDuty, furtherChargeDuty: furtherChargeDuty,
     dutyThresholds: dutyThresholds,
+    linkedDuty: linkedDuty,
     payment: payment, amortise: amortise,
     closingCosts: closingCosts, monthlyOwnership: monthlyOwnership,
     purchase: purchase, maxPrice: maxPrice, budgets: budgets, fit: fit,
