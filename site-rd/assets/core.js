@@ -294,9 +294,25 @@ var Core = (function () {
     var dutiableBasis = isNum(o.valuationBasis) && o.valuationBasis > 0 ? o.valuationBasis : price;
     var dutiable = Math.max(0, dutiableBasis - pos(o.chattels));
     var td = transferDuty(dutiable, o.ptype, o.status, o.joint, o.location, o.asOf);
+    /* A purchase inside a development scheme is charged on the combined value of
+       both instruments. The two halves together come to the ordinary rate, so
+       the cash to close carries the whole of it; the calculator splits it out.
+       Below CI$300,000 the regulation sets no linked rate, so the ordinary duty
+       stands rather than a figure invented to fill the gap. */
+    if (o.linked) {
+      var lk = linkedDuty(dutiable, 'whole');
+      if (lk) {
+        lk.std = td.std;
+        lk.alternative = td.rule;
+        lk.alternativeAmount = td.amount;
+        td = lk;
+      }
+    }
     var md = mortgageDuty(loan);
+    var dutyLabel = td.rule === 'linked' || td.rule === 'linked-over'
+      ? 'Stamp duty on both documents' : 'Stamp duty on the transfer';
     var items = [
-      { key: 'transferDuty', label: 'Stamp duty on the transfer', amount: td.amount, kind: 'rule' },
+      { key: 'transferDuty', label: dutyLabel, amount: td.amount, kind: 'rule' },
       { key: 'mortgageDuty', label: 'Stamp duty on the mortgage', amount: md.amount, kind: 'rule' },
       { key: 'registry', label: 'Land Registry fees', kind: 'rule',
         amount: RULES.regTransfer + (loan > 0 ? RULES.regCharge : 0) }

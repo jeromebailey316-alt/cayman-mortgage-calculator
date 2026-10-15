@@ -313,6 +313,52 @@ ok('guards: every purchase figure is finite',
    [Core.purchase(0, settings), Core.purchase(1e9, settings)]
      .every(p => isFinite(p.cashToClose) && isFinite(p.pmt) && isFinite(p.ownership.total)));
 
+/* ------------------------------------- linked purchases through closingCosts --- */
+
+const lkBase = { price: 800000, loan: 600000, ptype: 'home', status: 'standard',
+                 legalPct: 1, bankPct: 1, valuation: 600, inspection: 0 };
+const lkOn = Core.closingCosts({ ...lkBase, linked: true });
+const lkOff = Core.closingCosts(lkBase);
+ok('linked: a standard buyer pays the same in total either way',
+   Math.abs(lkOn.transferDuty.amount - lkOff.transferDuty.amount) < 0.01);
+ok('linked: the cash to close is unchanged for a standard buyer',
+   Math.abs(lkOn.total - lkOff.total) < 0.01);
+ok('linked: the duty line says both documents',
+   lkOn.items[0].label === 'Stamp duty on both documents' &&
+   lkOff.items[0].label === 'Stamp duty on the transfer');
+ok('linked: the two parts sum to the whole',
+   Math.abs(Core.linkedDuty(800000, 'first').amount +
+            Core.linkedDuty(800000, 'second').amount - lkOn.transferDuty.amount) < 0.01);
+
+// the concession does not survive the scheme rates: this is the figure that moves
+// CI$650,000 sits inside the taper, where the concession is still worth something;
+// above CI$750,000 it has run out and the two routes agree, proving nothing.
+const lkFirst = Core.closingCosts({ ...lkBase, price: 650000, status: 'first', linked: true });
+const lkFirstPlain = Core.closingCosts({ ...lkBase, price: 650000, status: 'first' });
+ok('linked: a Caymanian first-property buyer pays the flat scheme rate',
+   Math.abs(lkFirst.transferDuty.amount - 48750) < 0.01 &&
+   Math.abs(lkFirstPlain.transferDuty.amount - 3750) < 0.01);
+ok('linked: what the ordinary rules would have charged is kept on the result',
+   Math.abs(lkFirst.transferDuty.alternativeAmount - lkFirstPlain.transferDuty.amount) < 0.01 &&
+   lkFirst.transferDuty.alternative === 'first-taper');
+
+// the sharpest clash: the island concession is 0%, the scheme rate is flat
+const lkBrac = Core.closingCosts({ ...lkBase, ptype: 'land', location: 'brac', linked: true });
+ok('linked: the scheme rate overrides the Cayman Brac concession, and says what it displaced',
+   lkBrac.transferDuty.rule === 'linked' &&
+   lkBrac.transferDuty.alternative === 'brac-land' &&
+   lkBrac.transferDuty.alternativeAmount === 0);
+
+const lkLux = Core.closingCosts({ ...lkBase, price: 2000000, linked: true });
+ok('linked: each part is 5% at CI$2,000,000, 10% in all',
+   Math.abs(lkLux.transferDuty.amount - 200000) < 0.01 &&
+   lkLux.transferDuty.rule === 'linked-over');
+
+const lkSmall = Core.closingCosts({ ...lkBase, price: 250000, loan: 0, linked: true });
+ok('linked: below CI$300,000 the ordinary duty stands rather than an invented rate',
+   lkSmall.transferDuty.rule === 'standard' &&
+   lkSmall.items[0].label === 'Stamp duty on the transfer');
+
 /* ---------------------------------------------------------------- report --- */
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) {

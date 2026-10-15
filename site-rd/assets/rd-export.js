@@ -43,6 +43,7 @@
       price: price, loan: loan, ptype: el('cPtype').value,
       status: el('cStatus').value, joint: el('cBuyer').value === 'joint',
       location: el('cIsland').value,
+      linked: !!el('cLinked') && el('cLinked').value === 'linked',
       legalPct: parseFloat(el('cLegal').value) || 0,
       bankPct: parseFloat(el('cBank').value) || 0,
       valuation: parseFloat(el('cValFee').value) || 0, inspection: 0
@@ -52,6 +53,13 @@
   }
 
   function money(x, s) { return CMC.money(Math.round(x * s.v.fx), s.v.symbol); }
+
+  // read back from the engine rather than from the select, so the file says
+  // "both documents" only when the linked rates were actually applied
+  function dutyLabel(s) {
+    var i = s.close.items.filter(function (it) { return it.key === 'transferDuty'; })[0];
+    return i ? i.label : 'Stamp duty on the transfer';
+  }
 
   /* ------------------------------------------------------------------ Excel */
   function rowsForSchedule(s) {
@@ -76,7 +84,7 @@
       ['Interest rate', s.v.rate],
       ['Term in years', s.v.term],
       ['Monthly cost of owning', s.monthly],
-      ['Stamp duty on the transfer', Math.round(s.close.transferDuty.amount * s.v.fx)],
+      [dutyLabel(s), Math.round(s.close.transferDuty.amount * s.v.fx)],
       ['Stamp duty on the mortgage', Math.round(s.close.mortgageDuty.amount * s.v.fx)],
       ['Cash to close', s.cash],
       ['Total interest over the term', Math.round(s.am.totalInterest * s.v.fx)],
@@ -163,7 +171,7 @@
         ['Monthly cost of owning', s.monthly]
       ]);
       section('Cash and running costs', [
-        ['Stamp duty on the transfer', money(s.close.transferDuty.amount, s)],
+        [dutyLabel(s), money(s.close.transferDuty.amount, s)],
         ['Stamp duty on the mortgage', money(s.close.mortgageDuty.amount, s)],
         ['Cash to close', s.cash],
         ['Total interest over the term', money(s.am.totalInterest, s)]

@@ -48,6 +48,7 @@
     var loan = Math.max(0, price - down);
     var extra = (rawOf('cExtra') || 0) / V.fx;
     var bldgInStrata = el('cBldgInStrata').checked;
+    var linked = !!el('cLinked') && el('cLinked').value === 'linked';
 
     var am = Core.amortise({ loan: loan, rate: V.rate / 100, years: V.term, extra: extra });
     var insAnnual = bldgInStrata || ptype === 'land' ? 0 : price * numOf('cBldg', 0) / 100;
@@ -55,7 +56,7 @@
     var close = Core.closingCosts({
       price: price, loan: loan, ptype: ptype, status: status, joint: joint,
       valuationBasis: valuation != null ? valuation / V.fx : 0,
-      location: island,
+      location: island, linked: linked,
       legalPct: numOf('cLegal', 1), bankPct: numOf('cBank', 1),
       valuation: numOf('cValFee', 600), inspection: 0
     });
@@ -73,8 +74,11 @@
 
     return {
       price: price, down: down, loan: loan, am: am, close: close, own: own,
-      ptype: ptype, status: status, joint: joint, island: island,
+      ptype: ptype, status: status, joint: joint, island: island, linked: linked,
       dutiableBasis: close.dutiableBasis,
+      // the same basis the engine charged, so the split cannot drift from the total
+      parts: linked ? [Core.linkedDuty(close.dutiable, 'first'),
+                       Core.linkedDuty(close.dutiable, 'second')] : null,
       cashToClose: down + close.total,
       income: rawOf('cIncome'), cash: rawOf('cCash')
     };
@@ -138,6 +142,7 @@
     var td = m.close.transferDuty;
     el('rDuty').textContent = money(td.amount);
     el('rDutyWhy').textContent = dutyWhy(td, m);
+    renderLinked(m, td);
     el('cMortDuty').value = money(m.close.mortgageDuty.amount);
 
     // affordability: the 40% total debt service guideline
@@ -160,6 +165,54 @@
     renderYears(m);
   }
 
+  /* The two instruments, each charged on the combined value. Shown only when
+     the engine actually applied the linked rates: below CI$300,000 it falls
+     back to the ordinary duty and there is nothing to split. */
+  function renderLinked(m, td) {
+    var wrap = el('rLinkedWrap');
+    if (!wrap) return;
+    var on = m.linked && m.parts && m.parts[0] && m.parts[1];
+    wrap.hidden = !on;
+    if (!on) return;
+    var pct = function (r) { return (r * 100).toFixed(2).replace(/\.?0+$/, '') + '%'; };
+    // No "charged on" column: it is the same combined value in every row, the
+    // sentence above already gives it, and a fourth column pushed the duty
+    // itself off the edge of the results panel.
+    rows(el('rLinkedTable'),
+      '<th>Document</th><th>Rate</th><th>Duty</th>',
+      [['Agreement for the land', m.parts[0]],
+       ['Conveyance once built', m.parts[1]]].map(function (r) {
+        return '<tr><th>' + esc(r[0]) + '</th><td>' + esc(pct(r[1].rate)) + '</td><td>' +
+          esc(money(r[1].amount)) + '</td></tr>';
+      }).join('') +
+      '<tr><th>Both</th><td>' + esc(pct(m.parts[0].rate + m.parts[1].rate)) +
+      '</td><td><strong>' + esc(money(td.amount)) + '</strong></td></tr>');
+
+    /* The scheme rates are flat, so they override a concession the same buyer
+       would have had on a single purchase. Nothing published says whether a
+       concession survives a linked transaction, and quietly charging the
+       higher figure without saying what it displaced would be misleading. */
+    var alt = el('rLinkedAlt');
+    var cheaper = td.alternativeAmount != null && td.alternativeAmount < td.amount - 0.5;
+    alt.hidden = !cheaper;
+    if (cheaper) {
+      alt.textContent = 'Bought as a single property you would pay ' +
+        money(td.alternativeAmount) + ' here, under ' + concessionName(td.alternative) +
+        '. The scheme rates above are flat, and nothing published says whether that ' +
+        'concession survives a purchase in two parts. Ask your attorney before you ' +
+        'rely on either figure.';
+    }
+  }
+
+  function concessionName(rule) {
+    if (rule === 'brac-land' || rule === 'brac-developed') return 'the Cayman Brac concession';
+    if (rule === 'first-free' || rule === 'first-taper') {
+      return 'the Caymanian first-property concession';
+    }
+    if (rule === 'second-reduced') return 'the Caymanian reduced rate';
+    return 'the ordinary rates';
+  }
+
   function dutyWhy(td, m) {
     var basis = money(m.dutiableBasis);
     switch (td.rule) {
@@ -178,6 +231,15 @@
         return '10% of ' + basis + ': on Cayman Brac the concession stops at ' +
           'CI$2,000,000, and at or above it the rate is 10% whether the land is ' +
           'developed or not.';
+      case 'linked':
+        return '3.75% on each of the two documents, both charged on the combined ' +
+          'value of ' + basis + ', coming to 7.5% in all. A scheme that completes in ' +
+          'two parts is taxed on what the whole of it is worth, not on the bare land ' +
+          'and the building separately.';
+      case 'linked-over':
+        return '5% on each of the two documents, both charged on the combined value of ' +
+          basis + ', coming to 10% in all: at CI$2,000,000 the rate on each part rises ' +
+          'from 3.75% to 5%.';
       case 'luxury':
         return '10% of ' + basis + ': the rate rises to 10% of the whole value at CI$2,000,000.';
       case 'first-free':
@@ -233,7 +295,7 @@
     if (ptype === 'home' || ptype === 'land') {
       el('cPtype').value = ptype;
     }
-    ['cValuation', 'cIsland', 'cPtype', 'cStatus', 'cBuyer', 'cExtra', 'cIncome', 'cCash',
+    ['cValuation', 'cIsland', 'cPtype', 'cStatus', 'cBuyer', 'cExtra', 'cIncome', 'cCash', 'cLinked',
      'cStrata', 'cLife', 'cBldg', 'cMaint', 'cLegal', 'cBank', 'cValFee', 'cBldgInStrata']
       .forEach(function (id) {
         var e = el(id);

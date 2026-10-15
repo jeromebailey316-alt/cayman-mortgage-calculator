@@ -187,9 +187,11 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
     if monthly is not None:
         monthly_html = (f'<div class="cmc-listing__monthly">{icon("calculator", 14)}From '
                         f"<strong>{e(fmt_money(monthly, currency))}</strong>/mo</div>")
-    label = f"{address}: view on the agent's site" if external and address else None
+    # clean first: the label was being built from the raw scraper string, so a
+    # title cleaned for display still reached screen readers with its own dashes
     address = clean_title(address)
     locality = clean_title(locality) if locality else locality
+    label = f"{address}: view on the agent's site" if external and address else None
     return (f'<{tag} class="cmc-listing"'
             + attrs(href=href, target="_blank" if external else None,
                     rel="noopener" if external else None, aria_label=label)

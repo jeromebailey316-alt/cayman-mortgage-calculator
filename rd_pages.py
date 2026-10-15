@@ -386,7 +386,19 @@ def calculator(data: dict) -> str:
 
     inputs = (
         rd.currency_toggle()
-        + _fieldset("Property", _grid(
+        + _fieldset("Property",
+            # On its own row: it changes how the price below it is read, and the
+            # option text does not fit a half-width select.
+            '<div style="margin-bottom:16px">'
+            + rd.select_field("Purchase type",
+                              [("single", "A single purchase"),
+                               ("linked", "A development scheme, in two parts")],
+                              id="cLinked", value="single",
+                              hint="An agreement for the land, then the conveyance once "
+                                   "built. Enter what the two together are worth as the "
+                                   "purchase price.")
+            + "</div>"
+            + _grid(
             rd.input_field("Purchase price", bind="price", value=650000, prefix="CI$", step=1000, min_=0, money=True),
             rd.input_field("Government valuation, if higher", id="cValuation", prefix="CI$",
                            placeholder="Same as price", step=1000, min_=0, value=None, money=True),
@@ -476,7 +488,16 @@ def calculator(data: dict) -> str:
           '<p id="rDuty" style="margin:0;font-size:32px;line-height:40px;font-weight:700;'
           'font-variant-numeric:tabular-nums;color:var(--ink-900)">CI$0</p>'
           '<p id="rDutyWhy" style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
-          "</p></section>"
+          "</p>"
+          '<div id="rLinkedWrap" hidden style="display:flex;flex-direction:column;gap:8px">'
+          '<div class="rd-scroll"><table class="rd-table" id="rLinkedTable"></table></div>'
+          '<p id="rLinkedAlt" hidden style="margin:0;font-size:12px;line-height:16px;'
+          'padding:8px 12px;border-radius:8px;background:var(--surface-0);'
+          'color:var(--ink-900)"></p>'
+          '<p style="margin:0;font-size:12px;line-height:16px;color:var(--ink-700)">'
+          "Each document carries its own 45 day deadline, running from the day you first "
+          "sign that document rather than from completion.</p></div>"
+          "</section>"
 
         + '<section id="rAffordWrap" aria-label="Affordability check" hidden '
           'style="display:flex;flex-direction:column;gap:8px;padding:24px;'
@@ -540,10 +561,14 @@ SOURCES = [
     ("Stamp Duty (Rates of Duty) (No. 2) Regulations, 2025", REG_URL,
      "SL 63 of 2025, in force 1 January 2026: the current rates, the "
      "concession bands, and linked transactions in a development scheme"),
-    ("Stamp Duty Act (2019 Revision)",
-     "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
-     "stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5",
-     "The transfer and mortgage duty rates, and the 45 day deadline"),
+    # The regulation above sets the transfer rates and replaces what the Act's
+    # own Schedule said about them. It does not mention mortgages at all, so the
+    # 1% and 1.5% on a charge still come from the Act, and this entry is narrowed
+    # to that rather than dropped: a figure on the page with no source behind it
+    # would be worse than one citation more.
+    ("Stamp Duty Act (2019 Revision), Schedule: Mortgage", REG_URL,
+     "Stamp duty on the charge itself: 1% of the sum secured up to CI$300,000 "
+     "and 1.5% of the whole sum above it, and the 45 day deadline"),
     ("Ministry of Finance: Caymanian concession application",
      "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/stamp-duty/"
      "application-concession-form-for-caymanian-property-buyers.pdf?sfvrsn=a01a6f6d_1",
@@ -757,6 +782,9 @@ LINKED_SECTION = """
       that document</strong>, not from completion. The published rates start above CI$300,000.</p>
     <p style="margin:0">Anything signed before 1 January 2026 keeps the rate that applied when it
       was executed, under the transitional provision in the same regulations.</p>
+    <p style="margin:0"><a href="/calculator/">The calculator has a mode for
+      this</a>: choose a development scheme in two parts under Purchase type, enter what the two
+      together are worth, and it splits the duty across the two documents.</p>
   </div>
 </section>
 """
@@ -824,6 +852,12 @@ def stamp_duty_guide(data: dict) -> str:
     # The regulation that actually sets the current rates, first in the guide's
     # own Sources list. The board predates it and cites the Act, whose 2019
     # thresholds the regulation has since replaced.
+    # The board cites the Act for the rates. The regulation has replaced what the
+    # Act's Schedule said about them, so that link now points at the regulation.
+    body = body.replace(
+        "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/"
+        "stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5", REG_URL)
+
     first_li = body.find("<li>")
     if first_li > 0:
         body = (body[:first_li]
@@ -904,7 +938,7 @@ def _closing_items() -> list[dict]:
     rows = [
         ("Stamp duty on the transfer", duty_first_excess,
          "3.75% on the part above CI$550,000 for a Caymanian first property",
-         "Stamp Duty Act (2019 Revision)"),
+         "Stamp Duty (Rates of Duty) (No. 2) Regulations, 2025"),
         ("Stamp duty on the mortgage", mortgage_duty,
          "1% up to CI$300,000, then 1.5% of the whole sum", "Stamp Duty Act, Schedule: Mortgage"),
         ("Land Registry fees", 100.0, "CI$50 to register the transfer, CI$50 for the charge",
@@ -949,6 +983,10 @@ def closing_costs_guide(data: dict) -> str:
     """Ported from ClosingCosts.dc.html, with the cash-at-closing panel rebuilt
     on core.js so it matches the calculator line for line."""
     src = (_BOARDS / "ClosingCosts.dc.html").read_text()
+    # as on the stamp duty guide: the rates citation points at the regulation
+    src = src.replace(
+        "https://www.caymanlandinfo.ky/docs/default-source/laws-and-regulations/"
+        "stamp-duty/stamp-duty-act_2019-revision.pdf?sfvrsn=dd960e84_5", REG_URL)
     # The checklist is server-rendered from the same core.js itemisation the
     # calculator uses, then kept live by rd-guides.js. Ticking a line is runtime
     # state, so the initial render just shows every line unticked.
