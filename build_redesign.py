@@ -56,7 +56,8 @@ PAGES = {
     "equity": {
         "title": "Cayman home equity calculator: how much could you release?",
         "description": ("What your Cayman property is worth less what is secured against it, "
-                        "and how much of that a lender would advance."),
+                        "how much a lender would advance, and what releasing it costs a month "
+                        "and in stamp duty on the larger charge."),
         "build": lambda data: rd_pages.equity(data),
         "active": "/equity/",
         "scripts": ["/assets/core.js", "/assets/rd-afford.js"],

@@ -745,9 +745,28 @@ def equity(data: dict) -> str:
             rd.input_field("Other secured loans", id="eOther", prefix="CI$", value=0,
                            step=1000, min_=0, money=True),
             rd.input_field("Maximum loan to value", id="eLtv", suffix="%", value=80,
-                           hint="90% Caymanian, 80% resident, 70% non-resident",
+                           hint="90% Caymanian, 80% resident, 70% non-resident. Lenders "
+                                "publish these for a purchase; confirm yours for a release.",
                            step=1, min_=1, max_=100),
         ), "Your property")
+        + _fieldset("What you want to release", _grid(
+            rd.input_field("Amount to release", id="eRelease", prefix="CI$", value=100000,
+                           step=5000, min_=0, money=True,
+                           hint="The new money, not the total you would owe"),
+            rd.input_field("Rate on the new borrowing", id="eRate", suffix="%", value=7.75,
+                           step=0.05, min_=0),
+            rd.select_field("Term", [(10, "10 years"), (15, "15 years"), (20, "20 years"),
+                                     (25, "25 years"), (30, "30 years")],
+                            id="eTerm", value=15,
+                            hint="A longer term lowers the payment and raises the interest"),
+        ), "What you want to release")
+        + _fieldset("Can you carry it?", _grid(
+            rd.input_field("Current monthly mortgage payment", id="ePayment", prefix="CI$",
+                           value=None, placeholder="Optional", step=50, min_=0, money=True),
+            rd.input_field("Gross monthly income", id="eIncome", prefix="CI$", value=None,
+                           placeholder="Optional", step=100, min_=0, money=True,
+                           hint="Both together check the payment against the 40% guideline"),
+        ), "Can you carry it?", collapsible=True, open_=False)
         + "</form>")
 
     results = (
@@ -757,14 +776,30 @@ def equity(data: dict) -> str:
           '<h2 style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
           "How it is worked out</h2>"
           '<div class="rd-scroll"><table class="rd-table" id="eTable"></table></div></section>'
+        + '<section id="eCostWrap" aria-label="What releasing it costs" '
+          'style="display:flex;flex-direction:column;gap:12px;padding:24px;'
+          'border:1px solid var(--line-100);border-radius:12px">'
+          '<h2 id="eCostTitle" style="margin:0;font-size:20px;line-height:28px;font-weight:700">'
+          "What releasing it costs</h2>"
+          '<div class="rd-scroll"><table class="rd-table" id="eCostTable"></table></div>'
+          # The cliff is the whole reason this section exists, so it gets its own
+          # line rather than a row a reader can skim past.
+          '<p id="eCliff" hidden style="margin:0;font-size:13px;line-height:19px;'
+          'padding:10px 12px;border-radius:8px;background:var(--teal-100);'
+          'color:var(--ink-900)"></p>'
+          '<p id="eAffordNote" hidden style="margin:0;font-size:13px;line-height:19px;'
+          'color:var(--ink-700)"></p>'
+          "</section>"
         + '<p style="margin:0;font-size:14px;line-height:22px;color:var(--ink-700)">'
-          'Releasing equity means a new or larger charge on the property, which carries its own '
-          'stamp duty. The <a href="/guides/refinancing/">refinancing guide</a> works out '
+          'These figures price the new money on its own. If you remortgage the whole balance '
+          'instead of taking a further advance, the payment covers everything you owe and will '
+          'be higher. The <a href="/guides/refinancing/">refinancing guide</a> works out '
           "whether a new rate pays for itself.</p>")
 
     return (_page_head("Equity", "How much equity do you have?",
-                       "What your property is worth, less what is secured against it, and how "
-                       "much of that a lender would let you borrow.")
+                       "What your property is worth, less what is secured against it, how "
+                       "much of that a lender would let you borrow, and what taking it would "
+                       "cost you a month and in stamp duty.")
             + _two_col(form, results) + sources_block())
 
 
