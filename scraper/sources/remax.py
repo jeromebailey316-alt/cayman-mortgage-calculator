@@ -87,7 +87,7 @@ def _cards(soup: BeautifulSoup) -> dict[int, dict]:
 
 
 def _acres_from_title(title: str) -> float | None:
-    m = re.search(r"(\d+(?:\.\d+)?)\s*[- ]?\s*(?:acres?|ac)\b", title or "", re.I)
+    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*[- ]?\s*(?:acres?|ac)\b", title or "", re.I)
     return float(m.group(1)) if m else None
 
 

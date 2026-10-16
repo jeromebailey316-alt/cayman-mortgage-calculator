@@ -535,3 +535,103 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
   margin-top: auto;
 }
 .rd-listing-actions .cmc-btn { width: 100%; justify-content: center; }
+
+/* ---------------------------------------------------- acreage range slider
+
+   Two range inputs stacked on one track. The inputs are transparent and
+   pointer-transparent; only their thumbs take the pointer, so each handle is
+   grabbable anywhere along the shared track without one input swallowing the
+   other's clicks.
+
+   The scale is stepped, not linear: the median listing is 0.4 acres and the
+   largest is 100, so a linear track would bury half the inventory in its first
+   half-percent. rd-listings.js maps the index to acres. */
+.rd-acres {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+.rd-acres__out {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--ink-900);
+  font-variant-numeric: tabular-nums;
+}
+.rd-acres__slider {
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.rd-acres__track {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line-100);
+}
+.rd-acres__fill {
+  position: absolute;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--teal-300);
+}
+.rd-acres__slider input[type="range"] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 18px;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+}
+.rd-acres__slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface-0);
+  border: 2px solid var(--navy-700);
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+}
+.rd-acres__slider input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface-0);
+  border: 2px solid var(--navy-700);
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+  -moz-appearance: none;
+}
+.rd-acres__slider input[type="range"]:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--teal-300);
+  outline-offset: 2px;
+}
+.rd-acres__slider input[type="range"]:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--teal-300);
+  outline-offset: 2px;
+}
+.rd-acres__slider input[type="range"]::-moz-range-track { background: none; }
+
+/* A select the property type has taken out of play reads as disabled rather
+   than as an empty choice the visitor made. */
+.cmc-field__input:disabled {
+  background: var(--surface-100);
+  color: var(--ink-500);
+  cursor: not-allowed;
+}

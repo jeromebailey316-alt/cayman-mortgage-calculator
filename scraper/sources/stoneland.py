@@ -160,7 +160,7 @@ def _parse_card(card, page_url: str) -> Listing | None:
         beds = baths = None
         if sqft is None and width and depth:
             sqft = round(width * depth)
-        m = re.search(r"(\d+(?:\.\d+)?)\s*(?:\+\s*)?acres?\b", title, re.I)
+        m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*(?:\+\s*)?acres?\b", title, re.I)
         if m:
             acres = float(m.group(1))
         elif sqft:
@@ -209,7 +209,7 @@ def _enrich(l: Listing) -> bool:
     text = _clean(soup.get_text(" "))
     if _RENT_RE.search(text[:400]):      # title area only, descriptions mention rentals
         return False
-    m = re.search(r"(\d+(?:\.\d+)?)\s*(?:\+\s*)?(?:-\s*)?acres?\b", text, re.I)
+    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*(?:\+\s*)?(?:-\s*)?acres?\b", text, re.I)
     if m and l.acres is None:
         acres = float(m.group(1))
         if 0 < acres < 500:

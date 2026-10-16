@@ -100,7 +100,7 @@ def _parse_cards(html: str) -> list[Listing]:
                 elif re.search(r"sq\s*ft", txt, re.I):
                     sqft = num(txt)
             if acres is None:
-                mm = re.search(r"(\d+(?:\.\d+)?)\s*acres?\b", title, re.I)
+                mm = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*acres?\b", title, re.I)
                 if mm:
                     acres = float(mm.group(1))
             if ptype == LAND and sqft is None and acres:

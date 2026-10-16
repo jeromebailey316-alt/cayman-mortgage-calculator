@@ -110,7 +110,7 @@ def _parse_card(card, cat_type: str) -> Listing | None:
     if cat_type == LAND or cat.startswith("lands-"):
         ptype = LAND
         if acres is None:
-            m = re.search(r"(\d+(?:\.\d+)?)\s*acres?", title, re.I)
+            m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*acres?", title, re.I)
             acres = float(m.group(1)) if m else (round(sqft / SQFT_PER_ACRE, 3) if sqft else None)
         beds = baths = None
     else:

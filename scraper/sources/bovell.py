@@ -57,7 +57,7 @@ def _price(txt: str) -> tuple[float | None, str]:
 
 
 def _acres(title: str) -> float | None:
-    m = re.search(r"(\d+(?:\.\d+)?)\s*[- ]?\s*(?:acres?|ac)\b", title or "", re.I)
+    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*[- ]?\s*(?:acres?|ac)\b", title or "", re.I)
     return float(m.group(1)) if m else None
 
 

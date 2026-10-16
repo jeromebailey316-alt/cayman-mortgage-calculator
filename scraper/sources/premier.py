@@ -85,8 +85,8 @@ GONE = re.compile(r"\bsold\b|\bwithdrawn\b|\bleased\b|\brented\b|\bunder\s+(offe
                   r"|\bpending\b|\bno\s+longer\s+available\b", re.I)
 RENTAL = re.compile(r"\brent(al|ed|s)?\b|\bfor\s+rent\b|\bper\s+month\b|\bp/?m\b|\blease\b", re.I)
 COMMERCIAL = re.compile(r"\bcommercial\b|\boffice\b|\bretail\b|\bwarehouse\b", re.I)
-ACRES = re.compile(r"acre\(?s?\)?\s*[:\-]?\s*(\d+(?:\.\d+)?)", re.I)
-ACRES_ALT = re.compile(r"(\d+(?:\.\d+)?)\s*acres?\b", re.I)
+ACRES = re.compile(r"acre\(?s?\)?\s*[:\-]?\s*(?<![\d./])(\d*\.\d+|\d+)", re.I)
+ACRES_ALT = re.compile(r"(?<![\d./])(\d*\.\d+|\d+)\s*acres?\b", re.I)
 
 
 def _clean(s: str | None) -> str:

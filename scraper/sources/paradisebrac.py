@@ -61,7 +61,7 @@ ISLAND = "Cayman Brac"
 # "96E381", "102A379", "99A135": block letter-and-number, then the parcel.
 CODE = re.compile(r"\b(\d{2,3}[A-Z]\d{1,4})\b")
 PRICE = re.compile(r"\$\s*[\d,]+(?:\.\d+)?\s*CI\b", re.I)
-ACRES = re.compile(r"(\d+(?:\.\d+)?)\s*(?:of\s+an?\s+)?acres?\b", re.I)
+ACRES = re.compile(r"(?<![\d./])(\d*\.\d+|\d+)\s*(?:of\s+an?\s+)?acres?\b", re.I)
 SOLD_WORDS = re.compile(r"\bsold\b|\bunder\s+(contract|offer)\b|\bpending\b", re.I)
 
 

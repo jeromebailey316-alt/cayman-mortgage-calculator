@@ -270,7 +270,7 @@ def _parse_detail(url: str, base: Listing | None = None) -> Listing | None:
         l.beds = l.baths = None
         if l.acres is None:
             # Several lots only state the acreage in the title.
-            m = re.search(r"(\d+(?:\.\d+)?)\s*(?:\+\s*)?acres?\b", l.title, re.I)
+            m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*(?:\+\s*)?acres?\b", l.title, re.I)
             if m:
                 l.acres = float(m.group(1))
         if l.sqft is None and l.acres:

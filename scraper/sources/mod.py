@@ -142,7 +142,7 @@ def _parse_card(card, locs: dict) -> Listing | None:
     if sqft is not None and sqft < 50:
         acres, sqft = acres or sqft, None
     if acres is None:
-        m = re.search(r"(\d+(?:\.\d+)?)\s*[- ]?\s*acres?\b", title, re.I)
+        m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*[- ]?\s*acres?\b", title, re.I)
         if m:
             acres = float(m.group(1))
     if ptype == LAND and acres is None and sqft:

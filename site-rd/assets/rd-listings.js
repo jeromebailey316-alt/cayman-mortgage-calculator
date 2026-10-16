@@ -145,10 +145,70 @@
   /* --------------------------------------------------------------- filters */
   function val(id) { var el = d.getElementById(id); return el ? el.value : ''; }
 
+  /* Acreage, on a stepped scale. Half the listings with a figure are under
+     0.4 acres and the largest is 100, so a linear track would put the median
+     at 0.4% along it. Index 0 means no minimum; the last index means no
+     maximum, so the handful of large parcels stay reachable. */
+  var ACRE_STOPS = [0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 25, 50, null];
+  var ACRE_TOP = ACRE_STOPS.length - 1;
+
+  function acreLabel(i) {
+    var v = ACRE_STOPS[i];
+    return v === null ? 'any' : String(v);
+  }
+
+  function acreUnit(v) { return v === 1 ? ' acre' : ' acres'; }
+
+  function acreRange() {
+    var lo = d.getElementById('fAcreMin'), hi = d.getElementById('fAcreMax');
+    if (!lo || !hi) return null;
+    var a = parseInt(lo.value, 10), b = parseInt(hi.value, 10);
+    if (a > b) { var t = a; a = b; b = t; }
+    return { i: a, j: b, min: ACRE_STOPS[a], max: ACRE_STOPS[b],
+             active: a > 0 || b < ACRE_TOP };
+  }
+
+  function paintAcres() {
+    var r = acreRange();
+    if (!r) return;
+    var fill = d.getElementById('fAcreFill'), out = d.getElementById('fAcreOut');
+    if (fill) {
+      fill.style.left = (r.i / ACRE_TOP * 100) + '%';
+      fill.style.width = ((r.j - r.i) / ACRE_TOP * 100) + '%';
+    }
+    if (out) {
+      out.textContent = !r.active ? 'Any'
+        : r.max === null ? acreLabel(r.i) + '+ acres'
+        : r.i === r.j ? acreLabel(r.i) + acreUnit(r.min)
+        : acreLabel(r.i) + ' to ' + acreLabel(r.j) + acreUnit(r.max);
+    }
+  }
+
+  /* Land has no bedroom or bathroom count: 335 of the 336 land listings carry
+     neither. Selecting it zeroes both and takes them out of play rather than
+     leaving two controls that would filter the whole category away. */
+  function syncRooms() {
+    var isLand = val('fType') === 'land';
+    ['fBeds', 'fBaths'].forEach(function (id) {
+      var el = d.getElementById(id);
+      if (!el) return;
+      if (isLand) {
+        if (el.dataset.was === undefined) el.dataset.was = el.value;
+        el.value = '0';
+        el.disabled = true;
+      } else if (el.disabled) {
+        el.disabled = false;
+        el.value = el.dataset.was || '';
+        delete el.dataset.was;
+      }
+    });
+  }
+
   function apply() {
     var district = val('fDistrict'), type = val('fType');
     var min = parseFloat(val('fMin')), max = parseFloat(val('fMax'));
-    var beds = parseFloat(val('fBeds'));
+    var beds = val('fBeds'), baths = val('fBaths');
+    var acres = acreRange();
     var v = CMC.inputs.get();
     // the price boxes are in the display currency
     if (!isNaN(min)) min = min / v.fx;
@@ -160,7 +220,15 @@
       if (type && l.ptype !== type) return false;
       if (!isNaN(min) && l.price_kyd < min) return false;
       if (!isNaN(max) && l.price_kyd > max) return false;
-      if (!isNaN(beds) && !(l.beds >= beds)) return false;
+      if (!roomsOk(l.beds, beds)) return false;
+      if (!roomsOk(l.baths, baths)) return false;
+      if (acres && acres.active) {
+        // no figure means it cannot be shown to be in range, so it is out; the
+        // hint under the slider says this before anyone narrows
+        if (!(l.acres > 0)) return false;
+        if (acres.min !== null && l.acres < acres.min) return false;
+        if (acres.max !== null && l.acres > acres.max) return false;
+      }
       return true;
     });
 
@@ -173,6 +241,15 @@
     });
     shown = PAGE;
     render();
+  }
+
+  /* "0" is an exact match: land carries null, not 0, so both count as none.
+     Every other value is a floor. */
+  function roomsOk(have, want) {
+    if (want === '') return true;
+    var n = parseFloat(want);
+    if (n === 0) return !(have > 0);
+    return have >= n;
   }
 
   function bindCards() {
@@ -336,11 +413,20 @@
     loadFav();
     loadCompare();
 
-    ['fDistrict', 'fType', 'fMin', 'fMax', 'fBeds', 'fSort'].forEach(function (id) {
+    ['fDistrict', 'fType', 'fMin', 'fMax', 'fBeds', 'fBaths', 'fSort'].forEach(function (id) {
       var el = d.getElementById(id);
       if (el) el.addEventListener('input', apply);
       if (el && el.tagName === 'SELECT') el.addEventListener('change', apply);
     });
+    var fType = d.getElementById('fType');
+    if (fType) fType.addEventListener('change', function () { syncRooms(); apply(); });
+    ['fAcreMin', 'fAcreMax'].forEach(function (id) {
+      var el = d.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', function () { paintAcres(); apply(); });
+    });
+    syncRooms();
+    paintAcres();
     var form = d.getElementById('rdFilters');
     if (form) form.addEventListener('submit', function (ev) { ev.preventDefault(); apply(); });
     if (moreBtn) moreBtn.addEventListener('click', function () { shown += PAGE; render(); });

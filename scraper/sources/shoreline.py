@@ -185,7 +185,7 @@ def fetch(max_pages: int = 5) -> list[Listing]:
                 if sqft is not None and sqft < 50:  # land cards show "0 ft²"
                     sqft = None
                 if acres is None:
-                    m = re.search(r"(\d+(?:\.\d+)?)\s*[- ]?\s*acres?\b", title, re.I)
+                    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*[- ]?\s*acres?\b", title, re.I)
                     if m:
                         acres = float(m.group(1))
                 if ptype == LAND and acres is not None:

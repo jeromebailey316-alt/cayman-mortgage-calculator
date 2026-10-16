@@ -60,7 +60,7 @@ def _path_type(url: str):
 
 
 def _acres_from_text(text: str) -> float | None:
-    m = re.search(r"(\d+(?:\.\d+)?)\s*(?:\+\s*)?acres?\b", text or "", re.I)
+    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*(?:\+\s*)?acres?\b", text or "", re.I)
     return float(m.group(1)) if m else None
 
 

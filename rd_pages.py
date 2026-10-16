@@ -201,7 +201,7 @@ def home(data: dict) -> str:
         'grid-template-columns:repeat(4,minmax(0,1fr));gap:24px">'
         + _feature("shield-check", "navy", "Free, no account",
                    "No sign-up, no newsletter, nothing to unsubscribe from.")
-        + _feature("receipt", "teal", "Cayman costs built in",
+        + _feature("receipt", "navy", "Cayman costs built in",
                    "Stamp duty, legal fees and closing costs; not a generic US calculator.")
         + _feature("house", "navy", "Real local listings",
                    "Shown with each agency's permission, linking back to the original listing.")
@@ -264,7 +264,35 @@ def listings(data: dict) -> str:
     need to work on the client anyway.
     """
     district_opts = [("", "Any district")] + [(d, d) for d in DISTRICTS]
-    bed_opts = [("", "Any")] + [(str(n), f"{n}+") for n in (1, 2, 3, 4, 5)]
+    # "0" is an exact match, not a floor: it is what Land selects, and land
+    # carries no bedroom or bathroom count at all.
+    room_opts = [("", "Any"), ("0", "None")] + [(str(n), f"{n}+") for n in (1, 2, 3, 4, 5)]
+
+    # Acreage is only worth filtering on where it is known, so say where that is
+    # rather than letting a visitor narrow into an empty result and guess why.
+    rows = (data or {}).get("listings", []) or []
+    with_acres = sum(1 for l in rows
+                     if isinstance(l.get("acres"), (int, float)) and l["acres"] > 0)
+    land_with = sum(1 for l in rows if l.get("ptype") == "land"
+                    and isinstance(l.get("acres"), (int, float)) and l["acres"] > 0)
+    land_total = sum(1 for l in rows if l.get("ptype") == "land") or 1
+    acre_hint = (f"Known for {with_acres} of {len(rows)} listings, including "
+                 f"{round(100 * land_with / land_total)}% of land. Narrowing it hides "
+                 "listings with no acreage figure.")
+
+    acreage = (
+        '<div class="rd-acres" role="group" aria-labelledby="fAcreLabel">'
+        '<span class="cmc-field__label" id="fAcreLabel">Acreage</span>'
+        '<output class="rd-acres__out" id="fAcreOut" for="fAcreMin fAcreMax">Any</output>'
+        '<div class="rd-acres__slider">'
+        '<div class="rd-acres__track"><div class="rd-acres__fill" id="fAcreFill"></div></div>'
+        '<input type="range" id="fAcreMin" min="0" max="16" step="1" value="0"'
+        ' aria-label="Minimum acreage">'
+        '<input type="range" id="fAcreMax" min="0" max="16" step="1" value="16"'
+        ' aria-label="Maximum acreage">'
+        "</div>"
+        f'<span class="cmc-field__hint">{e(acre_hint)}</span>'
+        "</div>")
 
     filters = (
         '<form id="rdFilters" aria-label="Filter listings" style="display:flex;'
@@ -279,7 +307,12 @@ def listings(data: dict) -> str:
         + rd.select_field("Property type", TYPES, id="fType")
         + rd.input_field("Min price", prefix="CI$", placeholder="No min", id="fMin", value=None, money=True)
         + rd.input_field("Max price", prefix="CI$", placeholder="No max", id="fMax", value=None, money=True)
-        + rd.select_field("Beds", bed_opts, id="fBeds")
+        + rd.select_field("Beds", room_opts, id="fBeds")
+        + rd.select_field("Baths", room_opts, id="fBaths")
+        + "</div>"
+        + '<div class="r-grid-2" style="display:grid;'
+          'grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:end">'
+        + f'<div style="grid-column:span 5">{acreage}</div>'
         + rd.button("Search", icon_left="search", type="submit")
         + "</div></form>")
 

@@ -99,7 +99,7 @@ def _parse_card(card) -> Listing | None:
         if ptype == OTHER:
             ptype = HOME if seg == "residential" else OTHER
 
-    m = re.search(r"(\d+(?:\.\d+)?)\s*acres?\b", title, re.I)
+    m = re.search(r"(?<![\d./])(\d*\.\d+|\d+)\s*acres?\b", title, re.I)
     return Listing(
         source=SOURCE, url=url, title=title, price=price, currency=cur,
         ptype=ptype, location="", beds=beds, baths=baths, sqft=sqft,
