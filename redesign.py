@@ -123,6 +123,64 @@ def use_in_calculator(price, location=None, ptype=None) -> str:
         + f">{icon('calculator', 16)}<span>Use in calculator</span></button></div>")
 
 
+# Short forms that stay upper once a shouting title is cased down. GT is the
+# ONE|GT building in George Town and appears in 15 titles; II is a phase number.
+_KEEP_UPPER = {"GT", "II", "III", "IV", "MLS", "SMB", "HOA",
+               "NE", "NW", "SE", "SW", "USA", "UK", "US", "CI", "PH", "RV", "TV"}
+_SMALL_WORDS = {"a", "an", "and", "as", "at", "by", "for", "from", "in", "near",
+                "of", "on", "or", "the", "to", "with"}
+
+
+def _is_shouting(t: str) -> bool:
+    """True only when the title has no lowercase at all.
+
+    Deliberately strict. A title the agency cased themselves, even partly, is
+    their choice and is left alone; only a title that is purely uppercase is
+    treated as shouting.
+    """
+    letters = [c for c in t if c.isalpha()]
+    return bool(letters) and all(c.isupper() for c in letters)
+
+
+def _case_token(tok: str) -> str:
+    """Case one token, a run of letters at a time, so digits and punctuation
+    inside it survive: $5K stays $5K, 2B/2B stays 2B/2B, 4BED becomes 4Bed."""
+    out, i = [], 0
+    while i < len(tok):
+        if tok[i].isalpha():
+            j = i
+            while j < len(tok) and tok[j].isalpha():
+                j += 1
+            run, prev = tok[i:j], (tok[i - 1] if i else "")
+            if len(run) == 1 and prev in ("'", "\u2019"):
+                out.append(run.lower())          # CHISHOLM'S -> Chisholm's
+            elif len(run) == 1:
+                out.append(run)                  # a lone letter is a unit or an initial
+            elif run in _KEEP_UPPER:
+                out.append(run)
+            else:
+                out.append(run[0] + run[1:].lower())
+            i = j
+        else:
+            out.append(tok[i])
+            i += 1
+    return "".join(out)
+
+
+def title_case(t: str) -> str:
+    """Title case, matching titleCase in rd-listings.js."""
+    import re as _re
+    toks = t.split(" ")
+    out = []
+    for k, tok in enumerate(toks):
+        cased = _case_token(tok)
+        bare = _re.sub(r"[^A-Za-z]", "", cased)
+        if 0 < k < len(toks) - 1 and bare.lower() in _SMALL_WORDS and bare == cased:
+            cased = cased.lower()
+        out.append(cased)
+    return " ".join(out)
+
+
 def clean_title(t: str) -> str:
     """Tidy a scraper title for display without rewriting the agent's words.
 
@@ -140,7 +198,13 @@ def clean_title(t: str) -> str:
     t = _re.sub(r"\s*\(", " (", t)
     t = _re.sub(r"\s{2,}", " ", t)
     t = _re.sub(r"\s+,", ",", t)
-    return t.strip()
+    t = t.strip()
+    # 115 of 875 titles arrive in full caps while 737 are already title case.
+    # Side by side in one grid, every eighth card shouts. Cased at display time
+    # only, so the agency's own string is still what the data holds.
+    if _is_shouting(t):
+        t = title_case(t)
+    return t
 
 
 def fmt_money(v, currency="KYD") -> str:

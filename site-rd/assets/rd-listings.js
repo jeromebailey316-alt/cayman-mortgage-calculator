@@ -35,8 +35,56 @@
   }
   /* Agencies type their titles by hand: pipes become commas, a bracket gets the
      space it is missing, doubled spaces collapse. The wording is left alone. */
+  /* Short forms that stay upper when a shouting title is cased down. GT is the
+     ONE|GT building in George Town; II is a phase number. Mirrors _KEEP_UPPER
+     in redesign.py, which cases the server-rendered cards. */
+  var KEEP_UPPER = {GT:1, II:1, III:1, IV:1, MLS:1, SMB:1, HOA:1, NE:1, NW:1,
+                    SE:1, SW:1, USA:1, UK:1, US:1, CI:1, PH:1, RV:1, TV:1};
+  var SMALL_WORDS = {a:1, an:1, and:1, as:1, at:1, by:1, 'for':1, from:1, 'in':1,
+                     near:1, of:1, on:1, or:1, the:1, to:1, 'with':1};
+
+  // strict: any lowercase at all means the agency cased it themselves
+  function isShouting(t) {
+    return /[A-Za-z]/.test(t) && t === t.toUpperCase();
+  }
+
+  /* One token at a time, a run of letters at a time, so digits and punctuation
+     inside survive: $5K stays $5K, 2B/2B stays 2B/2B, 4BED becomes 4Bed. */
+  function caseToken(tok) {
+    var out = '', i = 0, j, run, prev;
+    while (i < tok.length) {
+      if (/[A-Za-z]/.test(tok.charAt(i))) {
+        j = i;
+        while (j < tok.length && /[A-Za-z]/.test(tok.charAt(j))) j++;
+        run = tok.slice(i, j);
+        prev = i ? tok.charAt(i - 1) : '';
+        if (run.length === 1 && (prev === "'" || prev === '\u2019')) out += run.toLowerCase();
+        else if (run.length === 1) out += run;
+        else if (KEEP_UPPER[run] === 1) out += run;
+        else out += run.charAt(0) + run.slice(1).toLowerCase();
+        i = j;
+      } else {
+        out += tok.charAt(i); i++;
+      }
+    }
+    return out;
+  }
+
+  function titleCase(t) {
+    var toks = t.split(' ');
+    return toks.map(function (tok, k) {
+      var cased = caseToken(tok);
+      var bare = cased.replace(/[^A-Za-z]/g, '');
+      if (k > 0 && k < toks.length - 1 &&
+          SMALL_WORDS[bare.toLowerCase()] === 1 && bare === cased) {
+        return cased.toLowerCase();
+      }
+      return cased;
+    }).join(' ');
+  }
+
   function cleanTitle(t) {
-    return String(t || '').trim()
+    var out = String(t || '').trim()
       // en and em dashes are ruled out of rendered text; a plain hyphen matches
       // the " - " most other titles already use
       .replace(/[\u2013\u2014]/g, ' - ')
@@ -45,6 +93,9 @@
       .replace(/\s{2,}/g, ' ')
       .replace(/\s+,/g, ',')
       .trim();
+    // 115 of 875 arrive in full caps while 737 are already title case, so every
+    // eighth card in the grid shouts. Cased for display only.
+    return isShouting(out) ? titleCase(out) : out;
   }
 
   function districtOf(area) {
