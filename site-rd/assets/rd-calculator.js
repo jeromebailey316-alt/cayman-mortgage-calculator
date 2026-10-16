@@ -12,18 +12,13 @@
   'use strict';
 
   function el(id) { return d.getElementById(id); }
+  // CMC.readNum decides from the field's own attribute whether it carries
+  // thousands separators; parseFloat alone reads "650,000" as 650.
   function numOf(id, fallback) {
-    var e = el(id);
-    if (!e) return fallback;
-    var v = parseFloat(e.value);
-    return isNaN(v) ? fallback : v;
+    var v = CMC.readNum(id);
+    return v === null ? fallback : v;
   }
-  function rawOf(id) {
-    var e = el(id);
-    if (!e || e.value === '') return null;
-    var v = parseFloat(e.value);
-    return isNaN(v) ? null : v;
-  }
+  function rawOf(id) { return CMC.readNum(id); }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];

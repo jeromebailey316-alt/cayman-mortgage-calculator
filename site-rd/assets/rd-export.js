@@ -37,16 +37,16 @@
     var v = CMC.inputs.get();
     var price = v.price, down = price * v.deposit / 100;
     var loan = Math.max(0, price - down);
-    var extra = parseFloat((el('cExtra') || {}).value) || 0;
+    var extra = CMC.readNum('cExtra') || 0;
     var am = Core.amortise({ loan: loan, rate: v.rate / 100, years: v.term, extra: extra / v.fx });
     var close = Core.closingCosts({
       price: price, loan: loan, ptype: el('cPtype').value,
       status: el('cStatus').value, joint: el('cBuyer').value === 'joint',
       location: el('cIsland').value,
       linked: !!el('cLinked') && el('cLinked').value === 'linked',
-      legalPct: parseFloat(el('cLegal').value) || 0,
-      bankPct: parseFloat(el('cBank').value) || 0,
-      valuation: parseFloat(el('cValFee').value) || 0, inspection: 0
+      legalPct: CMC.readNum('cLegal') || 0,
+      bankPct: CMC.readNum('cBank') || 0,
+      valuation: CMC.readNum('cValFee') || 0, inspection: 0
     });
     return { v: v, price: price, down: down, loan: loan, am: am, close: close,
              monthly: el('rMonthly').textContent, cash: el('rCash').textContent };

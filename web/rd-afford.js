@@ -9,7 +9,9 @@
   'use strict';
 
   function el(id) { return d.getElementById(id); }
-  function n(id, fb) { var e = el(id); if (!e) return fb; var v = parseFloat(e.value); return isNaN(v) ? fb : v; }
+  // see CMC.readNum: the income and cash boxes are money fields, and reading
+  // them with a bare parseFloat is what made this page answer CI$0
+  function n(id, fb) { var v = CMC.readNum(id); return v === null ? fb : v; }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];

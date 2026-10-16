@@ -133,6 +133,25 @@
     var n = parseFloat(String(v).replace(/[^0-9.-]/g, ''));
     return isNaN(n) ? null : n;
   }
+  /* Read a numeric field, whatever kind it is.
+
+     A money field carries thousands separators once it loses focus, so
+     parseFloat alone turns "650,000" into 650. Every caller that remembered to
+     strip them was correct and every caller that forgot was silently wrong by a
+     factor of a thousand: the affordability page read CI$9,000 a month as CI$9
+     and answered CI$0, equity turned CI$240,000 of headroom into CI$240, and
+     the listings minimum price quietly reset on the next re-sort.
+
+     So the decision is taken from the element's own attribute rather than from
+     the caller's memory of which fields are money. Returns null for empty or
+     unparseable, never NaN. */
+  function readNum(ref) {
+    var el = typeof ref === 'string' ? document.getElementById(ref) : ref;
+    if (!el || el.value === '' || el.value == null) return null;
+    var n = el.hasAttribute('data-cmc-money') ? parseMoney(el.value) : parseFloat(el.value);
+    return (n === null || isNaN(n)) ? null : n;
+  }
+
   function groupMoney(n) {
     return Math.round(n).toLocaleString('en-US');
   }
@@ -222,6 +241,7 @@
   w.CMC.bindAll = bindAll;
   w.CMC.bindCurrency = bindCurrency;
   w.CMC.parseMoney = parseMoney;
+  w.CMC.readNum = readNum;
   w.CMC.bindUseInCalculator = bindUseInCalculator;
   w.CMC.bindPanel = bindPanel;
 

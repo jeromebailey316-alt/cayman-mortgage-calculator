@@ -206,7 +206,12 @@
 
   function apply() {
     var district = val('fDistrict'), type = val('fType');
-    var min = parseFloat(val('fMin')), max = parseFloat(val('fMax'));
+    // read through CMC.readNum: these are money fields, and once one loses
+    // focus "500,000" parses as 500, so the minimum silently vanished on the
+    // next re-sort
+    var min = CMC.readNum('fMin'), max = CMC.readNum('fMax');
+    if (min === null) min = NaN;
+    if (max === null) max = NaN;
     var beds = val('fBeds'), baths = val('fBaths');
     var acres = acreRange();
     var v = CMC.inputs.get();
