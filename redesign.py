@@ -340,38 +340,107 @@ def currency_toggle() -> str:
         "</div></div>")
 
 
+def _pmt(loan, rate_pct, years):
+    """Level payment. Mirrors Core.payment so the server-rendered figure matches
+    what rd-home.js puts there a moment later."""
+    r = rate_pct / 100 / 12
+    n = max(1, round(years * 12))
+    return loan * r / (1 - (1 + r) ** -n) if r else loan / n
+
+
+def _pane(mode, fields, label, value, sub, href, cta, active=False):
+    return (f'<div class="cmc-calc__grid" role="tabpanel" data-pane="{mode}"'
+            f' id="cp-{mode}" aria-labelledby="ct-{mode}"'
+            + ("" if active else " hidden") + ">"
+            + "".join(fields)
+            + '<div class="cmc-calc__result">'
+            f'<span class="cmc-calc__result-label" data-cmc-result-label>{e(label)}</span>'
+            f'<span class="cmc-calc__result-value" data-cmc-result>{e(value)}</span>'
+            f'<span class="cmc-calc__result-sub" data-cmc-result-sub>{e(sub)}</span></div>'
+            + button(cta, href=href, icon_right="arrow-right", cls="cmc-calc__cta")
+            + "</div>")
+
+
 def calculator_panel(href="/calculator/", cta_label="See full breakdown", note=None,
                      tabs=True, tab="buy", compact=False) -> str:
-    """Port of CMC.CalculatorPanel. Renders with the shared defaults already in
-    place; rd-inputs.js then binds the controls and keeps the result in step."""
+    """Port of CMC.CalculatorPanel, with the three tabs made real.
+
+    They used to be links: choosing Refinancing left the homepage. Now each is a
+    tab over its own set of inputs, and only the call to action navigates. The
+    white capsule is a single element that slides, rather than a background
+    moving between three pills, so the change of mode is something you watch
+    happen rather than something you notice afterwards.
+    """
     d = {"price": 650000, "deposit": 10, "rate": 7.75, "term": 25}
     loan = d["price"] * (1 - d["deposit"] / 100)
+    buy_pmt = _pmt(loan, d["rate"], d["term"])
+
+    # Refinancing: the new payment over the term that is left, so the rate is
+    # the only thing that changes. Stretching the term instead flatters almost
+    # any refinance, which is not what someone comparing rates is asking.
+    rf = {"balance": 400000, "cur": 7.75, "new": 6.50, "years": 20}
+    rf_now = _pmt(rf["balance"], rf["cur"], rf["years"])
+    rf_new = _pmt(rf["balance"], rf["new"], rf["years"])
+
+    # Affordability: what the income carries, on the shared deposit and term.
+    af = {"income": 9000, "debts": 500}
+    room = max(0.0, af["income"] * 0.40 - af["debts"])
     r = d["rate"] / 100 / 12
-    n = d["term"] * 12
-    monthly = loan * r / (1 - (1 + r) ** -n)
+    af_loan = room * (1 - (1 + r) ** -(d["term"] * 12)) / r
+    af_price = af_loan / (1 - d["deposit"] / 100)
+
     tabs_html = ""
     if tabs:
-        tabs_html = pill_tabs([("buy", "Buying", "/calculator/"),
-                               ("refi", "Refinancing", "/guides/refinancing/"),
-                               ("afford", "What can I afford?", "/affordability/")],
-                              value=tab, cls="cmc-calc__tabs")
+        items = [("buy", "Buying"), ("refi", "Refinancing"), ("afford", "What can I afford?")]
+        pills = "".join(
+            f'<button type="button" role="tab" data-mode="{m}" id="ct-{m}"'
+            f' aria-controls="cp-{m}" aria-selected="{"true" if m == tab else "false"}"'
+            f' tabindex="{"0" if m == tab else "-1"}"'
+            f' class="{cx("cmc-pill", "cmc-pill--active" if m == tab else "")}">{e(t)}</button>'
+            for m, t in items)
+        tabs_html = ('<div class="cmc-pills cmc-calc__tabs" role="tablist"'
+                     ' aria-label="What do you want to work out">'
+                     '<span class="cmc-pills__thumb" data-cmc-thumb aria-hidden="true"></span>'
+                     + pills + "</div>")
+
+    buy = [
+        input_field("Purchase price", bind="price", value=d["price"], prefix="CI$", money=True),
+        input_field("Deposit", bind="deposit", value=d["deposit"], suffix="%", step=0.5,
+                    min_=0, max_=100),
+        input_field("Interest rate", bind="rate", value=d["rate"], suffix="%", step=0.05, min_=0),
+        select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"),
+                              (30, "30 years")], value=d["term"], bind="term"),
+    ]
+    refi = [
+        input_field("Current balance", id="hBalance", value=rf["balance"], prefix="CI$",
+                    money=True),
+        input_field("Current rate", id="hCurRate", value=rf["cur"], suffix="%", step=0.05, min_=0),
+        input_field("New rate", id="hNewRate", value=rf["new"], suffix="%", step=0.05, min_=0),
+        input_field("Years left", id="hYears", value=rf["years"], suffix="yrs", step=1,
+                    min_=1, max_=40),
+    ]
+    afford = [
+        input_field("Gross monthly income", id="hIncome", value=af["income"], prefix="CI$",
+                    money=True),
+        input_field("Other monthly debts", id="hDebts", value=af["debts"], prefix="CI$",
+                    money=True),
+        input_field("Deposit", bind="deposit", value=d["deposit"], suffix="%", step=0.5,
+                    min_=0, max_=100),
+        input_field("Interest rate", bind="rate", value=d["rate"], suffix="%", step=0.05, min_=0),
+    ]
+
     return (
         f'<section class="{cx("cmc-calc", "cmc-calc--compact" if compact else "")}"'
-        ' aria-label="Mortgage calculator">' + tabs_html
-        + '<div class="cmc-calc__grid">'
-        + input_field("Purchase price", bind="price", value=d["price"], prefix="CI$",
-                      money=True)
-        + input_field("Deposit", bind="deposit", value=d["deposit"], suffix="%", step=0.5, min_=0, max_=100)
-        + input_field("Interest rate", bind="rate", value=d["rate"], suffix="%", step=0.05, min_=0)
-        + select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"), (30, "30 years")],
-                       value=d["term"], bind="term")
-        + '<div class="cmc-calc__result">'
-          '<span class="cmc-calc__result-label">Estimated monthly</span>'
-          f'<span class="cmc-calc__result-value" data-cmc-result>{e(fmt_money(monthly))}</span>'
-          f'<span class="cmc-calc__result-sub" data-cmc-result-sub>'
-          f'on {e(fmt_money(loan))} over {d["term"]} yrs</span></div>'
-        + button(cta_label, href=href, icon_right="arrow-right", cls="cmc-calc__cta")
-        + "</div>"
+        ' aria-label="Mortgage calculator" data-cmc-panel>' + tabs_html
+        + _pane("buy", buy, "Estimated monthly", fmt_money(buy_pmt),
+                f'on {fmt_money(loan)} over {d["term"]} yrs',
+                href, cta_label, active=(tab == "buy"))
+        + _pane("refi", refi, "New monthly payment", fmt_money(rf_new),
+                f"down from {fmt_money(rf_now)}, same {rf['years']} yrs left",
+                "/guides/refinancing/", cta_label, active=(tab == "refi"))
+        + _pane("afford", afford, "The most you can buy", fmt_money(af_price),
+                f"on {fmt_money(af['income'])} a month, {d['term']} yr term",
+                "/affordability/", cta_label, active=(tab == "afford"))
         + (f'<p class="cmc-calc__note">{icon("info", 14)}{e(note)}</p>' if note else "")
         + "</section>")
 

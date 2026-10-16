@@ -29,6 +29,8 @@ PAGES = {
                         "costs included, then see the homes for sale that fit."),
         "build": lambda data: rd_pages.home(data),
         "active": "/",
+        # the panel's three modes run on the engine, so core.js comes with it
+        "scripts": ["/assets/core.js", "/assets/rd-home.js"],
     },
     "calculator": {
         "title": "Cayman mortgage calculator: payment, stamp duty and closing costs",
@@ -236,7 +238,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "rd-export.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "rd-export.js", "rd-home.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)

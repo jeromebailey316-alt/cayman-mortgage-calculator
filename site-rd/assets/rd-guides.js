@@ -109,6 +109,15 @@
         e.addEventListener('change', render);
       });
     el('rdRefi').addEventListener('submit', function (ev) { ev.preventDefault(); });
+    // carried from the homepage panel, so nobody retypes what they just entered
+    var q = new URLSearchParams(location.search);
+    [['bal', 'fBal'], ['cur', 'fCur'], ['new', 'fNew'], ['years', 'fYears']]
+      .forEach(function (pair) {
+        var v = q.get(pair[0]), e = el(pair[1]);
+        if (v == null || v === '' || isNaN(Number(v)) || !e) return;
+        e.value = e.hasAttribute('data-cmc-money')
+          ? Math.round(Number(v)).toLocaleString('en-US') : v;
+      });
     render();
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start);

@@ -208,6 +208,15 @@
     [el('rdAfford'), el('rdEquity')].forEach(function (f) {
       if (f) f.addEventListener('submit', function (ev) { ev.preventDefault(); });
     });
+    // carried from the homepage panel
+    var q = new URLSearchParams(location.search);
+    [['income', 'aIncome'], ['debts', 'aDebts']].forEach(function (pair) {
+      var v = q.get(pair[0]), e = el(pair[1]);
+      if (v == null || v === '' || isNaN(Number(v)) || !e) return;
+      e.value = e.hasAttribute('data-cmc-money')
+        ? Math.round(Number(v)).toLocaleString('en-US') : v;
+    });
+
     CMC.inputs.subscribe(function () { renderAfford(); renderEquity(); });
     renderAfford(); renderEquity();
   }

@@ -655,3 +655,46 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
   background: rgba(255, 255, 255, .10);
   color: var(--on-dark);
 }
+
+/* ------------------------------------------------- sliding tab capsule
+
+   The delivered pills give the active one a white background, so switching
+   mode makes the capsule disappear here and reappear there. One element that
+   slides instead reads as the same capsule moving, which is what tells you the
+   panel below has changed rather than reloaded.
+
+   The thumb is positioned and sized by rd-home.js from the active pill's own
+   box, so it stays correct whatever the labels say and at any width. */
+.cmc-calc__tabs { position: relative; }
+.cmc-pills__thumb {
+  position: absolute;
+  top: var(--space-1);
+  left: 0;
+  height: calc(100% - (var(--space-1) * 2));
+  border-radius: var(--radius-full);
+  background: var(--surface-0);
+  box-shadow: var(--shadow-sm);
+  transition: transform .26s cubic-bezier(.4, 0, .2, 1), width .26s cubic-bezier(.4, 0, .2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Before the script measures it there is nothing to show: an unplaced capsule
+   sitting at the left edge would flash into position on load. */
+.cmc-pills__thumb:not([data-placed]) { opacity: 0; }
+.cmc-calc__tabs .cmc-pill { position: relative; z-index: 1; background: transparent; }
+/* the capsule is the background now, so the active pill must not paint its own */
+.cmc-calc__tabs .cmc-pill--active { background: transparent; box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cmc-pills__thumb { transition: none; }
+}
+
+/* Wrapped onto two rows the thumb cannot track a moving target, so the pills
+   go back to painting their own background. */
+@media (max-width: 560px) {
+  .cmc-pills__thumb { display: none; }
+  .cmc-calc__tabs .cmc-pill--active {
+    background: var(--surface-0);
+    box-shadow: var(--shadow-sm);
+  }
+}
