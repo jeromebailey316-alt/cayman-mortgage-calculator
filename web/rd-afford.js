@@ -210,6 +210,27 @@
     });
     // carried from the homepage panel
     var q = new URLSearchParams(location.search);
+
+    /* The Refinancing tab lands here, since borrowing against a property is
+       what this page works out. Its balance and new rate map onto these
+       fields directly; "years left" becomes the term, snapped to an option
+       the select actually offers rather than silently ignored. */
+    var bal = q.get('bal'), rate = q.get('rate'), years = q.get('years');
+    if (bal != null && !isNaN(Number(bal)) && el('eBalance')) {
+      el('eBalance').value = Math.round(Number(bal)).toLocaleString('en-US');
+    }
+    if (rate != null && !isNaN(Number(rate)) && el('eRate')) {
+      el('eRate').value = Number(rate);
+    }
+    if (years != null && !isNaN(Number(years)) && el('eTerm')) {
+      var want = Number(years), best = null, gap = Infinity;
+      [].slice.call(el('eTerm').options).forEach(function (o) {
+        var dgap = Math.abs(Number(o.value) - want);
+        if (dgap < gap) { gap = dgap; best = o.value; }
+      });
+      if (best !== null) el('eTerm').value = best;
+    }
+
     [['income', 'aIncome'], ['debts', 'aDebts']].forEach(function (pair) {
       var v = q.get(pair[0]), e = el(pair[1]);
       if (v == null || v === '' || isNaN(Number(v)) || !e) return;

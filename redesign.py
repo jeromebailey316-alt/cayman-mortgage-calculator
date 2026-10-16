@@ -437,7 +437,7 @@ def calculator_panel(href="/calculator/", cta_label="See full breakdown", note=N
                 href, cta_label, active=(tab == "buy"))
         + _pane("refi", refi, "New monthly payment", fmt_money(rf_new),
                 f"down from {fmt_money(rf_now)}, same {rf['years']} yrs left",
-                "/guides/refinancing/", cta_label, active=(tab == "refi"))
+                "/equity/", cta_label, active=(tab == "refi"))
         + _pane("afford", afford, "The most you can buy", fmt_money(af_price),
                 f"on {fmt_money(af['income'])} a month, {d['term']} yr term",
                 "/affordability/", cta_label, active=(tab == "afford"))

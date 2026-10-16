@@ -107,8 +107,11 @@
            (diff > 0.5 ? 'down from ' + money(now)
             : diff < -0.5 ? 'up from ' + money(now)
             : 'the same as now') + ', same ' + yrs + ' yrs left',
-           '/guides/refinancing/?bal=' + Math.round(bal) + '&cur=' + cur +
-             '&new=' + nw + '&years=' + yrs);
+           // The equity page is the fuller picture of borrowing against a
+           // property, so it is where the breakdown lives. Current rate has no
+           // field there and is dropped rather than mapped onto something it
+           // does not mean.
+           '/equity/?bal=' + Math.round(bal) + '&rate=' + nw + '&years=' + yrs);
       return;
     }
 
