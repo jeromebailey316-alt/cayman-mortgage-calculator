@@ -99,8 +99,17 @@ def _component(name: str, attrs: dict, inner: str) -> str:
     if kind == "Icon":
         return rd.icon(attrs.get("name", ""), int(attrs.get("size") or 24))
     if kind == "Button":
+        # The Agents board recolours one ghost button for the navy band with an
+        # inline `color: var(--on-dark-muted)`, which the translator otherwise
+        # drops: navy-700 on navy-900 is 1.29:1, so the button was invisible.
+        # Carrying the inline colour through would fix only the resting state
+        # and leave the delivered :hover filling it with near-white navy-100,
+        # where light text vanishes again. So the intent is mapped onto a
+        # modifier rd.css defines for both states.
+        on_dark = "on-dark" in (attrs.get("style") or "")
         return rd.button(
             inner.strip(), href=attrs.get("href"),
+            cls="cmc-btn--onDark" if on_dark else "",
             variant=attrs.get("variant", "primary"), size=attrs.get("size", "md"),
             icon_left=attrs.get("icon-left"), icon_right=attrs.get("icon-right"),
             block=attrs.get("block") in ("true", True),

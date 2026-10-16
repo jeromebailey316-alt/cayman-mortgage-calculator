@@ -353,3 +353,23 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
   color: var(--ink-500);
   cursor: not-allowed;
 }
+
+/* A ghost button on a dark band.
+
+   The delivered --ghost is navy-700 for a light surface; on the navy-900 band
+   of the Agents page that is 1.29:1, which is not a button so much as a rumour.
+   --onDark on its own fills it white, which would give that band two identical
+   solid buttons and lose the primary/secondary order.
+
+   So the two delivered modifiers compose: transparent like a ghost, legible
+   like onDark. Hover is restated because --ghost:hover fills with navy-100,
+   which is near-white, and light text would disappear into it. */
+.cmc-btn--ghost.cmc-btn--onDark {
+  background: transparent;
+  color: var(--on-dark-muted);
+}
+.cmc-btn--ghost.cmc-btn--onDark:hover,
+.cmc-btn--ghost.cmc-btn--onDark:focus-visible {
+  background: rgba(255, 255, 255, .10);
+  color: var(--on-dark);
+}
