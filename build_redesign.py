@@ -38,14 +38,14 @@ PAGES = {
                         "your buyer status, and the cash you need on the day you buy."),
         "build": lambda data: rd_pages.calculator(data),
         "active": "/calculator/",
-        "scripts": [
-            # As the board loads them, so window.XLSX and window.jspdf are present
-            # rather than appearing only after the first click. They sit at the end
-            # of the body, so they do not block the first paint.
-            "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
-            "/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js",
-        ],
+        # SheetJS and jsPDF are not loaded here. They were, on the grounds that
+        # sitting at the end of the body kept them off the first paint, and
+        # Lighthouse on the mobile profile showed that was simply untrue: a
+        # script without defer still blocks, and those two cost 2,686ms and
+        # 590ms, about three seconds of a 5.1s first paint, for an export most
+        # visitors never click. rd-export.js already fetches them on demand and
+        # falls back to CSV, so nothing is lost but the wait.
+        "scripts": ["/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js"],
     },
     "affordability": {
         "title": "What can you afford? A Cayman affordability calculator",
