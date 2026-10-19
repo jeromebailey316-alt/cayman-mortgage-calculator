@@ -891,6 +891,48 @@ BRAC_SECTION = """
 """
 
 
+def privacy(data: dict) -> str:
+    """Privacy board, corrected for advertising.
+
+    The board was written before the site carried adverts and says, under what
+    the site does not do, that it will not share information with advertisers
+    and will not track you across other websites. AdSense does both: that is
+    what personalised advertising is. It also says Google Analytics sets the
+    only cookies. Leaving any of that in place would publish three statements
+    the site no longer honours, on the page whose whole job is to be accurate,
+    in a jurisdiction with its own Data Protection Act.
+    """
+    html = rd_board.translate(_BOARDS / "Privacy.dc.html")
+
+    # the two claims adverts falsify, removed rather than softened
+    html = html.replace(
+        "<li>Sell, rent or share any information with lenders, agents or advertisers.</li>", "")
+    html = html.replace("<li>Track you across other websites.</li>", "")
+    # one that is still true and worth keeping in their place
+    html = html.replace(
+        "<li>Ask for your email to show a result.</li>",
+        "<li>Ask for your email, or an account, to show a result.</li>"
+        "<li>Send anything you type into a calculator to us or to anyone else.</li>")
+
+    html = html.replace(
+        "The only cookies are those set by Google Analytics;",
+        "Cookies come from two places: Google Analytics, which counts visits, and "
+        "Google AdSense, which serves the adverts;")
+
+    # a section of its own, since it is the one thing here that follows you off the site
+    ga_bullet_end = ("We do not connect this to anything you type into a calculator.</p>")
+    html = html.replace(ga_bullet_end, ga_bullet_end +
+        '<p style="margin: 0"><strong style="color: var(--ink-900)">Adverts.</strong> '
+        "The site carries Google AdSense, which is what pays for running it. Google and "
+        "its partners set their own cookies and may use your browsing to choose which "
+        "adverts you see, here and on other sites. That is tracking across websites, and "
+        "it is the one thing on this site that follows you beyond it. You can turn "
+        'personalised advertising off at <a href="https://myadcenter.google.com/" '
+        'target="_blank" rel="noopener">Google My Ad Center</a>, and your browser can '
+        "block the cookies without affecting the calculators.</p>", 1)
+    return html
+
+
 def stamp_duty_guide(data: dict) -> str:
     """Ported from StampDuty.dc.html.
 

@@ -699,6 +699,10 @@ RD_JS = """
 # The Privacy page describes what this measures.
 GA_MEASUREMENT_ID = "G-B7WJ51P8MN"
 
+# AdSense publisher id, without the "ca-" prefix in ads.txt. Empty turns the
+# tag off everywhere.
+ADSENSE_CLIENT = "ca-pub-9750887208860562"
+
 ORG_JSONLD = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -775,6 +779,10 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
               "</script><script>window.dataLayer=window.dataLayer||[];"
               "function gtag(){dataLayer.push(arguments);}gtag('js',new Date());"
               f"gtag('config','{e(GA_MEASUREMENT_ID)}',{{anonymize_ip:true}});</script>")
+    ads = ""
+    if ADSENSE_CLIENT:
+        ads = ('<script async src="https://pagead2.googlesyndication.com/pagead/js/'
+               f'adsbygoogle.js?client={e(ADSENSE_CLIENT)}" crossorigin="anonymous"></script>')
     return (
         '<!doctype html><html lang="en"><head>'
         '<meta charset="utf-8">'
@@ -790,13 +798,29 @@ def head(title: str, description: str, canonical: str = "", css_href: str = "/as
         "img-src 'self' https: data:; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
+        # AdSense needs rather a lot of host allowances, and Google publishes no
+        # definitive list for it, so this is the set the ad loader and its
+        # frames are known to use. Creatives themselves are covered by the
+        # permissive img-src above. If ads ever render blank, the console will
+        # name the directive that blocked them before anything else is guessed.
         "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
-        "https://www.googletagmanager.com; "
+        "https://www.googletagmanager.com https://pagead2.googlesyndication.com "
+        "https://partner.googleadservices.com https://tpc.googlesyndication.com "
+        "https://www.googletagservices.com https://adservice.google.com "
+        "https://googleads.g.doubleclick.net "
+        # sodar2.js is fetched as a script from here, not merely connected to;
+        # found by loading the page rather than by reading a list
+        "https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google; "
+        "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com "
+        "https://www.google.com https://ep1.adtrafficquality.google "
+        "https://ep2.adtrafficquality.google; "
         "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com "
-        "https://*.googletagmanager.com; "
+        "https://*.googletagmanager.com https://pagead2.googlesyndication.com "
+        "https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google "
+        "https://ep2.adtrafficquality.google; "
         "object-src 'none'; base-uri 'self'; form-action 'none'"
         '">'
-        + ga
+        + ga + ads
         + '<meta name="color-scheme" content="light dark">'
         '<meta name="theme-color" content="#011533">'
         + (f'<link rel="canonical" href="{e(canonical)}">' if canonical else "")

@@ -84,7 +84,7 @@ PAGES = {
     "privacy": {
         "title": "Privacy: Cayman Mortgage Calculator",
         "description": "What this site stores, what it measures, and what it never collects.",
-        "build": rd_pages.from_board("Privacy"), "active": "/privacy/",
+        "build": lambda data: rd_pages.privacy(data), "active": "/privacy/",
     },
     "terms": {
         "title": "Terms of use: Cayman Mortgage Calculator",
@@ -276,6 +276,14 @@ def build(data: dict, canonical: str = "") -> Path:
     lastmod = (data.get("generated_at") or "")[:10]
     (OUT / "sitemap.xml").write_text(sitemap(SITE + "/", lastmod))
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+
+    # Without ads.txt at the root, AdSense treats unauthorised resellers as
+    # unverified and buyers bid less or not at all. f08c47fec0942fa0 is
+    # Google's own certification id, the same for every publisher.
+    if rd.ADSENSE_CLIENT:
+        pub = rd.ADSENSE_CLIENT.replace("ca-", "", 1)
+        (OUT / "ads.txt").write_text(
+            f"google.com, {pub}, DIRECT, f08c47fec0942fa0\n")
     return OUT
 
 
