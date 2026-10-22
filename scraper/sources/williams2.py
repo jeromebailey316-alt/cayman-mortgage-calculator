@@ -30,7 +30,7 @@ from bs4 import BeautifulSoup
 
 from scraper.common import CONDO, HOME, LAND, Listing, get, norm_type, num, parse_price
 
-SOURCE = "Williams2"
+SOURCE = "Williams2 Real Estate"
 
 BASE = "https://williams2realestate.com"
 API = BASE + "/wp-json/wp/v2/app_property"

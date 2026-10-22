@@ -72,6 +72,21 @@ NO_THUMB_HOSTS = ("tridentproperties.ky",)
 
 FIELDS = ("title", "price", "location", "beds", "baths", "sqft", "acres", "image", "mls", "status")
 
+# Acreage above this has never once been genuine here. Every instance has been a
+# dropped decimal point or a square-footage figure landing in an acres field:
+# ".3020 Acre" read as 3020, ".80 Acre" as 80, and a CI$219,000 condo whose
+# agency typed 849 into their acres box. The largest real parcel in the data is
+# 100 acres, and Grand Cayman is only about 48,000 in total. Dropping the figure
+# is honest; keeping it silently breaks the acreage filter and makes a card lie.
+MAX_SANE_ACRES = 150
+
+
+def _sane(l: dict) -> dict:
+    a = l.get("acres")
+    if isinstance(a, (int, float)) and a > MAX_SANE_ACRES:
+        return dict(l, acres=None)
+    return l
+
 
 def _cache_path(mod_name: str) -> Path:
     return RAW / f"{mod_name}.json"
@@ -108,7 +123,7 @@ def _run_source(mod_name: str, pages: int) -> dict:
     name = getattr(mod, "SOURCE", mod_name)
     try:
         ls = [l.to_dict() for l in mod.fetch(pages)]
-        ls = [l for l in ls if l.get("url") and l.get("price_kyd")]
+        ls = [_sane(l) for l in ls if l.get("url") and l.get("price_kyd")]
         if not ls:
             return _fallback(mod_name, name, "No listings found")
         _save_raw(mod_name, name, ls)
