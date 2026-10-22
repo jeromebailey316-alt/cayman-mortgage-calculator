@@ -291,7 +291,12 @@ def listings(data: dict) -> str:
         '<input type="range" id="fAcreMax" min="0" max="16" step="1" value="16"'
         ' aria-label="Maximum acreage">'
         "</div>"
-        f'<span class="cmc-field__hint">{e(acre_hint)}</span>'
+        # Rendered from the build so it reads correctly without JavaScript, then
+        # recomputed by rd-listings.js from the very listings.json the result
+        # count is drawn from. The two were independently cached, so for ten
+        # minutes after every refresh the page could say "873 listings" beside
+        # "of 867". One source of truth at runtime, and they cannot disagree.
+        f'<span class="cmc-field__hint" id="fAcreHint">{e(acre_hint)}</span>'
         "</div>")
 
     filters = (

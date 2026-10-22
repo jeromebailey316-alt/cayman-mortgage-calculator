@@ -219,6 +219,26 @@
              active: a > 0 || b < ACRE_TOP };
   }
 
+  /* Keep the acreage hint on the same data as the result count.
+
+     The hint used to be fixed at build time while the count came from
+     listings.json, and the two are cached separately, so after a refresh a
+     visitor could read "873 listings, showing 12" directly above "Known for
+     356 of 867". Both now come from the array actually loaded. */
+  function describeAcreage() {
+    var el = d.getElementById('fAcreHint');
+    if (!el || !all.length) return;
+    var withAcres = 0, land = 0, landWith = 0;
+    all.forEach(function (l) {
+      var has = l.acres > 0;
+      if (has) withAcres++;
+      if (l.ptype === 'land') { land++; if (has) landWith++; }
+    });
+    el.textContent = 'Known for ' + withAcres + ' of ' + all.length + ' listings, including ' +
+      Math.round(100 * landWith / (land || 1)) + '% of land. Narrowing it hides listings ' +
+      'with no acreage figure.';
+  }
+
   function paintAcres() {
     var r = acreRange();
     if (!r) return;
@@ -497,6 +517,7 @@
 
     fetch('/listings.json').then(function (r) { return r.json(); }).then(function (data) {
       all = (data.listings || []).filter(function (l) { return l.price_kyd > 0; });
+      describeAcreage();
       // ?max= and monthly= come from the calculator's "see homes that fit" link
       var q = new URLSearchParams(location.search);
       if (q.get('max')) { var m = d.getElementById('fMax'); if (m) m.value = q.get('max'); }
