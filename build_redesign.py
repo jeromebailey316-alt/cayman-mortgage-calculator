@@ -45,7 +45,8 @@ PAGES = {
         # 590ms, about three seconds of a 5.1s first paint, for an export most
         # visitors never click. rd-export.js already fetches them on demand and
         # falls back to CSV, so nothing is lost but the wait.
-        "scripts": ["/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js"],
+        "scripts": ["/assets/core.js", "/assets/rd-calculator.js", "/assets/rd-export.js",
+                    "/assets/rd-walkthrough.js"],
     },
     "affordability": {
         "title": "What can you afford? A Cayman affordability calculator",
@@ -238,7 +239,7 @@ def build(data: dict, canonical: str = "") -> Path:
     stamp = hashlib.sha1(css.encode()).hexdigest()[:8]
     href = f"/assets/rd.css?v={stamp}"
 
-    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "rd-export.js", "rd-home.js", "core.js"):
+    for js in ("rd-inputs.js", "rd-listings.js", "rd-calculator.js", "rd-afford.js", "rd-guides.js", "rd-rent.js", "rd-export.js", "rd-home.js", "rd-walkthrough.js", "core.js"):
         shutil.copy(ROOT / "web" / js, assets / js)
     for logo in ("cmc-secondary-color.svg", "cmc-secondary-reversed.svg"):
         shutil.copy(BRAND / "logos" / logo, assets / logo)

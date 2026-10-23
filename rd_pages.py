@@ -444,7 +444,12 @@ def calculator(data: dict) -> str:
             rd.select_field("Property type", ptypes, id="cPtype", value="home"),
         ), "Property")
         + _fieldset("Buyer", _grid(
-            rd.select_field("Stamp duty status", statuses, id="cStatus", value="first"),
+            # Standard, not "Caymanian, first property". The page answers before
+            # anyone touches it, and the old default quietly showed CI$3,750 of
+            # duty to a buyer who owes CI$48,750. Erring toward the rate most
+            # buyers actually pay means a Caymanian opts into their concession
+            # rather than everyone else opting out of someone else's.
+            rd.select_field("Stamp duty status", statuses, id="cStatus", value="standard"),
             rd.select_field("Buyers", buyers, id="cBuyer", value="single"),
         ), "Buyer")
         + _fieldset("Mortgage", _grid(
@@ -581,7 +586,10 @@ def calculator(data: dict) -> str:
         "Cayman mortgage calculator</h1>"
         '<p style="margin:0;font-size:16px;line-height:26px;color:var(--ink-700);max-width:70ch">'
         "Your monthly payment and the cash you need on the day, with Cayman stamp duty, "
-        "legal fees and bank charges included. Every figure is an estimate.</p></div></section>"
+        "legal fees and bank charges included. Every figure is an estimate.</p>"
+        '<div><button type="button" id="rdWalkBtn" class="cmc-btn cmc-btn--secondary cmc-btn--sm">'
+        + rd.icon("info", 16) + "<span>Show me how this works</span></button></div>"
+        "</div></section>"
 
         '<section aria-label="Inputs" class="r-pad" style="padding:40px 24px 64px">'
         '<div class="r-grid" style="max-width:1200px;margin:0 auto;display:grid;'
@@ -713,7 +721,10 @@ def affordability(data: dict) -> str:
             rd.input_field("Interest rate", bind="rate", value=7.75, suffix="%", step=0.05, min_=0),
             rd.select_field("Term", [(15, "15 years"), (20, "20 years"), (25, "25 years"),
                                      (30, "30 years")], bind="term", value=25),
-            rd.select_field("Stamp duty status", statuses, id="aStatus", value="first"),
+            # Standard, matching the calculator: see the note there. A page that
+            # answers before it is touched must answer for the commonest buyer,
+            # and a Caymanian opts into their concession.
+            rd.select_field("Stamp duty status", statuses, id="aStatus", value="standard"),
         ), "The purchase")
         + "</form>")
 
@@ -1121,7 +1132,7 @@ def closing_costs_guide(data: dict) -> str:
                             [("first", "Caymanian, first property"),
                              ("second", "Caymanian, second property"),
                              ("standard", "Standard rate, 7.5%")],
-                            id="ccStatus", value="first"),
+                            id="ccStatus", value="standard"),
             cols=3)
         + "</form>"
         + '<div class="rd-scroll"><table class="rd-table" id="ccTable"></table></div>'
@@ -1161,7 +1172,7 @@ def rent_vs_buy(data: dict) -> str:
                             [("first", "Caymanian, first property"),
                              ("second", "Caymanian, second property"),
                              ("standard", "Standard rate, 7.5%")],
-                            id="vStatus", value="first"),
+                            id="vStatus", value="standard"),
             rd.input_field("Prices rise", id="vGrowth", suffix="%/yr", value=3,
                            step=0.5, min_=0),
         ), "Buying")

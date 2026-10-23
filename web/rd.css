@@ -416,3 +416,83 @@ a.cmc-pill, a.cmc-pill:hover { text-decoration: none; }
     box-shadow: var(--shadow-sm);
   }
 }
+
+/* ------------------------------------------------- calculator walkthrough
+
+   A step card fixed to the bottom of the viewport, and a ring around whatever
+   the current step is about. No dimming backdrop and no floating tooltip: the
+   page stays readable and usable throughout, which matters when the thing
+   being explained is a number that changes as you type.
+
+   The ring is an outline plus an offset, a change of shape rather than only of
+   colour, so it is still visible to someone who cannot distinguish the teal. */
+.rd-wt-on {
+  outline: 3px solid var(--teal-600);
+  outline-offset: 4px;
+  border-radius: 8px;
+  scroll-margin-top: 96px;
+}
+
+.rd-wt {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;                      /* over the back-to-top button, under nothing else */
+  padding: 0 var(--space-4) var(--space-4);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;             /* the page stays clickable either side of the card */
+}
+.rd-wt[hidden] { display: none; }
+.rd-wt:focus { outline: none; }
+.rd-wt:focus-visible .rd-wt__inner { outline: 2px solid var(--teal-600); outline-offset: 2px; }
+
+.rd-wt__inner {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: 14px;
+  background: var(--navy-900);
+  color: var(--on-dark);
+  box-shadow: var(--shadow-md);
+}
+.rd-wt__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.rd-wt__count {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--teal-300);
+}
+.rd-wt__x {
+  border: 0;
+  background: none;
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--on-dark-muted);
+  cursor: pointer;
+  border-radius: 6px;
+}
+.rd-wt__x:hover { color: var(--on-dark); background: rgba(255, 255, 255, .10); }
+.rd-wt__title { margin: 0; font-size: 17px; line-height: 24px; font-weight: 700; }
+.rd-wt__body { margin: 0; font-size: 14px; line-height: 22px; color: var(--on-dark-muted); }
+.rd-wt__body a { color: var(--teal-300); }
+.rd-wt__fork { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.rd-wt__nav { display: flex; justify-content: flex-end; gap: var(--space-2); }
+.rd-wt__nav .cmc-btn--ghost { color: var(--on-dark-muted); }
+.rd-wt__nav .cmc-btn--ghost:hover { background: rgba(255, 255, 255, .10); color: var(--on-dark); }
+.rd-wt__nav .cmc-btn--ghost:disabled { opacity: .4; cursor: not-allowed; background: none; }
+
+/* room so the card never sits on top of the last section of the page */
+body.rd-wt-open { padding-bottom: 220px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-wt-on { transition: none; }
+}
