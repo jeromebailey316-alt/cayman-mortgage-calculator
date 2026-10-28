@@ -341,6 +341,13 @@ h1, h2, h3, h4 { margin: 0; }
   .r-grid-2  { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
+/* A line break the copy wants on a phone and not above it. Hidden by default so
+   the heading flows, shown below 640px where the line no longer fits. */
+.r-br-sm { display: none; }
+@media (max-width: 639px) {
+  .r-br-sm { display: inline; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rd-skip { transition: none; }
   .cmc-totop { transition: none; }

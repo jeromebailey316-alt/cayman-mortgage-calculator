@@ -169,21 +169,28 @@ def home(data: dict) -> str:
         'grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;align-items:center">'
         '<div style="display:flex;flex-direction:column;gap:24px;min-width:0">'
         '<span style="font-size:12px;line-height:16px;font-weight:700;letter-spacing:.08em;'
-        'text-transform:uppercase;color:var(--teal-300)">Free · Cayman Islands · No sign-up</span>'
+        'color:var(--teal-300)">Free · No sign-up · Serving the Cayman Islands</span>'
         '<h1 class="r-h1" style="margin:0;font-size:56px;line-height:60px;font-weight:700;'
-        'letter-spacing:-.02em">Plan your home.<br>Know your '
-        '<span style="color:var(--teal-300)">numbers</span>.</h1>'
+        # The break is wanted on a phone only; r-br-sm switches it off from
+        # 640px up, where the H1 reads better flowing on its own. The hard space
+        # keeps "offer." off a line by itself at any width.
+        'letter-spacing:-.02em">See what a Cayman home really costs, '
+        '<br class="r-br-sm">before you make an&nbsp;offer.</h1>'
         '<p style="margin:0;font-size:18px;line-height:28px;color:var(--on-dark-muted);'
-        'max-width:44ch">See what a Cayman mortgage really costs each month, with stamp duty, '
-        'fees and closing costs included, before you make an offer.</p>'
+        'max-width:44ch">Monthly payment, stamp duty, legal fees and closing costs in one '
+        'free calculator. Built for Cayman buyers, not a generic US tool.</p>'
         '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">'
-        + button("Run the numbers", href="/calculator/", variant="onDark", icon_right="arrow-right")
-        + "</div></div>"
+        + button("Run the real numbers", href="/calculator/", variant="onDark",
+                 icon_right="arrow-right")
+        + "</div>"
+        # The tagline the H1 used to carry, kept as quiet supporting text.
+        '<p style="margin:0;font-size:14px;line-height:22px;color:var(--on-dark-muted)">'
+        "Plan your home. Know your numbers.</p></div>"
         '<ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;'
         'gap:12px;min-width:0">'
-        + _step(1, "Enter the price and your deposit", "Any property, any district.")
-        + _step(2, "Set a rate and term", "Try the figures lenders have quoted you.")
-        + _step(3, "See the full cost of buying",
+        + _step(1, "Enter the price and your deposit.", "Any property, any district.")
+        + _step(2, "Set a rate and term.", "Use the figures your lender quoted you.")
+        + _step(3, "See the full cost of buying.",
                 "Monthly payment, stamp duty and closing costs, side by side.")
         + "</ol></div></section>"
 
