@@ -172,8 +172,29 @@ def merge(all_listings: list[dict]) -> list[dict]:
         best["sources"] = sources
         best["also"] = also
         out.append(best)
+    _carry_first_seen(out)
     out.sort(key=lambda l: l.get("price_kyd") or 0)
     return out
+
+
+def _carry_first_seen(listings: list[dict]) -> None:
+    """Remember when each listing was first seen here, and keep it.
+
+    scraped_at is the moment the scraper parsed the card, so every run stamps
+    every listing afresh: 858 of them landed inside one 2m50s window, 61
+    distinct timestamps in all. Sorting by it meant sorting by the order the
+    scraper happened to visit each site, which is why adding CIREBA's
+    commercial category, scraped last, put nine warehouses at the top of
+    "Newest". first_seen is set once and carried forward, so "Newest" means
+    new to this site rather than late in the run.
+    """
+    prev = load() or {}
+    known = {l.get("url"): l.get("first_seen")
+             for l in (prev.get("listings") or []) if l.get("url")}
+    for l in listings:
+        # the first run has no history, so fall back to this scrape's own
+        # stamp: cached sources keep their older date rather than claiming today
+        l["first_seen"] = known.get(l.get("url")) or l.get("scraped_at")
 
 
 def scrape(pages: int | None = None, log=print, include: tuple[str, ...] = ()) -> dict:

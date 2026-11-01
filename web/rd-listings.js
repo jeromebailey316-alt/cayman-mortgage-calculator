@@ -345,7 +345,7 @@
       if (sort === 'price-asc') return a.price_kyd - b.price_kyd;
       if (sort === 'price-desc') return b.price_kyd - a.price_kyd;
       if (sort === 'size') return (b.sqft || 0) - (a.sqft || 0);
-      return String(b.scraped_at || '').localeCompare(String(a.scraped_at || ''));
+      return newestFirst(a, b);
     });
     shown = PAGE;
     render();
@@ -358,6 +358,31 @@
     var n = parseFloat(want);
     if (n === 0) return !(have > 0);
     return have >= n;
+  }
+
+  /* "Newest" means first seen here, to the day, and then a stable shuffle.
+
+     Two listings added in the same scrape are not meaningfully newer than one
+     another, and ordering them by timestamp orders them by the order the
+     scraper visited each site. That is how sixty commercial listings, parsed
+     last, took the whole first page the day they were added. Comparing only
+     the date and breaking ties on a hash of the URL spreads any single day's
+     intake instead of clumping it by whichever category came last, and the
+     hash is deterministic so the order does not jump about between renders. */
+  function dayOf(l) { return String(l.first_seen || l.scraped_at || '').slice(0, 10); }
+
+  function spread(l) {
+    if (l._spread == null) {
+      var h = 0, u = String(l.url || l.title || '');
+      for (var i = 0; i < u.length; i++) { h = ((h << 5) - h + u.charCodeAt(i)) | 0; }
+      l._spread = Math.abs(h);
+    }
+    return l._spread;
+  }
+
+  function newestFirst(a, b) {
+    var d = dayOf(b).localeCompare(dayOf(a));
+    return d !== 0 ? d : spread(a) - spread(b);
   }
 
   function bindCards() {
