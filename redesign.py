@@ -248,7 +248,7 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
                           if external else "")
                        + "</div>")
     monthly_html = ""
-    if monthly is not None:
+    if monthly is not None and ptype_for_calc != "commercial":
         monthly_html = (f'<div class="cmc-listing__monthly">{icon("calculator", 14)}From '
                         f"<strong>{e(fmt_money(monthly, currency))}</strong>/mo</div>")
     # clean first: the label was being built from the raw scraper string, so a
@@ -265,7 +265,14 @@ def listing_card(price, address, locality=None, beds=None, baths=None, sqft=None
             f'<div class="cmc-listing__address">{e(address)}</div>'
             + (f'<div class="cmc-listing__locality">{e(locality)}</div>' if locality else "")
             + monthly_html + "</div>" + meta_html + agency_html
-            + use_in_calculator(price, locality, ptype_for_calc) + f"</{tag}>")
+            # Commercial carries neither the monthly estimate nor the button
+            # that would produce one. Cayman commercial lending runs on shorter
+            # terms, higher rates and larger deposits, so the residential
+            # assumptions behind every figure here do not describe it. Offering
+            # the button would just move the wrong number one click away.
+            + ("" if ptype_for_calc == "commercial"
+               else use_in_calculator(price, locality, ptype_for_calc))
+            + f"</{tag}>")
 
 
 def field(control: str, label=None, prefix=None, suffix=None, hint=None,

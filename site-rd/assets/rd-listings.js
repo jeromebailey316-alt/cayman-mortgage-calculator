@@ -177,20 +177,26 @@
       '<div class="cmc-listing__price">' + esc(money(l.price_kyd)) + '</div>' +
       '<div class="cmc-listing__address">' + esc(cleanTitle(l.title) || 'Property for sale') + '</div>' +
       (l.location ? '<div class="cmc-listing__locality">' + esc(cleanTitle(l.location)) + '</div>' : '') +
-      '<div class="cmc-listing__monthly">' + icon('calculator', 14) + 'From <strong>' +
-      esc(money(monthlyFor(l))) + '</strong>/mo</div>' +
+      // commercial shows no monthly: the residential rate, term and deposit
+      // behind this figure do not describe a commercial mortgage in Cayman
+      (l.ptype === 'commercial' ? '' :
+        '<div class="cmc-listing__monthly">' + icon('calculator', 14) + 'From <strong>' +
+        esc(money(monthlyFor(l))) + '</strong>/mo</div>') +
       '</div>' +
       (meta ? '<div class="cmc-listing__meta">' + meta + '</div>' : '') +
       '<div class="cmc-listing__agency"><span>Listed by ' + esc(agency) + '</span>' +
       (ext ? '<span class="cmc-listing__ext">View on agent\'s site' + icon('external-link', 12) + '</span>' : '') +
       '</div>' +
-      '<div class="rd-listing-actions">' +
-        '<button type="button" class="cmc-btn cmc-btn--secondary cmc-btn--sm rd-use-calc"' +
-        ' data-use-price="' + Math.round(l.price_kyd) + '"' +
-        ' data-use-island="' + islandOf(l.location) + '"' +
-        ' data-use-ptype="' + (l.ptype === 'land' ? 'land' : 'home') + '">' +
-        icon('calculator', 16) + '<span>Use in calculator</span></button>' +
-      '</div></a>';
+      // no button on commercial either: it would carry the price into a
+      // calculator whose rate, term and deposit are residential
+      (l.ptype === 'commercial' ? '' :
+        '<div class="rd-listing-actions">' +
+          '<button type="button" class="cmc-btn cmc-btn--secondary cmc-btn--sm rd-use-calc"' +
+          ' data-use-price="' + Math.round(l.price_kyd) + '"' +
+          ' data-use-island="' + islandOf(l.location) + '"' +
+          ' data-use-ptype="' + (l.ptype === 'land' ? 'land' : 'home') + '">' +
+          icon('calculator', 16) + '<span>Use in calculator</span></button>' +
+        '</div>') + '</a>';
   }
 
   /* --------------------------------------------------------------- filters */
@@ -255,15 +261,18 @@
     }
   }
 
-  /* Land has no bedroom or bathroom count: 335 of the 336 land listings carry
-     neither. Selecting it zeroes both and takes them out of play rather than
-     leaving two controls that would filter the whole category away. */
+  /* Neither land nor commercial carries a bedroom or bathroom count: 335 of
+     336 land listings have neither, and all 60 commercial ones have neither
+     while every one of them has a floor area. Selecting either zeroes both
+     controls and takes them out of play, rather than leaving two filters that
+     would quietly empty the category. */
   function syncRooms() {
-    var isLand = val('fType') === 'land';
+    var t = val('fType');
+    var roomless = t === 'land' || t === 'commercial';
     ['fBeds', 'fBaths'].forEach(function (id) {
       var el = d.getElementById(id);
       if (!el) return;
-      if (isLand) {
+      if (roomless) {
         if (el.dataset.was === undefined) el.dataset.was = el.value;
         el.value = '0';
         el.disabled = true;
@@ -275,8 +284,30 @@
     });
   }
 
+  /* Free text across the fields someone would actually have to hand: the MLS
+     number an agent gave them, an address, an area, an agency. Every word must
+     match somewhere, so "west bay condo" narrows rather than widens. The
+     haystack is built once per listing and kept, because this runs on every
+     keystroke over nearly nine hundred records. */
+  function hay(l) {
+    if (l._hay == null) {
+      l._hay = [l.mls, l.title, l.location, l.source, districtOf(l.location), l.ptype]
+        .join(' ').toLowerCase();
+    }
+    return l._hay;
+  }
+
+  function matches(l, terms) {
+    var h = hay(l);
+    for (var i = 0; i < terms.length; i++) {
+      if (h.indexOf(terms[i]) < 0) return false;
+    }
+    return true;
+  }
+
   function apply() {
     var district = val('fDistrict'), type = val('fType');
+    var terms = val('fQ').toLowerCase().split(/\s+/).filter(function (t) { return t; });
     // read through CMC.readNum: these are money fields, and once one loses
     // focus "500,000" parses as 500, so the minimum silently vanished on the
     // next re-sort
@@ -292,6 +323,7 @@
 
     view = all.filter(function (l) {
       if (!(l.price_kyd > 0)) return false;
+      if (terms.length && !matches(l, terms)) return false;
       if (district && districtOf(l.location) !== district) return false;
       if (type && l.ptype !== type) return false;
       if (!isNaN(min) && l.price_kyd < min) return false;
@@ -355,7 +387,10 @@
     countEl.textContent = view.length
       ? view.length.toLocaleString('en-US') + ' listing' + (view.length === 1 ? '' : 's') +
         ', showing ' + slice.length
-      : 'No listings match these filters. Try a wider price range or another district.';
+      : (val('fQ')
+          ? 'Nothing matches "' + val('fQ') + '". Check the spelling, try fewer words, '
+            + 'or clear the search to browse by filter instead.'
+          : 'No listings match these filters. Try a wider price range or another district.');
     moreWrap.hidden = slice.length >= view.length;
     renderCompare();
   }
@@ -489,7 +524,7 @@
     loadFav();
     loadCompare();
 
-    ['fDistrict', 'fType', 'fMin', 'fMax', 'fBeds', 'fBaths', 'fSort'].forEach(function (id) {
+    ['fQ', 'fDistrict', 'fType', 'fMin', 'fMax', 'fBeds', 'fBaths', 'fSort'].forEach(function (id) {
       var el = d.getElementById(id);
       if (el) el.addEventListener('input', apply);
       if (el && el.tagName === 'SELECT') el.addEventListener('change', apply);

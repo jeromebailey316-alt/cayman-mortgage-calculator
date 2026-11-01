@@ -258,7 +258,8 @@ def home(data: dict) -> str:
 
 DISTRICTS = ["George Town", "Seven Mile Beach", "West Bay", "Bodden Town",
              "East End", "North Side", "Cayman Brac", "Little Cayman"]
-TYPES = [("", "Any type"), ("house", "House"), ("condo", "Condo or townhouse"), ("land", "Land")]
+TYPES = [("", "Any type"), ("house", "House"), ("condo", "Condo or townhouse"),
+         ("land", "Land"), ("commercial", "Commercial")]
 SORTS = [("new", "Newest"), ("price-asc", "Price, low to high"),
          ("price-desc", "Price, high to low"), ("size", "Largest")]
 
@@ -283,6 +284,7 @@ def listings(data: dict) -> str:
     land_with = sum(1 for l in rows if l.get("ptype") == "land"
                     and isinstance(l.get("acres"), (int, float)) and l["acres"] > 0)
     land_total = sum(1 for l in rows if l.get("ptype") == "land") or 1
+    with_mls = sum(1 for l in rows if l.get("mls"))
     acre_hint = (f"Known for {with_acres} of {len(rows)} listings, including "
                  f"{round(100 * land_with / land_total)}% of land. Narrowing it hides "
                  "listings with no acreage figure.")
@@ -306,6 +308,18 @@ def listings(data: dict) -> str:
         f'<span class="cmc-field__hint" id="fAcreHint">{e(acre_hint)}</span>'
         "</div>")
 
+    # Its own full-width row above the filters: it is the way past them, not
+    # another one of them. 764 of the listings carry an MLS number, so the hint
+    # says so rather than letting a search for one come back empty unexplained.
+    search = (
+        '<div style="margin-bottom:16px">'
+        + rd.input_field("Search", id="fQ", type_="search", inputmode="search",
+                         placeholder="MLS number, area, agency or keyword",
+                         value=None,
+                         hint=f"Searches {with_mls} MLS numbers, plus every address, "
+                              "area and agency name. Not every agency publishes one.")
+        + "</div>")
+
     filters = (
         '<form id="rdFilters" aria-label="Filter listings" style="display:flex;'
         'flex-direction:column;gap:16px;background:var(--surface-0);'
@@ -313,6 +327,7 @@ def listings(data: dict) -> str:
         'padding:20px 24px">'
         # No pill bar: the board has Buy and Rent, but the scraper carries no
         # rentals, and a single tab is not a choice. It returns with the data.
+        + search
         + '<div class="r-grid-2" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));'
           'gap:16px;align-items:end">'
         + rd.select_field("District", district_opts, id="fDistrict")

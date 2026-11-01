@@ -20,16 +20,20 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ..common import Listing, get, parse_price, norm_type, num, HOME, CONDO, LAND
+from ..common import Listing, get, parse_price, norm_type, num, HOME, CONDO, LAND, COMMERCIAL
 
 SOURCE = "CIREBA"
 BASE = "https://www.cireba.com"
 
-# (path, property type). Timeshare/fractional, multi-unit, commercial are skipped.
+# (path, property type). Timeshare/fractional and multi-unit are still skipped.
+# CIREBA is the island's MLS, so its commercial section carries most of what is
+# on the market; the individual agency scrapers still exclude commercial and do
+# not need to, since the same listings arrive here and merge by MLS number.
 CATEGORIES = [
     ("cayman-residential-property-for-sale/listingtype_4,15/filterby_N", HOME),
     ("cayman-residential-property-for-sale/listingtype_14,5/filterby_N", CONDO),
     ("cayman-land-for-sale/filterby_N", LAND),
+    ("cayman-commercial-property-for-sale/filterby_N", COMMERCIAL),
 ]
 PER_PAGE = 30
 
@@ -103,7 +107,11 @@ def _parse_card(art, ptype: str) -> Listing | None:
 
     # Refine type from title when the category is broad (e.g. duplex in condo bucket is fine;
     # a "home" standalone strata listing stays house).
-    if ptype != LAND and norm_type(title) == LAND and not beds:
+    # A bedroom-less listing whose title says "lot" or "parcel" is land, except
+    # in the commercial section: CIREBA has already told us what that is, and a
+    # "commercial lot" reclassified as land disappears from the commercial
+    # filter the visitor just chose.
+    if ptype not in (LAND, COMMERCIAL) and norm_type(title) == LAND and not beds:
         ptype = LAND
 
     return Listing(

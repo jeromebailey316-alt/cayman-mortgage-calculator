@@ -84,8 +84,13 @@ def post(url: str, **kw) -> requests.Response:
     return _request("POST", url, **kw)
 
 
-# Property types the calculator understands.
+# Property types the calculator understands. COMMERCIAL is carried through to
+# the listings but deliberately priced by nobody: Cayman commercial lending runs
+# on shorter terms, higher rates and much larger deposits than the residential
+# assumptions behind every monthly figure on this site, so a commercial card
+# shows no estimate rather than a wrong one.
 HOME, CONDO, LAND, OTHER = "house", "condo", "land", "other"
+COMMERCIAL = "commercial"
 
 
 def norm_type(text: str | None) -> str:
@@ -130,7 +135,7 @@ class Listing:
     title: str
     price: float | None         # asking price in `currency`
     currency: str = "USD"       # "USD" or "KYD" as advertised
-    ptype: str = OTHER          # house | condo | land | other
+    ptype: str = OTHER          # house | condo | land | commercial | other
     location: str = ""          # district / area, e.g. "Seven Mile Beach"
     beds: float | None = None
     baths: float | None = None
