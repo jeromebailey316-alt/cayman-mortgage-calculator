@@ -1,11 +1,13 @@
 {
- "generated_at": "2026-11-02T07:38:29+00:00",
+ "generated_at": "2026-11-02T19:31:02+00:00",
  "sources": [
   {
    "name": "CIREBA",
-   "ok": true,
+   "ok": false,
+   "stale": true,
+   "as_of": "2026-11-02T07:37:11+00:00",
    "count": 563,
-   "error": ""
+   "error": "No listings found"
   },
   {
    "name": "RE/MAX",
@@ -42,7 +44,7 @@
   {
    "name": "The Agency",
    "ok": true,
-   "count": 72,
+   "count": 68,
    "error": ""
   },
   {
@@ -234,7 +236,7 @@
    "image": "https://images.remax.ky/listings/1682/dsc-9679.jpeg",
    "mls": "412659",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:33+00:00",
+   "scraped_at": "2026-11-02T19:26:09+00:00",
    "price_kyd": 39900.0,
    "sources": [
     "Bovell RE/MAX"
@@ -280,7 +282,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2021/06/2024-PARCELS-104B-1.jpg",
    "mls": "104B00A68",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 40000.0,
    "sources": [
     "Island Realty"
@@ -424,7 +426,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-07-10-12-02-26-20260420102337CBLaxtonpage0001.webp",
    "mls": "420716",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 45000.0,
    "sources": [
     "Rainbow Realty"
@@ -447,7 +449,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_1a007db97289402287547943721fcc7c~mv2.jpeg",
    "mls": "97B176",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 45000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -470,7 +472,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_42508a0fbd904b5eb82b2035165f60d4~mv2.jpeg",
    "mls": "97B174",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 45000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -493,7 +495,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_6987dfddb20a435ca7c03c1bc2003428~mv2.png",
    "mls": "97B169",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 45000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -562,7 +564,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_1875d9e0d3204c9090efb4899af4aded~mv2.png",
    "mls": "97B177",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 49653.0,
    "sources": [
     "Paradise Realty Brac"
@@ -585,7 +587,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/59207/conversions/1754674812IMG9129-card%402x.webp",
    "mls": "419619",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 49950.0,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -631,7 +633,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/05/27110048/1650651890SelworthyGroveBluffTopCaymanBracLand-JenniferPowellPropertyCayman-370x414.jpg",
    "mls": "414414",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 50000.0,
    "sources": [
     "Property Cayman"
@@ -654,7 +656,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_7aaf52496e2b4c8daf2d0a54aee3f129~mv2.jpg",
    "mls": "102A302",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 50785.52,
    "sources": [
     "Paradise Realty Brac"
@@ -677,7 +679,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_15894b6845614d4cb7541d823e1353b7~mv2.jpg",
    "mls": "102A306",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 50932.53,
    "sources": [
     "Paradise Realty Brac"
@@ -700,7 +702,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_b97f689a0dfc45039f959271c27e221d~mv2.png",
    "mls": "99B117",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 53500.0,
    "sources": [
     "Paradise Realty Brac"
@@ -746,7 +748,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_169ecbcfd1c14766a4ed7e21ca6c01e8~mv2.png",
    "mls": "97B183",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 55697.0,
    "sources": [
     "Paradise Realty Brac"
@@ -769,7 +771,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_6982c8a0fa7c4b7eb4dcaf989de56532~mv2.jpeg",
    "mls": "96E229",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 56058.6,
    "sources": [
     "Paradise Realty Brac"
@@ -815,7 +817,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_67b6c684a3ae47e5a7bb7143aa1db71a~mv2.png",
    "mls": "102A384",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 57133.3,
    "sources": [
     "Paradise Realty Brac"
@@ -838,7 +840,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_8f65cd914b824d55bef916d866b227eb~mv2.jpeg",
    "mls": "96E239",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 57759.0,
    "sources": [
     "Paradise Realty Brac"
@@ -861,7 +863,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_332e822288c54c87b033a0a60e0c521d~mv2.jpeg",
    "mls": "96E369",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 57759.0,
    "sources": [
     "Paradise Realty Brac"
@@ -907,7 +909,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_24b5ec212ec244e18a7b67b3587a46af~mv2.png",
    "mls": "96E381",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 59000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -930,7 +932,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_271b858cb47a4218b54cba3db67bbe43~mv2.png",
    "mls": "96E380",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 59000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -976,7 +978,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_b856af2312134ef1bf99af8e888b37bf~mv2.png",
    "mls": "97B180",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 59616.0,
    "sources": [
     "Paradise Realty Brac"
@@ -999,7 +1001,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_a262d25d13b045f19a10babc9c50b941~mv2.png",
    "mls": "97B179",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 59616.0,
    "sources": [
     "Paradise Realty Brac"
@@ -1022,7 +1024,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2024-01-26-12-19-24-NL-1-26.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 60000.0,
    "sources": [
     "Tranquil Realty"
@@ -1068,7 +1070,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/02/12093105/1739299681SelworthyGrovelot-Photograph4-370x414.jpg",
    "mls": "418841",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:34+00:00",
    "price_kyd": 65000.0,
    "sources": [
     "Property Cayman"
@@ -1091,7 +1093,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2025-08-24-10-19-04-1000042160.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 65000.0,
    "sources": [
     "Tranquil Realty"
@@ -1206,7 +1208,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2021/06/AERIAL-VIEW-1.jpg",
    "mls": "102A00A722",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 75000.0,
    "sources": [
     "Island Realty"
@@ -1298,7 +1300,7 @@
    "image": "https://static.wixstatic.com/media/c13717_abdd51eb281c4b9fb0742b7107eab651~mv2.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 85000.0,
    "sources": [
     "Premier Realty"
@@ -1321,7 +1323,7 @@
    "image": "https://static.wixstatic.com/media/c13717_ec7b19ddf90d452885454ae2e69ced2c~mv2.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 85000.0,
    "sources": [
     "Premier Realty"
@@ -1344,7 +1346,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_56dddb4944f2470d83857e88685afc04~mv2.png",
    "mls": "102A379",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 90247.61,
    "sources": [
     "Paradise Realty Brac"
@@ -1367,7 +1369,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-229350251291705.webp",
    "mls": "420435",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 98000.0,
    "sources": [
     "Rainbow Realty"
@@ -1413,7 +1415,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2024-02-29-14-14-50-Cleared-land.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 99000.0,
    "sources": [
     "Tranquil Realty"
@@ -1436,7 +1438,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2025/12/Untitled-design-2-scaled.jpeg",
    "mls": "S1240",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:45+00:00",
+   "scraped_at": "2026-11-02T19:25:33+00:00",
    "price_kyd": 105000.0,
    "sources": [
     "Nine17 Realty"
@@ -1482,13 +1484,36 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2019-09-02-13-55-56-Little-Cayman-91A-27-parcel.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 106600,
    "sources": [
     "Tranquil Realty"
    ],
    "also": [],
    "first_seen": "2026-11-01T13:00:50+00:00"
+  },
+  {
+   "source": "Williams2 Real Estate",
+   "url": "https://williams2realestate.com/property/duplex-lot-med-density-bodden-town/",
+   "title": "DUPLEX LOT – MED DENSITY – BODDEN TOWN",
+   "price": 113000.0,
+   "currency": "KYD",
+   "ptype": "land",
+   "location": "Savannah / Lower Valley",
+   "beds": null,
+   "baths": null,
+   "sqft": null,
+   "acres": null,
+   "image": "https://williams2realestate.com/wp-content/uploads/2026/11/20261101221920_Christina_Forbes_Drive7.jpg",
+   "mls": "421405",
+   "status": "For Sale",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
+   "price_kyd": 113000.0,
+   "sources": [
+    "Williams2 Real Estate"
+   ],
+   "also": [],
+   "first_seen": "2026-11-02T19:25:28+00:00"
   },
   {
    "source": "CIREBA",
@@ -1557,7 +1582,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260212191015Lot381.webp",
    "mls": "420408",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 116150.0,
    "sources": [
     "Rainbow Realty"
@@ -1580,7 +1605,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260212183753Lot973.webp",
    "mls": "420364",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 116150.0,
    "sources": [
     "Rainbow Realty"
@@ -1603,7 +1628,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260212182835Lot373.webp",
    "mls": "420368",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 116150.0,
    "sources": [
     "Rainbow Realty"
@@ -1626,7 +1651,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-18-10-46-28-20260212184344Lots4Labled.webp",
    "mls": "420318",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 116150.0,
    "sources": [
     "Rainbow Realty"
@@ -1649,7 +1674,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-18-10-46-28-20260212184015Lot963.webp",
    "mls": "420363",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 116150.0,
    "sources": [
     "Rainbow Realty"
@@ -1672,7 +1697,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260212184155Lot861.webp",
    "mls": "420362",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 119600.0,
    "sources": [
     "Rainbow Realty"
@@ -1787,7 +1812,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2022-08-03-14-05-22-Aerial109A.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 125000.0,
    "sources": [
     "Tranquil Realty"
@@ -1810,7 +1835,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2026-03-10-05-07-59-New-3.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 125000.0,
    "sources": [
     "Tranquil Realty"
@@ -1833,7 +1858,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a95ca4adeeb6594da652324_extra%202.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 129000.0,
    "sources": [
     "MyRealtor"
@@ -1856,7 +1881,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a9230b5748b6da27cc386d5_3.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 129950.0,
    "sources": [
     "MyRealtor"
@@ -1879,7 +1904,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67d46b40fdf9dba83b65ec38_674a04269e11e0444f4a4e90_ocean%2520breeze%25200.2863%2520pic%25203.webp",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 129995.0,
    "sources": [
     "MyRealtor"
@@ -1948,7 +1973,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-10-20-11-07-35-20251021155021MilSea2.webp",
    "mls": "418303",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 138000.0,
    "sources": [
     "Rainbow Realty"
@@ -2023,7 +2048,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47233/original/17386917172c874471-7910-4548-a20a-f4932b0abc4e1.jpeg",
    "mls": "417934",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 140000.0,
    "sources": [
     "The Agency"
@@ -2046,7 +2071,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6e2e26f5f1ad337d28c0b6_58A219.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 140000.0,
    "sources": [
     "MyRealtor"
@@ -2069,7 +2094,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2022-08-03-13-59-02-Aerial-110A.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 145000.0,
    "sources": [
     "Tranquil Realty"
@@ -2184,7 +2209,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-55-20260212203310Lot941.webp",
    "mls": "420411",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 155250.0,
    "sources": [
     "Rainbow Realty"
@@ -2207,7 +2232,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6e2e6d6685a7aeb27a043c_DJI_20260727110423_0419_D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 160000.0,
    "sources": [
     "MyRealtor"
@@ -2230,7 +2255,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-10-at-11.30.56_554f8e0b.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 160000.0,
    "sources": [
     "Utopia Realty"
@@ -2253,7 +2278,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/12/Screenshot-2024-12-30-112451-1.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:38:18+00:00",
+   "scraped_at": "2026-11-02T19:28:06+00:00",
    "price_kyd": 161000.0,
    "sources": [
     "Elite Realty"
@@ -2299,7 +2324,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-55-20260212194108Lot1032.webp",
    "mls": "420409",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 162150.0,
    "sources": [
     "Rainbow Realty"
@@ -2368,7 +2393,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/693b1c4740875bba77aaff37_Rum-Point-Rd-Lot2-Social-1.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 165000.0,
    "sources": [
     "MyRealtor"
@@ -2391,7 +2416,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/693b1b88361b87601d0b9c5f_Rum-Point-Rd-Lot1-Social-1.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 165000.0,
    "sources": [
     "MyRealtor"
@@ -2437,7 +2462,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/104547/conversions/20260206093709_55A127Step-card%402x.webp",
    "mls": "420349",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 172500.0,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -2460,7 +2485,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-08-18-01-38-48-PHOTO-.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:37+00:00",
    "price_kyd": 175000.0,
    "sources": [
     "Stone Land"
@@ -2506,7 +2531,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/05/28163028/20260527094508_1Gregg_ArnoldEast_End_023_acresProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420862",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 176300,
    "sources": [
     "Property Cayman",
@@ -2581,7 +2606,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2023/05/BLUFF-WEST-LOT-AERIAL.jpg",
    "mls": "104A00A305306",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 180000.0,
    "sources": [
     "Island Realty"
@@ -2604,7 +2629,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2021/10/SONGBIRD-LOT-AERIAL.jpg",
    "mls": "104A00A303304",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 180000.0,
    "sources": [
     "Island Realty"
@@ -2627,7 +2652,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/107694/conversions/20260224134917_7-card%402x.webp",
    "mls": "420455",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 184500,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -2679,7 +2704,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49511/original/20251127195405_Little_Cayman__Parcel23.jpg",
    "mls": "420014",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 195000.0,
    "sources": [
     "The Agency"
@@ -2725,7 +2750,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-12-04-02-39-202601081502202DJI0506Outline.webp",
    "mls": "419632",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 199000.0,
    "sources": [
     "Rainbow Realty"
@@ -2846,7 +2871,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2026/06/VIEW.jpg",
    "mls": "95C00C18928",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 204180,
    "sources": [
     "Island Realty"
@@ -2984,7 +3009,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-55-20260212201319Lot934.webp",
    "mls": "420410",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 215050.0,
    "sources": [
     "Rainbow Realty"
@@ -3053,7 +3078,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6ad84d6a01e25ca25ed09513_1000344707.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 219000.0,
    "sources": [
     "MyRealtor"
@@ -3099,7 +3124,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/03/1.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 220000.0,
    "sources": [
     "Utopia Realty"
@@ -3168,7 +3193,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67fd596b19d0790287f44092_DJI_0665-Edit.webp",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 225000.0,
    "sources": [
     "MyRealtor"
@@ -3191,7 +3216,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/06/Floor-Plan.pdf-1.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 225000.0,
    "sources": [
     "Utopia Realty"
@@ -3214,7 +3239,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2022-07-29-07-48-08-CBC-102A-266.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 225000.0,
    "sources": [
     "Tranquil Realty"
@@ -3283,7 +3308,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2025-12-05-11-53-43-1000056147.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 228000.0,
    "sources": [
     "Tranquil Realty"
@@ -3364,7 +3389,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/06/20260524_231914077_iOS.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 235000.0,
    "sources": [
     "Utopia Realty"
@@ -3410,7 +3435,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6b7134476c63c026cea908_DJI_20260722160854_0341_D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 239995.0,
    "sources": [
     "MyRealtor"
@@ -3462,7 +3487,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/12/12170135/20251212143244_1Jenna_HydesGreen_Street_Canal_Front_LandProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420115",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 240000.0,
    "sources": [
     "Property Cayman"
@@ -3485,7 +3510,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-08-26-22-48-00-Savannah.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:37+00:00",
    "price_kyd": 245000.0,
    "sources": [
     "Stone Land"
@@ -3531,7 +3556,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/05/28163056/557810448313452-370x414.jpg",
    "mls": "420863",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 249000.0,
    "sources": [
     "Property Cayman",
@@ -3606,7 +3631,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/06/Floor-Plan.pdf-1.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 250000.0,
    "sources": [
     "Utopia Realty"
@@ -3629,7 +3654,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2022/04/95B-191-MAP-aerial.jpg",
    "mls": "95B00N191",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 250000.0,
    "sources": [
     "Island Realty"
@@ -3681,7 +3706,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/69f38282ed7483698d8fb8a7_WhatsApp%20Image%202026-04-30%20at%2011.16.47%20AM.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 255000.0,
    "sources": [
     "MyRealtor"
@@ -3704,7 +3729,7 @@
    "image": "https://static.wixstatic.com/media/1069f8_4aa6535da3f7431c8691e45cbbe4ae44~mv2.jpeg",
    "mls": "99A135",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 255000.0,
    "sources": [
     "Paradise Realty Brac"
@@ -3814,7 +3839,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-05-12-04-59-28-IMG5096.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:37+00:00",
    "price_kyd": 260000.0,
    "sources": [
     "Stone Land"
@@ -3952,7 +3977,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2025/12/FRONT-OF-CENTER-BLDG-2.webp",
    "mls": "95C00C189H35",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 262400,
    "sources": [
     "Island Realty"
@@ -4079,7 +4104,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2019-08-16-00-40-10-cb99Aw.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 266500,
    "sources": [
     "Tranquil Realty"
@@ -4206,7 +4231,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a35d9189b12da0b06636a50_WhatsApp%20Image%202026-06-19%20at%206.20.45%20PM%20(1).jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 280000.0,
    "sources": [
     "MyRealtor"
@@ -4327,7 +4352,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49457/original/20260117140853_Beach_Bay__Pebble_Beach_Drive12.jpg",
    "mls": "419959",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 299000.0,
    "sources": [
     "The Agency"
@@ -4483,7 +4508,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/68a621af4d4a91df25624d7c_WhatsApp%20Image%202025-08-14%20at%2010.24.33%20AM%20(3).jpeg",
    "mls": "",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 299999.0,
    "sources": [
     "MyRealtor"
@@ -4604,7 +4629,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-09-02-16-04-11-20260115115000DJI0464outline.webp",
    "mls": "419610",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 316000.0,
    "sources": [
     "Rainbow Realty"
@@ -4627,7 +4652,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67d46b3da8952d765f0c636a_652441c8e502ff7f0a842250_1a%2520(1).webp",
    "mls": "",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 319000.0,
    "sources": [
     "MyRealtor"
@@ -4650,7 +4675,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/09/49B126_AERIAL-VIEW_11.jpg",
    "mls": "",
    "status": "For Sale (Pre-Construction)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 319000.0,
    "sources": [
     "Utopia Realty"
@@ -4696,7 +4721,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2025-12-17-17-42-26-Export-1.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 323900,
    "sources": [
     "Tranquil Realty"
@@ -4765,7 +4790,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2022/07/Front-Elevation.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:09+00:00",
+   "scraped_at": "2026-11-02T19:25:56+00:00",
    "price_kyd": 325000.0,
    "sources": [
     "Elite Realty"
@@ -4886,7 +4911,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/Prime-Residential-Lot-for-Sale--Lavender-Way-Savannah-1773622569.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 332800.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -4932,7 +4957,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6b9b1a86e6e06e883a5d12_DJI_20260722144159_0003_D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 335000.0,
    "sources": [
     "MyRealtor"
@@ -5099,7 +5124,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-08-at-10.45.26-AM.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:44+00:00",
+   "scraped_at": "2026-11-02T19:25:32+00:00",
    "price_kyd": 349000.0,
    "sources": [
     "Nine17 Realty"
@@ -5122,7 +5147,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2026/07/FRONT-1.jpg",
    "mls": "101B00H66",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 349000.0,
    "sources": [
     "Island Realty"
@@ -5145,7 +5170,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2026/10/BOAT.webp",
    "mls": "95C00C176H10",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 350000.0,
    "sources": [
     "Island Realty"
@@ -5231,7 +5256,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6ad934f8b2af04f2a7930d98_DSC_2997_HDR.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 355000.0,
    "sources": [
     "MyRealtor"
@@ -5254,7 +5279,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49508/original/20251118163202_127__Lakeside1.jpg",
    "mls": "420012",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 359000.0,
    "sources": [
     "The Agency"
@@ -5346,7 +5371,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a021a7271e50d0d5cc477f6_DSC_6791_hdr.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 365000.0,
    "sources": [
     "MyRealtor"
@@ -5369,7 +5394,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2023-03-30-14-05-56-interior-Bluff-lot.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 369000,
    "sources": [
     "Tranquil Realty"
@@ -5571,7 +5596,7 @@
    "image": "https://images.remax.ky/listings/4353/dsc01825.jpg",
    "mls": "419934",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:22+00:00",
+   "scraped_at": "2026-11-02T19:25:58+00:00",
    "price_kyd": 369500.0,
    "sources": [
     "Bovell RE/MAX"
@@ -5626,15 +5651,9 @@
    "scraped_at": "2026-11-02T07:36:13+00:00",
    "price_kyd": 375000.0,
    "sources": [
-    "CIREBA",
-    "Williams2 Real Estate"
+    "CIREBA"
    ],
-   "also": [
-    {
-     "source": "Williams2 Real Estate",
-     "url": "https://williams2realestate.com/property/windsor-lakes-blk-g-unit-701/"
-    }
-   ],
+   "also": [],
    "first_seen": "2026-11-01T13:01:33+00:00"
   },
   {
@@ -5675,7 +5694,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6e3af257d6c0474fe97ae7_DJI_20260722170153_0378_D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 375000.0,
    "sources": [
     "MyRealtor"
@@ -5721,7 +5740,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/01/Screenshot-2024-01-31-120247.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:28+00:00",
+   "scraped_at": "2026-11-02T19:27:16+00:00",
    "price_kyd": 379000.0,
    "sources": [
     "Elite Realty"
@@ -5767,7 +5786,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/11/17173244/17072625811-SebastienNehme-SeaSprayLand-PropertyCaymanRealEstate-370x414.jpg",
    "mls": "420000",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 380000.0,
    "sources": [
     "Property Cayman"
@@ -5790,7 +5809,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2025/04/IMG-20250424-WA0004.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 380000.0,
    "sources": [
     "Utopia Realty"
@@ -5813,7 +5832,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2026/06/HUaZuD2AAXWdZdLd7Ss8iSyeajfZJ3Wixzwb9szCDadc32vEjBdmngRE_2s3EBlEAbBSLgQGDR0sicxZeq5kUCDBkGMsWy-P2PBcif8GlTxVoRVZ8qkfQr2zgvogyLIAxPhYVGWFZzuiXI-pRNGngMsetVKpgQutJ_ERa1zUZ22MOzNKqpx6KMJ3_5jotPo0.jpg",
    "mls": "S1107",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 380000.0,
    "sources": [
     "Nine17 Realty"
@@ -5957,7 +5976,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/03/PHOTO-2023-03-07-08-53-20.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 389000.0,
    "sources": [
     "Utopia Realty"
@@ -6032,7 +6051,7 @@
    "image": "https://images.remax.ky/listings/4249/dsc-9612-hdr.jpeg",
    "mls": "419603",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:19+00:00",
+   "scraped_at": "2026-11-02T19:25:56+00:00",
    "price_kyd": 389500,
    "sources": [
     "Bovell RE/MAX"
@@ -6101,7 +6120,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-07-07-08-45-51-20251106124437IMG3179.webp",
    "mls": "419954",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 390000.0,
    "sources": [
     "Rainbow Realty"
@@ -6170,7 +6189,7 @@
    "image": "https://images.remax.ky/listings/2926/1-aerial2.jpg",
    "mls": "416147",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:17+00:00",
+   "scraped_at": "2026-11-02T19:25:54+00:00",
    "price_kyd": 395000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -6193,7 +6212,7 @@
    "image": "https://images.remax.ky/listings/2922/1-aerial2.jpg",
    "mls": "416149",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:19+00:00",
+   "scraped_at": "2026-11-02T19:25:55+00:00",
    "price_kyd": 395000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -6291,7 +6310,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-08-11-01-38-11-Blue-Minimalist-New-Listing-Real-Estate-Flyer-8.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 399000.0,
    "sources": [
     "Stone Land"
@@ -6314,7 +6333,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-22-20-57-14-C4B2E618-4AB2-4BA0-BC4A-A7EFB51D4B4D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 399000.0,
    "sources": [
     "Stone Land"
@@ -6435,7 +6454,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-25-23-06-34-ab5cb188-f3bd-438f-983b-a62ac4abf2b0.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 415000.0,
    "sources": [
     "Stone Land"
@@ -6458,7 +6477,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-30-01-57-04-ab5cb188-f3bd-438f-983b-a62ac4abf2b0.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 415000.0,
    "sources": [
     "Stone Land"
@@ -6579,7 +6598,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47296/original/1719509847Int01.jpg",
    "mls": "417935",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 425000.0,
    "sources": [
     "The Agency"
@@ -6602,7 +6621,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2022/07/Ext-03-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:59+00:00",
+   "scraped_at": "2026-11-02T19:25:47+00:00",
    "price_kyd": 425000.0,
    "sources": [
     "Elite Realty"
@@ -6625,7 +6644,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2022/07/01-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:18+00:00",
+   "scraped_at": "2026-11-02T19:26:06+00:00",
    "price_kyd": 425000.0,
    "sources": [
     "Elite Realty"
@@ -6648,7 +6667,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2022/07/Ext-03-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:28+00:00",
+   "scraped_at": "2026-11-02T19:26:16+00:00",
    "price_kyd": 425000.0,
    "sources": [
     "Elite Realty"
@@ -6671,7 +6690,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/01/1704725184WESTVILLAGE-EXTERIOR3-1170x785.jpg.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:58+00:00",
+   "scraped_at": "2026-11-02T19:26:46+00:00",
    "price_kyd": 425000.0,
    "sources": [
     "Elite Realty"
@@ -6717,7 +6736,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-09-02-16-04-11-20260115104954DJI0461outlined.webp",
    "mls": "419609",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 432000.0,
    "sources": [
     "Rainbow Realty"
@@ -6740,7 +6759,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/69a3300b9e88f17011e67cd7_DSC_1883_HDR%202.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 435000.0,
    "sources": [
     "MyRealtor"
@@ -7022,7 +7041,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2024/04/3-canal-lots-for-Sale.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 450000.0,
    "sources": [
     "Utopia Realty"
@@ -7143,7 +7162,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/121483/conversions/20260828083720_Screenshot_20260828_at_83617AM-card%402x.webp",
    "mls": "421147",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 463300,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -7218,7 +7237,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/TRIANGULAR-CANAL-LOT-ON-CHINABERRY-DRIVE-PROSPECT-1789947085.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 469000.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -7431,7 +7450,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/10/GU4evKnAtPeTO43GfoK4GIdGFFUYi8wx.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 475000.0,
    "sources": [
     "Utopia Realty"
@@ -7454,7 +7473,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2024/07/pan.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 475000.0,
    "sources": [
     "Utopia Realty"
@@ -7477,7 +7496,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2022/02/WEB-4.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 475000.0,
    "sources": [
     "Utopia Realty"
@@ -7592,7 +7611,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-22-20-57-14-C4B2E618-4AB2-4BA0-BC4A-A7EFB51D4B4D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 485000.0,
    "sources": [
     "Stone Land"
@@ -7615,7 +7634,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-22-20-57-14-C4B2E618-4AB2-4BA0-BC4A-A7EFB51D4B4D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 485000.0,
    "sources": [
     "Stone Land"
@@ -7638,7 +7657,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-06-22-20-57-14-C4B2E618-4AB2-4BA0-BC4A-A7EFB51D4B4D.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 485000.0,
    "sources": [
     "Stone Land"
@@ -7661,7 +7680,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-07-10-21-40-24-New.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:44+00:00",
+   "scraped_at": "2026-11-02T19:25:33+00:00",
    "price_kyd": 485000.0,
    "sources": [
     "Stone Land"
@@ -7684,7 +7703,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/01/1704725184WESTVILLAGE-EXTERIOR3-1170x785.jpg.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:08+00:00",
+   "scraped_at": "2026-11-02T19:26:56+00:00",
    "price_kyd": 485000.0,
    "sources": [
     "Elite Realty"
@@ -7736,7 +7755,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/59086/conversions/1738430562DJI202501301335270152D-card%402x.webp",
    "mls": "418785",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 487900,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -7788,7 +7807,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-05-05-12-46-12-1744649965Kitchen.jpeg",
    "mls": "419214",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 490000.0,
    "sources": [
     "Trident"
@@ -7955,7 +7974,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/10/Ex1-aa-1-1.jpg",
    "mls": "",
    "status": "For Sale (Pre-Construction)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 495000.0,
    "sources": [
     "Utopia Realty"
@@ -7978,7 +7997,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67d46b41a6d9dae6ce5a3736_65243bed45f0e8d66a1d9c58_New%2520Roof.webp",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 497000.0,
    "sources": [
     "MyRealtor"
@@ -8053,7 +8072,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/06/05120050/20260604155608_01Nancy_ChenStefan_PriorVIDA_104_West_Bay_CondoProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420892",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:34+00:00",
    "price_kyd": 499000.0,
    "sources": [
     "Property Cayman"
@@ -8076,7 +8095,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/118569/conversions/20260714111614_16_Pionner_01_23-card%402x.webp",
    "mls": "421013",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 499380,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -8238,7 +8257,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a6e34a6183fbba14fc8a907_Mangrove%20Ave%20Fixer%20upper%20.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 515000.0,
    "sources": [
     "MyRealtor"
@@ -8261,7 +8280,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2025/11/2-Bedroom.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:38:29+00:00",
+   "scraped_at": "2026-11-02T19:28:16+00:00",
    "price_kyd": 515000.0,
    "sources": [
     "Elite Realty"
@@ -8353,7 +8372,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-04-29-07-40-21-20260423105804DSCF5002.jpg",
    "mls": "420738",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "Trident"
@@ -8376,7 +8395,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a96fcb1ec24314915bc028a_Walker%203-Edited.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "MyRealtor"
@@ -8399,7 +8418,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2025/01/Ex3-aa-1.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "Utopia Realty"
@@ -8422,7 +8441,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/10/Ex3-aa-1.jpg",
    "mls": "",
    "status": "For Sale (Pre-Construction)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "Utopia Realty"
@@ -8445,7 +8464,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2021/10/Front.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:49+00:00",
+   "scraped_at": "2026-11-02T19:25:37+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "Elite Realty"
@@ -8468,7 +8487,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2022/07/Ext-03-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:38+00:00",
+   "scraped_at": "2026-11-02T19:26:26+00:00",
    "price_kyd": 525000.0,
    "sources": [
     "Elite Realty"
@@ -8491,7 +8510,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/CHARMING-2-BEDROOM-DUPLEX-IN-SPOTTS-BREEZE-SAVANNAH-1793335350.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 530000.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -8537,7 +8556,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/06/ChatGPT-Image-Jun-8-2026-09_47_18-PM-Copy.jpeg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 533000,
    "sources": [
     "Utopia Realty"
@@ -8704,7 +8723,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6a0c98ad27bfd76fdeb7582c_DSC_9239_HDR%20copy.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 535000.0,
    "sources": [
     "MyRealtor"
@@ -8726,8 +8745,8 @@
    "acres": 0.57,
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/103939/conversions/1740433710Untitleddesign-5-card%402x.webp",
    "mls": "418783",
-   "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "status": "Pending/Conditional",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 535000.0,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -8773,7 +8792,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-05-01-16-23-14-1744837048GateViewWideAngle.jpg",
    "mls": "419227",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 539000.0,
    "sources": [
     "Trident"
@@ -8825,7 +8844,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2023/04/DJI_0038-copy.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 545000.0,
    "sources": [
     "Utopia Realty"
@@ -8848,7 +8867,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2022/02/DJI_0029-copy.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 545000.0,
    "sources": [
     "Utopia Realty"
@@ -8969,7 +8988,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/09/PXL_20240710_214042296.MP_-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:38:09+00:00",
+   "scraped_at": "2026-11-02T19:27:56+00:00",
    "price_kyd": 550000.0,
    "sources": [
     "Elite Realty"
@@ -9067,7 +9086,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/68ed86a966d7b91a1f0d9d71_DSC_2296_hdr.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 560000.0,
    "sources": [
     "MyRealtor"
@@ -9119,7 +9138,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67d46b40ce25276ca532acf0_679a65794b1cbdaf19918044_DJI_0595-Edit.webp",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 565000.0,
    "sources": [
     "MyRealtor"
@@ -9145,15 +9164,9 @@
    "scraped_at": "2026-11-02T07:36:08+00:00",
    "price_kyd": 569000.0,
    "sources": [
-    "CIREBA",
-    "Williams2 Real Estate"
+    "CIREBA"
    ],
-   "also": [
-    {
-     "source": "Williams2 Real Estate",
-     "url": "https://williams2realestate.com/property/one-gt-residences-unit-619-special-price-defaulted-unit-sale/"
-    }
-   ],
+   "also": [],
    "first_seen": "2026-11-01T13:01:25+00:00"
   },
   {
@@ -9263,7 +9276,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-08-05-22-44-39-IMG1091.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 575000.0,
    "sources": [
     "Stone Land"
@@ -9286,7 +9299,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-08-05-22-57-06-IMG1070.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 575000.0,
    "sources": [
     "Stone Land"
@@ -9401,7 +9414,7 @@
    "image": "https://images.remax.ky/listings/2923/1-aerial1.jpg",
    "mls": "416148",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:12+00:00",
+   "scraped_at": "2026-11-02T19:25:50+00:00",
    "price_kyd": 589000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -9424,7 +9437,7 @@
    "image": "https://images.remax.ky/listings/2924/1-aerial1.jpg",
    "mls": "416146",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:36:13+00:00",
+   "scraped_at": "2026-11-02T19:25:51+00:00",
    "price_kyd": 589000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -9447,7 +9460,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2024/07/Main.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:52+00:00",
+   "scraped_at": "2026-11-02T19:25:40+00:00",
    "price_kyd": 589000.0,
    "sources": [
     "Nine17 Realty"
@@ -9470,7 +9483,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/Savannah-Saddle-Wood-Home-1763346208.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 590000.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -9539,7 +9552,7 @@
    "image": "https://www.stonelandproperties.ky/caches/451x301/2026-10-09-21-16-12-JOSHUA--KIMONE-WILSON-10.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 595000.0,
    "sources": [
     "Stone Land"
@@ -9637,7 +9650,7 @@
    "image": "https://williams2realestate.com/wp-content/uploads/2026/10/20261021151607_The_Agency__Mona__San_Sebastian2.jpg",
    "mls": "419857",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 599000.0,
    "sources": [
     "Williams2 Real Estate"
@@ -9660,7 +9673,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/09/30130337/17495815491WindsorVillage28CaymanIslands-370x414.jpg",
    "mls": "419417",
    "status": "Pending",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 599000.0,
    "sources": [
     "Property Cayman"
@@ -9683,7 +9696,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2026/05/WhatsApp-Image-2026-04-30-at-8.42.46-PM-1.jpeg",
    "mls": "S2005",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 599000.0,
    "sources": [
     "Nine17 Realty"
@@ -9706,7 +9719,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/118568/conversions/20260714094012_Main_House_Hans001_02-card%402x.webp",
    "mls": "421014",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 599010,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -9744,6 +9757,29 @@
    "first_seen": "2026-11-01T13:03:14+00:00"
   },
   {
+   "source": "Williams2 Real Estate",
+   "url": "https://williams2realestate.com/property/breakers-0-9-acre-lot/",
+   "title": "BREAKERS 0.9 ACRE LOT",
+   "price": 600000.0,
+   "currency": "KYD",
+   "ptype": "land",
+   "location": "Bodden Town / Breakers",
+   "beds": null,
+   "baths": null,
+   "sqft": null,
+   "acres": 0.9,
+   "image": "https://williams2realestate.com/wp-content/uploads/2026/11/20261029143753_Map_56C_58.jpg",
+   "mls": "421402",
+   "status": "For Sale",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
+   "price_kyd": 600000.0,
+   "sources": [
+    "Williams2 Real Estate"
+   ],
+   "also": [],
+   "first_seen": "2026-11-02T19:25:28+00:00"
+  },
+  {
    "source": "Island Realty",
    "url": "https://islandrealty.com.ky/estate_property/280-oceanfront-bamboo-bay/",
    "title": "280′ Oceanfront | Bamboo Bay",
@@ -9758,7 +9794,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2025/01/PICTURE.jpg",
    "mls": "104B00N01",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 600000.0,
    "sources": [
     "Island Realty"
@@ -9879,7 +9915,7 @@
   {
    "source": "MyRealtor",
    "url": "https://www.myrealtor.agency/properties/az-courts-unit-1",
-   "title": "AZ Courts Unit 1 |",
+   "title": "AZ Courts Unit 1",
    "price": 620000.0,
    "currency": "KYD",
    "ptype": "condo",
@@ -9891,7 +9927,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6ae3616b503fbf93dd45e48a_WhatsApp%20Image%202026-10-27%20at%207.31.29%20AM%20katrina.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 620000.0,
    "sources": [
     "MyRealtor"
@@ -10006,7 +10042,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/02/06123121/20260205122755_1Nancy_ChenWindsor_Village_27Property_Cayman_Real_Estate-370x414.jpg",
    "mls": "420350",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:34+00:00",
    "price_kyd": 625000.0,
    "sources": [
     "Property Cayman"
@@ -10032,20 +10068,9 @@
    "scraped_at": "2026-11-02T07:36:08+00:00",
    "price_kyd": 629000.0,
    "sources": [
-    "CIREBA",
-    "Williams2 Real Estate",
-    "IRG"
+    "CIREBA"
    ],
-   "also": [
-    {
-     "source": "Williams2 Real Estate",
-     "url": "https://williams2realestate.com/property/one-gt-residences-unit-510-special-price-defaulted-unit-sale/"
-    },
-    {
-     "source": "IRG",
-     "url": "https://www.irgcayman.com/property-detail/georgetowncentral/residential/one-gt-residences-unit-510-special-price-defaulted-unit-sale-1"
-    }
-   ],
+   "also": [],
    "first_seen": "2026-11-01T13:01:25+00:00"
   },
   {
@@ -10086,7 +10111,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260505164706PHOTO202605051707462.webp",
    "mls": "420234",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 635000.0,
    "sources": [
     "Rainbow Realty"
@@ -10109,7 +10134,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-06-25-11-55-47-20260506083458PHOTO202605051707462.webp",
    "mls": "420235",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 635000.0,
    "sources": [
     "Rainbow Realty"
@@ -10136,14 +10161,9 @@
    "price_kyd": 639000.0,
    "sources": [
     "CIREBA",
-    "Williams2 Real Estate",
     "IRG"
    ],
    "also": [
-    {
-     "source": "Williams2 Real Estate",
-     "url": "https://williams2realestate.com/property/one-gt-residences-unit-508-special-price-defaulted-unit-sale/"
-    },
     {
      "source": "IRG",
      "url": "https://www.irgcayman.com/property-detail/georgetowncentral/residential/one-gt-residences-unit-508-special-price-defaulted-unit-sale-1"
@@ -10316,7 +10336,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/04/07160140/20260407144816_01Stefan_PriorGregg_ArnoldCayman_Crossing_33_2_Bed_TownhomeProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420681",
    "status": "Pending",
-   "scraped_at": "2026-11-02T07:35:49+00:00",
+   "scraped_at": "2026-11-02T19:25:37+00:00",
    "price_kyd": 649000.0,
    "sources": [
     "Property Cayman"
@@ -10339,7 +10359,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-12-04-02-39-1720822971Brac-Pin2.webp",
    "mls": "419601",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 649000.0,
    "sources": [
     "Rainbow Realty"
@@ -10362,7 +10382,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/01/1704725184WESTVILLAGE-EXTERIOR3-1170x785.jpg.png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:18+00:00",
+   "scraped_at": "2026-11-02T19:27:06+00:00",
    "price_kyd": 649000.0,
    "sources": [
     "Elite Realty"
@@ -10408,7 +10428,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2024-03-13-14-43-40-IMG-20240312-WA0056.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 650000.0,
    "sources": [
     "Tranquil Realty"
@@ -10431,7 +10451,7 @@
    "image": "https://williams2realestate.com/wp-content/uploads/2026/10/Screenshot-2026-10-21-at-13.59.16.png",
    "mls": "421364",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 655180,
    "sources": [
     "Williams2 Real Estate",
@@ -10535,7 +10555,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/06/17130117/20260617114425_1Gregg_ArnoldVivi_8Property_Cayman_Real_Estate-370x414.jpg",
    "mls": "420935",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 665000.0,
    "sources": [
     "Property Cayman"
@@ -10558,7 +10578,7 @@
    "image": "https://images.remax.ky/listings/4682/dsc08849.jpg",
    "mls": "420867",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:10+00:00",
+   "scraped_at": "2026-11-02T19:25:48+00:00",
    "price_kyd": 670000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -10581,7 +10601,7 @@
    "image": "https://images.remax.ky/listings/4684/dsc08849.jpg",
    "mls": "420869",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:11+00:00",
+   "scraped_at": "2026-11-02T19:25:49+00:00",
    "price_kyd": 670000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -10707,7 +10727,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2025/08/dji_mimo_20250819_142450_20250819142451_1755708009072_photo-1-scaled.jpg",
    "mls": "",
    "status": "For Sale, Pre-Construction",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:34+00:00",
    "price_kyd": 675000.0,
    "sources": [
     "Nine17 Realty"
@@ -11127,7 +11147,7 @@
    "image": "https://propertycayman-prod-media.s3.us-east-2.amazonaws.com/wp-content/uploads/2026/10/23180135/20261023153035_001Colleen_MartinHarbour_Reach_LotProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "421378",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:45+00:00",
+   "scraped_at": "2026-11-02T19:25:33+00:00",
    "price_kyd": 685000.0,
    "sources": [
     "Property Cayman",
@@ -11161,7 +11181,7 @@
    "image": "https://images.remax.ky/listings/4501/1.jpg",
    "mls": "420546",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:09+00:00",
+   "scraped_at": "2026-11-02T19:25:47+00:00",
    "price_kyd": 692900,
    "sources": [
     "Bovell RE/MAX"
@@ -11317,7 +11337,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/08/View-05L-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:38+00:00",
+   "scraped_at": "2026-11-02T19:27:26+00:00",
    "price_kyd": 695000.0,
    "sources": [
     "Elite Realty"
@@ -11438,7 +11458,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/67d46b3e090ce38ce3ebfe4f_63fe1b2a667bb2309e293bb1_seaspray2.webp",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 699000.0,
    "sources": [
     "MyRealtor"
@@ -11461,7 +11481,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2026/06/Front-Pic.png",
    "mls": "S1008",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 699999.0,
    "sources": [
     "Nine17 Realty"
@@ -11622,7 +11642,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-01-20-14-20-29-1757461792DJI202509011035230883D-Editt.jpg",
    "mls": "419742",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 700000.0,
    "sources": [
     "IRG"
@@ -11645,7 +11665,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-02-09-14-49-59-20260206120606Screenshot20260206at120325.png",
    "mls": "420369",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 700000.0,
    "sources": [
     "IRG"
@@ -11668,7 +11688,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/94093/conversions/20251130125439_IMG_1122-card%402x.webp",
    "mls": "420053",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 705118,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -11720,7 +11740,7 @@
    "image": "https://images.remax.ky/listings/4683/dsc08849.jpg",
    "mls": "420868",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:07+00:00",
+   "scraped_at": "2026-11-02T19:25:45+00:00",
    "price_kyd": 710000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -11743,7 +11763,7 @@
    "image": "https://images.remax.ky/listings/4685/dsc08849.jpg",
    "mls": "420870",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:08+00:00",
+   "scraped_at": "2026-11-02T19:25:46+00:00",
    "price_kyd": 710000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -11822,29 +11842,6 @@
   },
   {
    "source": "Bovell RE/MAX",
-   "url": "https://www.bovell.ky/cayman-island-properties-for-sale/42-ria-development-3-bed-end-unit/",
-   "title": "#42 RIA DEVELOPMENT | 3 BED | END UNIT",
-   "price": 725000.0,
-   "currency": "KYD",
-   "ptype": "condo",
-   "location": "George Town",
-   "beds": 3.0,
-   "baths": 3.5,
-   "sqft": 2049.0,
-   "acres": null,
-   "image": "https://images.remax.ky/listings/2927/1-pool.jpg",
-   "mls": "416150",
-   "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:36:05+00:00",
-   "price_kyd": 725000.0,
-   "sources": [
-    "Bovell RE/MAX"
-   ],
-   "also": [],
-   "first_seen": "2026-11-01T13:01:19+00:00"
-  },
-  {
-   "source": "Bovell RE/MAX",
    "url": "https://www.bovell.ky/cayman-island-properties-for-sale/31-ria-development-3-bed-end-unit/",
    "title": "# 31 RIA DEVELOPMENT | 3 BED | END UNIT",
    "price": 725000.0,
@@ -11858,13 +11855,36 @@
    "image": "https://images.remax.ky/listings/2925/1-pool.jpg",
    "mls": "416145",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:36:06+00:00",
+   "scraped_at": "2026-11-02T19:25:43+00:00",
    "price_kyd": 725000.0,
    "sources": [
     "Bovell RE/MAX"
    ],
    "also": [],
    "first_seen": "2026-11-01T13:01:18+00:00"
+  },
+  {
+   "source": "Bovell RE/MAX",
+   "url": "https://www.bovell.ky/cayman-island-properties-for-sale/42-ria-development-3-bed-end-unit/",
+   "title": "#42 RIA DEVELOPMENT | 3 BED | END UNIT",
+   "price": 725000.0,
+   "currency": "KYD",
+   "ptype": "condo",
+   "location": "George Town",
+   "beds": 3.0,
+   "baths": 3.5,
+   "sqft": 2049.0,
+   "acres": null,
+   "image": "https://images.remax.ky/listings/2927/1-pool.jpg",
+   "mls": "416150",
+   "status": "Pending/Conditional",
+   "scraped_at": "2026-11-02T19:25:44+00:00",
+   "price_kyd": 725000.0,
+   "sources": [
+    "Bovell RE/MAX"
+   ],
+   "also": [],
+   "first_seen": "2026-11-01T13:01:19+00:00"
   },
   {
    "source": "CIREBA",
@@ -11950,7 +11970,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49121/original/20260730154825_Winterhaven27.jpg",
    "mls": "419654",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 745000.0,
    "sources": [
     "The Agency"
@@ -12019,7 +12039,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/10/88E7A146-8978-4DC7-974F-5D713D3573F2.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 749000.0,
    "sources": [
     "Utopia Realty"
@@ -12142,6 +12162,29 @@
    "first_seen": "2026-11-01T13:01:25+00:00"
   },
   {
+   "source": "Williams2 Real Estate",
+   "url": "https://williams2realestate.com/property/3-br-townhome-end-unit-great-location/",
+   "title": "3 BR TOWNHOME – END UNIT – GREAT LOCATION!",
+   "price": 760000.0,
+   "currency": "KYD",
+   "ptype": "condo",
+   "location": "George Town",
+   "beds": 3.0,
+   "baths": 3.5,
+   "sqft": 1883.0,
+   "acres": null,
+   "image": "https://williams2realestate.com/wp-content/uploads/2026/11/20261101112423_LR1.png",
+   "mls": "421404",
+   "status": "For Sale",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
+   "price_kyd": 760000.0,
+   "sources": [
+    "Williams2 Real Estate"
+   ],
+   "also": [],
+   "first_seen": "2026-11-02T19:25:28+00:00"
+  },
+  {
    "source": "CIREBA",
    "url": "https://www.cireba.com/property-detail/savannah-lower-valley/residential-properties-for-sale-in-cayman-islands/beach-bay-home-3",
    "title": "Beach Bay Home",
@@ -12248,7 +12291,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2022-03-23-10-17-45-1647724865RESIDENCEPOOL-PEOPLEcopy.jpg",
    "mls": "414229",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 779000.0,
    "sources": [
     "IRG"
@@ -12305,7 +12348,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2023-06-15-20-15-06-Aerial-3.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 788000.0,
    "sources": [
     "Tranquil Realty"
@@ -12432,7 +12475,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2023-11-08-18-02-04-Aerial-9.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 797000.0,
    "sources": [
     "Tranquil Realty"
@@ -12455,7 +12498,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/124765/conversions/20261012160253_4_20261009a7409477-card%402x.webp",
    "mls": "421309",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 799000.0,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -12565,7 +12608,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/For-Sale---East-End-House---75A-Pl-203-House-58-1759681832.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 799000.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -12588,7 +12631,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2019-07-29-03-06-19-002.JPG",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 799500,
    "sources": [
     "Tranquil Realty"
@@ -12732,7 +12775,7 @@
    "image": "https://propertycayman-prod-media.s3.us-east-2.amazonaws.com/wp-content/uploads/2026/07/07220114/20260703154533_1_Cayman_Kai_Beach_Front_Land__Stefan_Prior__Property_Cayman_Real_Estate_1-370x414.jpg",
    "mls": "420994",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 815900,
    "sources": [
     "Property Cayman",
@@ -12807,7 +12850,7 @@
    "image": "https://images.remax.ky/listings/4656/34-20260605-a7401324.jpg",
    "mls": "420908",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:03+00:00",
+   "scraped_at": "2026-11-02T19:25:42+00:00",
    "price_kyd": 815900,
    "sources": [
     "Bovell RE/MAX"
@@ -12839,6 +12882,35 @@
    "first_seen": "2026-11-01T13:03:10+00:00"
   },
   {
+   "source": "Williams2 Real Estate",
+   "url": "https://williams2realestate.com/property/one-gt-residences-unit-1018-special-price-defaulted-unit-sale/",
+   "title": "ONE | GT RESIDENCES – UNIT 1018 – SPECIAL PRICE – DEFAULTED UNIT SALE",
+   "price": 825000.0,
+   "currency": "KYD",
+   "ptype": "condo",
+   "location": "George Town",
+   "beds": 1.0,
+   "baths": 1.0,
+   "sqft": 906.0,
+   "acres": null,
+   "image": "https://williams2realestate.com/wp-content/uploads/2026/11/697256728336794.jpg",
+   "mls": "421401",
+   "status": "For Sale",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
+   "price_kyd": 825000.0,
+   "sources": [
+    "Williams2 Real Estate",
+    "IRG"
+   ],
+   "also": [
+    {
+     "source": "IRG",
+     "url": "https://www.irgcayman.com/property-detail/georgetowncentral/residential/one-gt-residences-unit-1018-special-price-defaulted-unit-sale"
+    }
+   ],
+   "first_seen": "2026-11-02T19:25:28+00:00"
+  },
+  {
    "source": "Utopia Realty",
    "url": "https://www.utopiacaymanrealty.com/property/arvia/",
    "title": "ARVIA",
@@ -12853,7 +12925,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2024/01/IMG-20240128-WA0009.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 825000.0,
    "sources": [
     "Utopia Realty"
@@ -12876,7 +12948,7 @@
    "image": "https://www.tranquilrealty.ky/caches/570x338/2023-07-19-10-33-40-DV-5.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 837000.0,
    "sources": [
     "Tranquil Realty"
@@ -12998,29 +13070,6 @@
    ],
    "also": [],
    "first_seen": "2026-11-01T13:01:51+00:00"
-  },
-  {
-   "source": "The Agency",
-   "url": "https://theagencyre.ky/property/point-west-unit-10-one-bed-garden-view/",
-   "title": "POINT WEST UNIT #10 – ONE BED GARDEN VIEW",
-   "price": 1049000.0,
-   "currency": "USD",
-   "ptype": "condo",
-   "location": "W Bay South, West Bay",
-   "beds": 1.0,
-   "baths": 1.0,
-   "sqft": 913.0,
-   "acres": null,
-   "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47818/original/20251128115402_Portfolio47588.jpg",
-   "mls": "418397",
-   "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
-   "price_kyd": 860180,
-   "sources": [
-    "The Agency"
-   ],
-   "also": [],
-   "first_seen": "2026-11-01T13:00:52+00:00"
   },
   {
    "source": "CIREBA",
@@ -13169,7 +13218,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/08/Beach-Groves-Rear.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:48+00:00",
+   "scraped_at": "2026-11-02T19:27:36+00:00",
    "price_kyd": 892980.0,
    "sources": [
     "Elite Realty"
@@ -13215,36 +13264,13 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/06/06183030/20260606180125_1-370x414.png",
    "mls": "420891",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 902000,
    "sources": [
     "Property Cayman"
    ],
    "also": [],
    "first_seen": "2026-11-01T13:00:59+00:00"
-  },
-  {
-   "source": "The Agency",
-   "url": "https://theagencyre.ky/property/point-west-penthouse-20-one-bed-garden-view/",
-   "title": "POINT WEST PENTHOUSE #20 – ONE BED GARDEN VIEW",
-   "price": 1101000.0,
-   "currency": "USD",
-   "ptype": "condo",
-   "location": "W Bay South, West Bay",
-   "beds": 1.0,
-   "baths": 1.0,
-   "sqft": 914.0,
-   "acres": null,
-   "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47819/original/20251128121815_Portfolio47595.jpg",
-   "mls": "418398",
-   "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
-   "price_kyd": 902820,
-   "sources": [
-    "The Agency"
-   ],
-   "also": [],
-   "first_seen": "2026-11-01T13:00:52+00:00"
   },
   {
    "source": "IRG",
@@ -13261,7 +13287,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-03-24-15-19-55-202603241434131.jpg",
    "mls": "420191",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 919000.0,
    "sources": [
     "IRG"
@@ -13284,7 +13310,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/105202/conversions/20260214092613_89_20260212a7403645-card%402x.webp",
    "mls": "420215",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 941360,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -13359,7 +13385,7 @@
    "image": "https://tcgrealty.ky/wp-content/uploads/2021/05/Screen-Shot-2021-05-05-at-5.18.26-PM.png",
    "mls": "SouthSound1",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 950000.0,
    "sources": [
     "TCG Realty"
@@ -13405,7 +13431,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50092/original/20260318155304_Aqua__40127.jpg",
    "mls": "420567",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 963500,
    "sources": [
     "The Agency"
@@ -13537,7 +13563,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49594/original/20260307123715_Pools6_WEB_Beachfront1.jpg",
    "mls": "420083",
    "status": "Reduced",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 979900,
    "sources": [
     "The Agency"
@@ -13640,7 +13666,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50089/original/20260325153904_19_a7409200.jpg",
    "mls": "420568",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 984000,
    "sources": [
     "The Agency"
@@ -13887,7 +13913,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49969/original/20260226145907_North_Side__57E17REM15_websize.jpg",
    "mls": "420445",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1027000.0,
    "sources": [
     "The Agency"
@@ -13910,7 +13936,7 @@
    "image": "https://propertycayman-prod-media.s3.us-east-2.amazonaws.com/wp-content/uploads/2023/01/09161906/16727536811Waves3Condo-PropertyCaymanRealEstateJudeHolland1-370x414.jpg",
    "mls": "415495",
    "status": "Pending",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 1045459,
    "sources": [
     "Property Cayman"
@@ -14008,7 +14034,7 @@
    "image": "https://images.remax.ky/listings/3518/front-gate.jpg",
    "mls": "417640",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:36:02+00:00",
+   "scraped_at": "2026-11-02T19:25:41+00:00",
    "price_kyd": 1088000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -14083,7 +14109,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50070/original/20260315091535_Arvia__Unit_817.jpg",
    "mls": "420551",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1100000.0,
    "sources": [
     "The Agency"
@@ -14106,7 +14132,7 @@
    "image": "https://nine17realty.com/wp-content/uploads/2025/08/WhatsApp-Image-2026-07-31-at-12.20.23-PM.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:47+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 1100000.0,
    "sources": [
     "Nine17 Realty"
@@ -14129,7 +14155,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2023/10/WhatsApp-Image-2023-10-18-at-5.16.32-PM-1.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:48+00:00",
+   "scraped_at": "2026-11-02T19:26:36+00:00",
    "price_kyd": 1100000.0,
    "sources": [
     "Elite Realty"
@@ -14152,7 +14178,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/12/05173057/20251205170700_1Gregg_ArnoldPedro_Bluff_LandProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420081",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 1107000,
    "sources": [
     "Property Cayman"
@@ -14244,36 +14270,13 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2025-12-03-07-53-56-1745824102DSCF2642.jpg",
    "mls": "419258",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1143900.0,
    "sources": [
     "Trident"
    ],
    "also": [],
    "first_seen": "2026-11-01T13:00:51+00:00"
-  },
-  {
-   "source": "The Agency",
-   "url": "https://theagencyre.ky/property/point-west-unit-9-one-bed-ocean-view/",
-   "title": "POINT WEST UNIT #9 – ONE BED OCEAN VIEW",
-   "price": 1400000.0,
-   "currency": "USD",
-   "ptype": "condo",
-   "location": "W Bay South, West Bay",
-   "beds": 1.0,
-   "baths": 1.0,
-   "sqft": 1123.0,
-   "acres": null,
-   "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47806/original/20251128114014_Portfolio47595.jpg",
-   "mls": "418388",
-   "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
-   "price_kyd": 1148000,
-   "sources": [
-    "The Agency"
-   ],
-   "also": [],
-   "first_seen": "2026-11-01T13:00:52+00:00"
   },
   {
    "source": "CIREBA",
@@ -14348,7 +14351,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/06/05150054/20260605142522_14_20260601a7400652-370x414.jpg",
    "mls": "420898",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:45+00:00",
+   "scraped_at": "2026-11-02T19:25:32+00:00",
    "price_kyd": 1150000.0,
    "sources": [
     "Property Cayman"
@@ -14371,7 +14374,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/48058/original/1736879926DJI202501071148500203D.jpg",
    "mls": "420573",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1150000.0,
    "sources": [
     "The Agency"
@@ -14394,7 +14397,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49963/original/20260227101232_Aqua__4011.jpg",
    "mls": "420480",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1168500,
    "sources": [
     "The Agency"
@@ -14665,7 +14668,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2022-03-23-10-48-01-1647723185EXTERIORNIGHTTIME.jpg",
    "mls": "414257",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1249000.0,
    "sources": [
     "IRG"
@@ -14688,7 +14691,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-09-30-11-03-50-20260930104923DSC051621.jpg",
    "mls": "415819",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1249000.0,
    "sources": [
     "IRG"
@@ -14780,7 +14783,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/10/188804AD-88EC-4864-B228-58374B041DBF.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1265000.0,
    "sources": [
     "Utopia Realty"
@@ -14918,7 +14921,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/96360/conversions/20251203095123_DJI_20251201111859_0013_D-card%402x.webp",
    "mls": "420091",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 1299700,
    "sources": [
     "Berkshire Hathaway HomeServices"
@@ -15016,7 +15019,7 @@
    "image": "https://eliterealty.ky/wp-content/uploads/2024/08/Beach-Groves-Facade-Entrance-min-1-1-scaled.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:37:58+00:00",
+   "scraped_at": "2026-11-02T19:27:46+00:00",
    "price_kyd": 1311180.0,
    "sources": [
     "Elite Realty"
@@ -15085,7 +15088,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2024/02/08173214/17074059821-Waves13Townhome-PropertyCaymanRealEstateJudeHolland2-370x414.jpg",
    "mls": "417279",
    "status": "Pending",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 1332459,
    "sources": [
     "Property Cayman"
@@ -15177,7 +15180,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/09/ChatGPT-Image-Jul-22-2026-11_14_15-AM.jpeg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1350000.0,
    "sources": [
     "Utopia Realty"
@@ -15200,7 +15203,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47812/original/20251128103646_Portfolio47644.jpg",
    "mls": "418403",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1352180,
    "sources": [
     "The Agency"
@@ -15246,7 +15249,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/12/08110332/20251203125747_Property_Cayman_Real_Estate_Waves_New_Development_Jude_Holland_14-370x414.jpg",
    "mls": "420059",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:45+00:00",
+   "scraped_at": "2026-11-02T19:25:33+00:00",
    "price_kyd": 1353000,
    "sources": [
     "Property Cayman"
@@ -15344,7 +15347,7 @@
    "image": "https://images.remax.ky/listings/2317/beach-aerial.jpg",
    "mls": "414412",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:36:01+00:00",
+   "scraped_at": "2026-11-02T19:25:40+00:00",
    "price_kyd": 1395000.0,
    "sources": [
     "Bovell RE/MAX"
@@ -15390,7 +15393,7 @@
    "image": "https://www.cireba.com/caches/508x339/2026-09-14-11-00-41-202609111122192.jpeg",
    "mls": "421230",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1400000.0,
    "sources": [
     "Trident",
@@ -15419,7 +15422,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2024/04/11123050/17127560227Waves13Townhome-PropertyCaymanRealEstateJudeHolland7-370x414.jpg",
    "mls": "417516",
    "status": "Pending",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 1414459,
    "sources": [
     "Property Cayman"
@@ -15442,7 +15445,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49780/original/20260119110248_Homes.jpg",
    "mls": "420237",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1425000.0,
    "sources": [
     "The Agency"
@@ -15465,7 +15468,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49707/original/20260112140401_Homes.jpg",
    "mls": "420199",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1425000.0,
    "sources": [
     "The Agency"
@@ -15488,7 +15491,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49704/original/20260112133358_Homes.jpg",
    "mls": "420198",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1425000.0,
    "sources": [
     "The Agency"
@@ -15511,7 +15514,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49017/original/20260112122110_Homes.jpg",
    "mls": "420197",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1425000.0,
    "sources": [
     "The Agency"
@@ -15603,7 +15606,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2022-03-23-11-03-30-1647719595RESTOPATIO-FINALPEOPLE.jpg",
    "mls": "414281",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1449000.0,
    "sources": [
     "IRG"
@@ -15626,7 +15629,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2023-03-29-15-33-37-1680040099EXTERIORENTRANCE.jpg",
    "mls": "415816",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1449000.0,
    "sources": [
     "IRG"
@@ -15649,7 +15652,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-06-23-12-50-51-20260617102550DSC09540V3Edit2Edit.jpg",
    "mls": "420957",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1449000.0,
    "sources": [
     "IRG"
@@ -15787,7 +15790,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/01/07110111/1736796159053-24coralbaypropertycayman-370x414.jpg",
    "mls": "418661",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:31+00:00",
    "price_kyd": 1475000.0,
    "sources": [
     "Property Cayman"
@@ -15819,6 +15822,29 @@
    "first_seen": "2026-11-01T13:01:33+00:00"
   },
   {
+   "source": "Williams2 Real Estate",
+   "url": "https://williams2realestate.com/property/the-grove-too-2-bed-short-term-rental/",
+   "title": "THE GROVE TOO – 2 BED SHORT TERM RENTAL",
+   "price": 1800000.0,
+   "currency": "USD",
+   "ptype": "house",
+   "location": "West Bay",
+   "beds": 2.0,
+   "baths": 2.0,
+   "sqft": 1399.0,
+   "acres": null,
+   "image": "https://williams2realestate.com/wp-content/uploads/2026/11/535147375327265-scaled.jpg",
+   "mls": "421403",
+   "status": "For Sale",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
+   "price_kyd": 1476000,
+   "sources": [
+    "Williams2 Real Estate"
+   ],
+   "also": [],
+   "first_seen": "2026-11-02T19:25:28+00:00"
+  },
+  {
    "source": "The Agency",
    "url": "https://theagencyre.ky/property/secret-beach-villa-14/",
    "title": "SECRET BEACH VILLA 14",
@@ -15833,7 +15859,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49978/original/20260610091621_IMG_2023.jpg",
    "mls": "420468",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1476000.0,
    "sources": [
     "The Agency"
@@ -15879,7 +15905,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50472/original/20261031171739_1.png",
    "mls": "420928",
    "status": "Reduced",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1495000.0,
    "sources": [
     "The Agency"
@@ -15902,7 +15928,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50674/original/943848737325975.jpg",
    "mls": "421125",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1497500.0,
    "sources": [
     "The Agency"
@@ -15925,7 +15951,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50673/original/172199767325955.jpg",
    "mls": "421124",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1497500.0,
    "sources": [
     "The Agency"
@@ -15994,7 +16020,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49601/original/20251215142940_IMAGE_4__PLOT_17.jpg",
    "mls": "420099",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1500600,
    "sources": [
     "The Agency"
@@ -16069,7 +16095,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-10-19-16-18-49-20261019160300DSC07917.jpg",
    "mls": "414236",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1549000.0,
    "sources": [
     "IRG"
@@ -16092,7 +16118,7 @@
    "image": "https://propertycayman.com/wp-content/uploads/2026/05/20260507162523_01Stefan_PriorMichael_JosephOLEA_225_3_Bed_Townhome_Camana_BayProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420785",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1549800,
    "sources": [
     "Property Cayman"
@@ -16213,7 +16239,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-09-22-14-38-00-1647723339CAFE-FINAL.jpg",
    "mls": "414253",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1579000.0,
    "sources": [
     "IRG"
@@ -16282,7 +16308,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-02-06-10-23-13-2026020608083820260205142524.jpg",
    "mls": "420334",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1598000.0,
    "sources": [
     "Trident"
@@ -16305,7 +16331,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2024/02/08173045/17073429061-JudeHolland-Sundance-PropertyCaymanRealEstate-min-370x414.jpg",
    "mls": "417278",
    "status": "Pending/Conditional",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:30+00:00",
    "price_kyd": 1598959,
    "sources": [
     "Property Cayman"
@@ -16337,29 +16363,6 @@
    "first_seen": "2026-11-01T13:01:16+00:00"
   },
   {
-   "source": "The Agency",
-   "url": "https://theagencyre.ky/property/point-west-unit-1-three-bed-ocean-view/",
-   "title": "POINT WEST UNIT #1 – THREE BED OCEAN VIEW",
-   "price": 1960000.0,
-   "currency": "USD",
-   "ptype": "condo",
-   "location": "W Bay South, West Bay",
-   "beds": 3.0,
-   "baths": 3.0,
-   "sqft": 1698.0,
-   "acres": null,
-   "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47815/original/20251128100806_Portfolio47656.jpg",
-   "mls": "418396",
-   "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
-   "price_kyd": 1607200,
-   "sources": [
-    "The Agency"
-   ],
-   "also": [],
-   "first_seen": "2026-11-01T13:00:52+00:00"
-  },
-  {
    "source": "IRG",
    "url": "https://www.irgcayman.com/property-detail/georgetowncentral/residential/one-gt-residences-unit-917-1",
    "title": "ONE | GT RESIDENCES - UNIT 922",
@@ -16374,7 +16377,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-09-24-15-19-23-20260924151154DSC07897.jpg",
    "mls": "414279",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1619000.0,
    "sources": [
     "IRG"
@@ -16541,7 +16544,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/01/22110038/20260122104446_2Jennifer_PowellRum_Point_Club_403Property_Cayman_Real_Estate-370x414.jpg",
    "mls": "418369",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1695000.0,
    "sources": [
     "Property Cayman"
@@ -16564,7 +16567,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/01/22110125/20260122103540_1Jennifer_PowellRum_Point_Club_403Property_Cayman_Real_Estate-370x414.jpg",
    "mls": "418370",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1695000.0,
    "sources": [
     "Property Cayman"
@@ -16587,7 +16590,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/48249/original/20261002134659_DJI_0849.jpg",
    "mls": "418821",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1695000.0,
    "sources": [
     "The Agency"
@@ -16610,7 +16613,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/43853/original/1654463682DJI0851.jpg",
    "mls": "414638",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1695000.0,
    "sources": [
     "The Agency"
@@ -16656,7 +16659,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2022/11/IMG_8165.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1700000.0,
    "sources": [
     "Utopia Realty"
@@ -16679,7 +16682,7 @@
    "image": "https://tcgrealty.ky/wp-content/uploads/2021/03/2.jpg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:46+00:00",
+   "scraped_at": "2026-11-02T19:25:35+00:00",
    "price_kyd": 1700000.0,
    "sources": [
     "TCG Realty"
@@ -16777,7 +16780,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2021/07/IMG_8163.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1742400.0,
    "sources": [
     "Utopia Realty"
@@ -16834,7 +16837,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-09-22-14-37-49-1647724245EXTERIORENTRANCEcopy.jpg",
    "mls": "414237",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1749000.0,
    "sources": [
     "IRG"
@@ -16903,7 +16906,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-02-06-16-46-14-20260206124915coIOQFVQ.jpg",
    "mls": "420357",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1785550.0,
    "sources": [
     "Trident"
@@ -16926,7 +16929,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-12-01-09-49-18-1647723317RESTOPATIO-FINALPEOPLE.jpg",
    "mls": "414254",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1799000.0,
    "sources": [
     "IRG"
@@ -17041,7 +17044,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-09-23-15-37-26-20250923114432-379WaterSt002.jpg",
    "mls": "419780",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1850000.0,
    "sources": [
     "IRG",
@@ -17139,7 +17142,7 @@
    "image": "https://www.cireba.com/caches/508x339/2025-12-12-14-30-14-20251210155330TridentKerriPigPond110of110.jpg",
    "mls": "420112",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1895000.0,
    "sources": [
     "Trident",
@@ -17243,7 +17246,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-03-03-10-46-14-20260302143659INDU1.jpg",
    "mls": "420486",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 1929950.0,
    "sources": [
     "Trident"
@@ -17496,7 +17499,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49592/original/947254538280036.jpg",
    "mls": "420098",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 1984400,
    "sources": [
     "The Agency"
@@ -17640,7 +17643,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-06-10-10-06-57-20260610095219DSC09866v2.jpg",
    "mls": "420708",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 1995000.0,
    "sources": [
     "IRG"
@@ -17715,7 +17718,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49607/original/198158396280763.jpg",
    "mls": "420100",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2074600,
    "sources": [
     "The Agency"
@@ -17859,7 +17862,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49600/original/697909366280473.jpg",
    "mls": "420096",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2107400,
    "sources": [
     "The Agency"
@@ -18205,7 +18208,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/48654/original/17443832617-CypressPointe-26.jpg",
    "mls": "419316",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2200000.0,
    "sources": [
     "The Agency",
@@ -18378,7 +18381,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49518/original/20251120164432_Boggy_Sands30.jpg",
    "mls": "420020",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2337000,
    "sources": [
     "The Agency"
@@ -18453,7 +18456,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47817/original/20251128124204_Portfolio47656.jpg",
    "mls": "418400",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2390300,
    "sources": [
     "The Agency"
@@ -18476,7 +18479,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-09-22-21-48-41-20260922210518WhatsAppImage20260922at90458PM.webp",
    "mls": "420046",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 2395000.0,
    "sources": [
     "Rainbow Realty"
@@ -18499,7 +18502,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-18-16-46-24-20260818162309SnugHarbourUnit1EditedforWeb37.webp",
    "mls": "420047",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 2395000.0,
    "sources": [
     "Rainbow Realty"
@@ -18545,7 +18548,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/6ad8d994c7cec9d2f21e4c7f_DSC_1861_HDR.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 2425000.0,
    "sources": [
     "MyRealtor"
@@ -18671,7 +18674,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49491/original/20251114102907_DJI_0851.jpg",
    "mls": "419995",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2459180,
    "sources": [
     "The Agency"
@@ -18694,7 +18697,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-02-06-17-23-14-20260206155742BDNewListingGraphics27.png",
    "mls": "420360",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 2460000.0,
    "sources": [
     "Trident"
@@ -18717,7 +18720,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-03-03-10-46-14-20260302162026INDU1.jpg",
    "mls": "420488",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 2471030.0,
    "sources": [
     "Trident"
@@ -18740,7 +18743,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-09-22-14-37-23-1647643658LIBRARY-FINAL.jpg",
    "mls": "414209",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 2490000.0,
    "sources": [
     "IRG"
@@ -18948,7 +18951,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-06-04-13-46-15-20260604133215WhatsAppImage20260603at11235PM.jpeg",
    "mls": "420815",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 2689600.0,
    "sources": [
     "Trident"
@@ -19132,7 +19135,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50481/original/20260622161032_ChatGPT_Image_Jun_22_2026_04_09_53_PM.png",
    "mls": "420956",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2870000,
    "sources": [
     "The Agency"
@@ -19155,7 +19158,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49160/original/20261014152326_Rear_View.png",
    "mls": "421338",
    "status": "New",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2950000.0,
    "sources": [
     "The Agency",
@@ -19282,7 +19285,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50661/original/20260818155137_2.jpg",
    "mls": "421120",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 2995000.0,
    "sources": [
     "The Agency"
@@ -19305,7 +19308,7 @@
    "image": "https://cdn.prod.website-files.com/63fcb330d3a5af92e135fa25/699488989c23273a2eeae650_Untitled%20design%20(17).png",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:38+00:00",
+   "scraped_at": "2026-11-02T19:25:26+00:00",
    "price_kyd": 3000000.0,
    "sources": [
     "MyRealtor"
@@ -19328,7 +19331,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2026/06/IMG_4938.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3000000.0,
    "sources": [
     "Utopia Realty"
@@ -19535,7 +19538,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-03-03-10-46-14-20260302152118INDU1.jpg",
    "mls": "420487",
    "status": "Under Offer",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 3134000.0,
    "sources": [
     "Trident"
@@ -19558,7 +19561,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49815/original/20260206103613_NCB3.jpg",
    "mls": "420348",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3157000,
    "sources": [
     "The Agency"
@@ -19748,7 +19751,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2025/12/12110143/20251212104139_4Gregg_ArnoldPedro_Bluff_LandProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420082",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 3321000,
    "sources": [
     "Property Cayman"
@@ -19869,7 +19872,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-08-13-15-35-35-20260813133213TheShoresdrone16.jpg",
    "mls": "421094",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 3382500,
    "sources": [
     "IRG",
@@ -19921,7 +19924,7 @@
    "image": "https://www.cireba.com/caches/508x339/2026-07-28-22-50-08-20260728224309Jul26Resized2.jpg",
    "mls": "420033",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 3440809,
    "sources": [
     "Trident",
@@ -20008,7 +20011,7 @@
    "image": "https://www.cireba.com/caches/508x339/2024-12-20-17-21-05-1733606778CanalviewCover.jpg",
    "mls": "418612",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 3450000.0,
    "sources": [
     "Trident",
@@ -20037,7 +20040,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49595/original/429860198280134.jpg",
    "mls": "420097",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3460400,
    "sources": [
     "The Agency"
@@ -20112,7 +20115,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-03-18-02-32-1753735465Map.webp",
    "mls": "419577",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 3500000.0,
    "sources": [
     "Rainbow Realty"
@@ -20135,7 +20138,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49036/original/1753442236EYE7170.jpeg",
    "mls": "419571",
    "status": "Increased",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3603900,
    "sources": [
     "The Agency"
@@ -20331,7 +20334,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49806/original/20260224162750_FIN34.jpg",
    "mls": "420336",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3690000,
    "sources": [
     "The Agency"
@@ -20354,7 +20357,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47633/original/1727103353DJI202409200607320383D.jpg",
    "mls": "418252",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 3813000,
    "sources": [
     "The Agency"
@@ -20481,7 +20484,7 @@
    "image": "https://propertycayman-prod-media.s3.us-east-2.amazonaws.com/wp-content/uploads/2026/07/08143059/20260708141935_1Michael_Joseph__Joshua_HewWater_Cay_Road_054_AcresProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "420993",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 3997500,
    "sources": [
     "Property Cayman",
@@ -20643,7 +20646,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2022-03-23-11-03-31-1647822818EXTERIORFULLBUILDING.jpg",
    "mls": "414270",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 4290000.0,
    "sources": [
     "IRG"
@@ -20718,7 +20721,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-05-28-00-39-54-20260121205043SouthSoundDevelopmentSiteDougallHislopJPG.webp",
    "mls": "420263",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 4380000.0,
    "sources": [
     "Rainbow Realty"
@@ -20787,7 +20790,7 @@
    "image": "https://propertycayman-prod-media.s3.us-east-2.amazonaws.com/wp-content/uploads/2026/07/27170130/20260727144338_1Michael_Joseph_and_Joshua_HewCayman_Kai_Water_Cay_Road_LotsProperty_Cayman_Real_Estate-370x414.jpg",
    "mls": "421045",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 4551000,
    "sources": [
     "Property Cayman",
@@ -20816,7 +20819,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/DEVELOPERS-DREAM-54-ELEVATED-ACRES-IN-EAST-END-1793421870.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 4700000.0,
    "sources": [
     "H.A. Bodden Realty"
@@ -20839,7 +20842,7 @@
    "image": "https://bhhs-prod-media.s3.amazonaws.com/properties/123994/conversions/20261001124800_b1a00b4997b244ac9cf058b8d780a5b2-card%402x.webp",
    "mls": "421226",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:48+00:00",
+   "scraped_at": "2026-11-02T19:25:36+00:00",
    "price_kyd": 4821600,
    "sources": [
     "Berkshire Hathaway HomeServices",
@@ -20920,7 +20923,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/48230/original/1739369060DJI202502080811250397D.jpg",
    "mls": "418845",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 4915900,
    "sources": [
     "The Agency",
@@ -20995,7 +20998,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2026-06-10-10-06-56-20260610094645DSC09681v2.jpg",
    "mls": "420709",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 4995000.0,
    "sources": [
     "IRG"
@@ -21018,7 +21021,7 @@
    "image": "https://www.irgcayman.com/caches/633x422/2025-12-29-09-05-57-174982592511-boggysandshorz.jpg",
    "mls": "418969",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 5250000.0,
    "sources": [
     "IRG"
@@ -21185,7 +21188,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/45931/original/1723746218DJI202407310058200390D.jpg",
    "mls": "416612",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 5739180,
    "sources": [
     "The Agency"
@@ -21212,14 +21215,9 @@
    "price_kyd": 5930000.0,
    "sources": [
     "CIREBA",
-    "Williams2 Real Estate",
     "IRG"
    ],
    "also": [
-    {
-     "source": "Williams2 Real Estate",
-     "url": "https://williams2realestate.com/property/rare-1-24-acre-waterfront-development-site-adjacent-to-sunset-house/"
-    },
     {
      "source": "IRG",
      "url": "https://www.irgcayman.com/property-detail/georgetownsouth/land/rare-1-24-acre-waterfront-development-site-adjacent-to-sunset-house-1"
@@ -21299,7 +21297,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49541/original/20251203135935_DSC08763.jpg",
    "mls": "420060",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 6145900,
    "sources": [
     "The Agency",
@@ -21357,7 +21355,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47414/original/1723480452DJI202407310058130384D.jpg",
    "mls": "418061",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 6150000,
    "sources": [
     "The Agency"
@@ -21466,7 +21464,7 @@
    "image": "https://propertycayman-prod-media.s3.amazonaws.com/wp-content/uploads/2026/03/04120131/16694145781-ColleenMartin-PedroLand-PropertyCaymanRealEstate-370x414.jpg",
    "mls": "415351",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:45+00:00",
+   "scraped_at": "2026-11-02T19:25:33+00:00",
    "price_kyd": 6400000.0,
    "sources": [
     "Property Cayman"
@@ -21512,7 +21510,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/47467/original/1723668399DJI202407310058130384D.jpg",
    "mls": "418086",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 6519000,
    "sources": [
     "The Agency"
@@ -21558,7 +21556,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/48459/original/1742228946DJI202503150906080549D.jpg",
    "mls": "419024",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 6765000,
    "sources": [
     "The Agency"
@@ -21581,7 +21579,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50499/original/964288566317019.jpg",
    "mls": "420953",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 6912928,
    "sources": [
     "The Agency"
@@ -21656,7 +21654,7 @@
    "image": "https://www.tridentproperties.ky/caches/328x218/2026-07-18-13-00-57-20260718124828-20260718124743DJI202607161555280030DEdit.jpg",
    "mls": "420790",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:39+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 7011000,
    "sources": [
     "Trident"
@@ -21800,7 +21798,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50344/original/20260521081324_Watercolours42.jpg",
    "mls": "420847",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 7462000,
    "sources": [
     "The Agency"
@@ -21823,7 +21821,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49669/original/20251230161706_DSC04224.jpg",
    "mls": "420161",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 7749000,
    "sources": [
     "The Agency",
@@ -21852,7 +21850,7 @@
    "image": "https://www.utopiacaymanrealty.com/wp-content/uploads/2024/04/16-BELLA-CLOSE-WEST-BAY-17.jpg",
    "mls": "",
    "status": "For Sale (New)",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 7900000.0,
    "sources": [
     "Utopia Realty"
@@ -21875,7 +21873,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/50116/original/20260408104615_caymanislandsvilladelmare2020048.jpg",
    "mls": "420591",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 7995000,
    "sources": [
     "The Agency",
@@ -22060,7 +22058,7 @@
    "image": "https://islandrealty.com.ky/wp-content/uploads/2021/10/IMG_3798.jpeg",
    "mls": "95B00N5692",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:41+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 8200000,
    "sources": [
     "Island Realty"
@@ -22158,7 +22156,7 @@
    "image": "https://www.rainbowrealty.ky/caches/390x260/2026-08-03-18-02-32-1738089672MLS417287SouthSoundDevSite-Lined.webp",
    "mls": "419659",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:40+00:00",
+   "scraped_at": "2026-11-02T19:25:28+00:00",
    "price_kyd": 8999000.0,
    "sources": [
     "Rainbow Realty"
@@ -22337,7 +22335,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/44866/original/167529869314OceanClubItalianrestauranttoSunsetBarexterioroverlookingocean6K1101copy-min.jpg",
    "mls": "415593",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 9922000,
    "sources": [
     "The Agency"
@@ -22429,7 +22427,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49274/original/20250925174859_p1.jpg",
    "mls": "419791",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 12259000,
    "sources": [
     "The Agency",
@@ -22602,7 +22600,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/46830/original/1726695161SunsetBay-3.jpg",
    "mls": "417475",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 15580000,
    "sources": [
     "The Agency"
@@ -22752,7 +22750,7 @@
    "image": "https://cireba-cdn.s3.amazonaws.com/assets/images/property/listing/49531/original/20251201123900_01_Black_Urchin_4BR_Suites_Pool_1.jpg",
    "mls": "420056",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:42+00:00",
+   "scraped_at": "2026-11-02T19:25:29+00:00",
    "price_kyd": 24518000,
    "sources": [
     "The Agency",
@@ -22902,7 +22900,7 @@
    "image": "https://www.habrealtycayman.com/cache/listing/images/520_340/Newlands-Residential-Canal-Lot-Subdivision-1753747371.jpeg",
    "mls": "",
    "status": "For Sale",
-   "scraped_at": "2026-11-02T07:35:43+00:00",
+   "scraped_at": "2026-11-02T19:25:27+00:00",
    "price_kyd": 50000000.0,
    "sources": [
     "H.A. Bodden Realty"
